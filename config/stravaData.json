@@ -1,0 +1,12 @@
+{
+  "client_id": "105855",
+  "client_secret": "16c4b8a34e652d2963fbe7b8732e2041b410b92c",
+  "token": "a5d5d275bcef91e50dbb0d6f7ae032fa603653f6",
+  "refresh_token": "123377e42962277127ac9d232a629803f4599e28",
+  "code": "8e255117638b72aa18d21b2eedf2fef21c7a2b8c",
+  "grant_type": "authorization_code",
+  "base_url": "https://www.strava.com/api/v3",
+  "response_type": "code",
+  "oauth_endpoint": "",
+  "redirect_uri": "https://juandelaf.com/"
+} 

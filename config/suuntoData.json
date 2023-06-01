@@ -1,0 +1,8 @@
+{
+  "client_id": "",
+  "client_secret": "",
+  "base_url": "https://cloudapi-oauth.suunto.com",
+  "response_type": "code",
+  "oauth_endpoint": "",
+  "redirect_uri": "https://juandelaf.com/"
+}
