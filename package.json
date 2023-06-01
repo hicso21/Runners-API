@@ -5,6 +5,9 @@
   "author": "hicso <tv21102000@gmail.com>",
   "license": "MIT",
   "type": "module",
+  "engines": {
+    "node": ">=18.16.0"
+  },
   "scripts": {
     "start": "node --watch server"
   },
