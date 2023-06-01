@@ -1,6 +1,6 @@
 class StravaController {
 
-  static async getUser (req, res) {
+  static async getAllUsers (req, res) {
     try {
       
     } catch (error) {

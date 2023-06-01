@@ -1,11 +1,13 @@
 class StravaServices {
-  static async getUser () {
+  
+  static async getAllUsers () {
     try {
       
     } catch (error) {
       
     }
   }
+  
 }
 
 export default StravaServices

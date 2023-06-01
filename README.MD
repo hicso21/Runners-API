@@ -1,0 +1,1 @@
+The access token on Strava changes every 6 hours, to find out what is this new token, access this link https://www.strava.com/settings/api
