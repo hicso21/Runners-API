@@ -1,4 +1,4 @@
-import fetchSuunto from "../../../utils/fetchSuuntoAPI";
+import fetchSuunto from "../../../utils/fetches/fetchSuuntoAPI.js";
 
 class SuuntoServices {
   
