@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 8000;
 const app = express();
 
 app.use(cors({
-  origin: ["http://localhost:3000", "https://localhost:8000"],
+  origin: ["http://localhost:5173", "https://localhost:8000"],
   methods: ["OPTIONS", "GET", "PATCH", "DELETE", "POST", "UPDATE", "PUT"]
 }));
 app.use(express.json());
