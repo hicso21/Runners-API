@@ -1,8 +1,11 @@
-import mongoose, { Schema, Schema } from "mongoose";
+import mongoose from "mongoose";
 
 const connectionString = "mongodb+srv://hicso:thomas2110@runnersdb.kso8gvp.mongodb.net/?retryWrites=true&w=majority";
 
-mongoose.connect(connectionString)
+const db = mongoose
+    .connect(connectionString, {
+        dbName: 'runners_api',
+    })
     .then(() => {
         console.log('DB was connected successfully')
     })
@@ -10,4 +13,6 @@ mongoose.connect(connectionString)
         console.error(err)
     })
 
-const Schema = new Schema()
+mongoose.Promise = global.Promise
+
+export default db

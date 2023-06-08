@@ -1,3 +1,4 @@
+import "./db/mongoDB.js"
 import express from "express";
 import cors from "cors";
 import router from "./routes/v1/index.js";
@@ -9,7 +10,7 @@ const app = express();
 
 app.use(cors({
   origin: ["http://localhost:3000", "https://localhost:8000"],
-  methods: ["OPTIONS", "GET", "PATCH", "DELETE", "POST"],
+  methods: ["OPTIONS", "GET", "PATCH", "DELETE", "POST", "UPDATE", "PUT"]
 }));
 app.use(express.json());
 
@@ -17,9 +18,9 @@ app.use(express.json());
 app.use("/api/v1", router);
 
 app.get("/", (req, res) => {
-  res.send("Hello World!")
+  res.send("Hello World!");
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+  console.log(`Server running on port ${PORT}`);
 });
