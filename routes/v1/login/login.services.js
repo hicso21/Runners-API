@@ -1,4 +1,4 @@
-import Login from "../db/models/Login.js";
+import Login from "../../../db/models/Login.js";
 
 class LoginService {
     static async login(email) {
