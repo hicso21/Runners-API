@@ -1,9 +1,14 @@
 import { Schema, model } from "mongoose";
 
 const exercisesSchema = new Schema({
-    
-})
+    name: String,
+    type: String,
+    category: String,
+    time: String,
+    intensity: String,
+    comentary: String
+});
 
-const Exercises = model("Exercise", exercisesSchema)
+const Exercises = model("Exercise", exercisesSchema);
 
-export default Exercises
+export default Exercises;

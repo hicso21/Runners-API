@@ -3,6 +3,7 @@ import { Schema, model } from "mongoose";
 const runnerSchema = new Schema({
     id: String,
     name: String,
+    brand: String,
     group: String,
     calendar: Array
 })

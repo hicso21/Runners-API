@@ -1,10 +1,11 @@
-import Groups from "../../../db/models/Groups.js";
+import Routines from "../../../db/models/Routines.js";
 
-export default class GroupsServices {
-    static async getAllGroups () {
+export default class RoutinesServices {
+    
+    static async getAllRoutines () {
         try {
-            const groups = await Groups.find({});
-            return groups;
+            const routines = await Routines.find({});
+            return routines;
         } catch (error) {
             return {
                 error: true,
@@ -12,14 +13,15 @@ export default class GroupsServices {
             }
         }
     }
-    static async postGroup (name) {
+
+    static async postRoutine (name) {
         try {
-            const newGroup = await new Groups({
+            const newRoutine = await new Routines({
                 name: name,
-                users: []
+                exercises: []
             });
-            newGroup.save();
-            return newGroup;
+            newRoutine.save();
+            return newRoutine;
         } catch (error) {
             return {
                 error: true,
@@ -27,10 +29,11 @@ export default class GroupsServices {
             }
         }
     }
-    static async getOneGroup (id) {
+
+    static async getOneRoutine (id) {
         try {
-            const group = await Groups.findById(id);
-            return group;
+            const routine = await Routines.findById(id);
+            return routine;
         } catch (error) {
             return {
                 error: true,
@@ -38,9 +41,10 @@ export default class GroupsServices {
             }
         }
     }
-    static async deleteGroup (name) {
+
+    static async deleteRoutine (name) {
         try {
-            await Groups.deleteOne({ name: name });
+            await Routines.deleteOne({ name: name });
             return {
                 error: false
             }
@@ -51,4 +55,5 @@ export default class GroupsServices {
             }
         }
     }
+
 }

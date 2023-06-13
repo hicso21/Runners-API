@@ -1,11 +1,11 @@
-import GroupsServices from "./groups.services.js";
+import RoutinesServices from "./routines.services.js";
 
-class GroupsController {
-    
-    static async getGroups(req, res) {
+class RoutinesController {
+
+    static async getRoutines(req, res) {
         try {
-            const groups = await GroupsServices.getAllGroups();
-            res.status(200).send(groups);
+            const routines = await RoutinesServices.getAllRoutines();
+            res.status(200).send(routines);
         } catch (error) {
             return {
                 error: true,
@@ -14,11 +14,11 @@ class GroupsController {
         }
     }
 
-    static async newGroup(req, res) {
+    static async newRoutine(req, res) {
         try {
             const { name } = req.body;
-            const newGroup = await GroupsServices.postGroup(name);
-            res.status(201).send(newGroup);
+            const newRoutine = await RoutinesServices.postRoutine(name);
+            res.status(201).send(newRoutine);
         } catch (error) {
             return {
                 error: true,
@@ -27,11 +27,11 @@ class GroupsController {
         }
     }
 
-    static async getOneGroup(req, res) {
+    static async getOneRoutine(req, res) {
         try {
             const { id } = req.params;
-            const group = await GroupsServices.getOneGroup(id);
-            res.status(200).send(group)
+            const routine = await RoutinesServices.getOneRoutine(id);
+            res.status(200).send(routine)
         }catch (error) {
             return {
                 error: true,
@@ -40,7 +40,7 @@ class GroupsController {
         }
     }
 
-    static async updateGroup(req, res) {
+    static async updateRoutine(req, res) {
         try {
             const { id } = req.params;
         } catch (error) {
@@ -51,10 +51,10 @@ class GroupsController {
         }
     }
 
-    static async deleteGroup(req, res) {
+    static async deleteRoutine(req, res) {
         try {
             const { name } = req.body;
-            const res = await GroupsServices.deleteGroup(name);
+            const res = await RoutinesServices.deleteRoutine(name);
             res.status(200).send(res)
         } catch (error) {
             return {
@@ -64,6 +64,6 @@ class GroupsController {
         }
     }
 
-} 
+}
 
-export default GroupsController
+export default RoutinesController
