@@ -1,10 +1,11 @@
-import Exercises from "../../../db/models/Exercises.js";
+import Runners from "../../../db/models/Runners.js";
 
-class ExercisesServices {
-    static async getAllExercises() {
+export default class RunnersServices {
+
+    static async getAll() {
         try {
-            const exercises = await Exercises.find({});
-            return exercises;
+            const runners = await Runners.find({});
+            return runners;
         } catch (error) {
             return {
                 error: true,
@@ -13,10 +14,10 @@ class ExercisesServices {
         }
     }
 
-    static async getExerciseById(id) {
+    static async getById(id) {
         try {
-            const exercise = await Exercises.findById(id);
-            return exercise;
+            const runner = await Runners.findById(id);
+            return runner;
         } catch (error) {
             return {
                 error: true,
@@ -25,10 +26,11 @@ class ExercisesServices {
         }
     }
 
-    static async newExercise(exercise) {
+    static async create(runner) {
         try {
-            const newExercise = await new Exercises(exercise).save();
-            return newExercise;
+            const newRunner = await new Runners(runner);
+            await newRunner.save();
+            return newRunner;
         } catch (error) {
             return {
                 error: true,
@@ -37,9 +39,13 @@ class ExercisesServices {
         }
     }
 
-    static async updateExercise(exercise) {
+    static async update(name, runner) {
         try {
-            
+            const res = await Runners.updateOne({ name: name }, runner);
+            return {
+                error: false,
+                runner: res
+            };
         } catch (error) {
             return {
                 error: true,
@@ -48,12 +54,12 @@ class ExercisesServices {
         }
     }
 
-    static async deleteExercise(name) {
+    static async delete(name) {
         try {
-            await Exercises.deleteOne({ name: name });
+            await Runners.deleteOne({ name: name });
             return {
                 error: false
-            }
+            };
         } catch (error) {
             return {
                 error: true,
@@ -61,6 +67,5 @@ class ExercisesServices {
             };
         }
     }
-}
 
-export default ExercisesServices;
+}

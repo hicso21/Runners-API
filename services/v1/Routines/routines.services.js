@@ -1,8 +1,8 @@
 import Routines from "../../../db/models/Routines.js";
 
 export default class RoutinesServices {
-    
-    static async getAllRoutines () {
+
+    static async getAllRoutines() {
         try {
             const routines = await Routines.find({});
             return routines;
@@ -10,27 +10,27 @@ export default class RoutinesServices {
             return {
                 error: true,
                 data: error
-            }
+            };
         }
     }
 
-    static async postRoutine (name) {
+    static async postRoutine(name) {
         try {
             const newRoutine = await new Routines({
                 name: name,
                 exercises: []
             });
-            newRoutine.save();
+            await newRoutine.save();
             return newRoutine;
         } catch (error) {
             return {
                 error: true,
                 data: error
-            }
+            };
         }
     }
 
-    static async getOneRoutine (id) {
+    static async getOneRoutine(id) {
         try {
             const routine = await Routines.findById(id);
             return routine;
@@ -38,21 +38,33 @@ export default class RoutinesServices {
             return {
                 error: true,
                 data: error
-            }
+            };
         }
     }
 
-    static async deleteRoutine (name) {
+    static async updateRoutine(id, routine) {
         try {
-            await Routines.deleteOne({ name: name });
-            return {
-                error: false
-            }
+            const routineUpdated = await Routines.findByIdAndUpdate(id, routine, { new: true });
+            return routineUpdated
         } catch (error) {
             return {
                 error: true,
                 data: error
-            }
+            };
+        }
+    }
+
+    static async deleteRoutine(name) {
+        try {
+            await Routines.deleteOne({ name: name });
+            return {
+                error: false
+            };
+        } catch (error) {
+            return {
+                error: true,
+                data: error
+            };
         }
     }
 

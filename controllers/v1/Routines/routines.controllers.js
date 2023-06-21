@@ -1,4 +1,4 @@
-import RoutinesServices from "./routines.services.js";
+import RoutinesServices from "../../../services/v1/Routines/routines.services.js";
 
 class RoutinesController {
 
@@ -7,10 +7,10 @@ class RoutinesController {
             const routines = await RoutinesServices.getAllRoutines();
             res.status(200).send(routines);
         } catch (error) {
-            return {
+            res.status(404).send({
                 error: true,
                 data: error
-            };
+            });
         }
     }
 
@@ -20,10 +20,10 @@ class RoutinesController {
             const newRoutine = await RoutinesServices.postRoutine(name);
             res.status(201).send(newRoutine);
         } catch (error) {
-            return {
+            res.status(404).send({
                 error: true,
                 data: error
-            };
+            });
         }
     }
 
@@ -33,21 +33,24 @@ class RoutinesController {
             const routine = await RoutinesServices.getOneRoutine(id);
             res.status(200).send(routine)
         }catch (error) {
-            return {
+            res.status(404).send({
                 error: true,
                 data: error
-            };
+            });
         }
     }
 
     static async updateRoutine(req, res) {
         try {
             const { id } = req.params;
+            const routine = req.body;
+            const updatedRoutine = await RoutinesServices.updateRoutine(id, routine);
+            res.status(200).send(updatedRoutine)
         } catch (error) {
-            return {
+            res.status(404).send({
                 error: true,
                 data: error
-            };
+            });
         }
     }
 
@@ -57,10 +60,10 @@ class RoutinesController {
             const res = await RoutinesServices.deleteRoutine(name);
             res.status(200).send(res)
         } catch (error) {
-            return {
+            res.status(404).send({
                 error: true,
                 data: error
-            };
+            });
         }
     }
 

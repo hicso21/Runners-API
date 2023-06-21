@@ -1,4 +1,4 @@
-import GroupsServices from "./groups.services.js";
+import GroupsServices from "../../../services/v1/Groups/groups.services.js";
 
 class GroupsController {
     
@@ -7,10 +7,10 @@ class GroupsController {
             const groups = await GroupsServices.getAllGroups();
             res.status(200).send(groups);
         } catch (error) {
-            return {
+            res.status(404).send({
                 error: true,
                 data: error
-            };
+            });
         }
     }
 
@@ -20,10 +20,10 @@ class GroupsController {
             const newGroup = await GroupsServices.postGroup(name);
             res.status(201).send(newGroup);
         } catch (error) {
-            return {
+            res.status(404).send({
                 error: true,
                 data: error
-            };
+            });
         }
     }
 
@@ -33,10 +33,10 @@ class GroupsController {
             const group = await GroupsServices.getOneGroup(id);
             res.status(200).send(group)
         }catch (error) {
-            return {
+            res.status(404).send({
                 error: true,
                 data: error
-            };
+            });
         }
     }
 
@@ -44,10 +44,10 @@ class GroupsController {
         try {
             const { id } = req.params;
         } catch (error) {
-            return {
+            res.status(404).send({
                 error: true,
                 data: error
-            };
+            });
         }
     }
 
@@ -57,10 +57,10 @@ class GroupsController {
             const res = await GroupsServices.deleteGroup(name);
             res.status(200).send(res)
         } catch (error) {
-            return {
+            res.status(404).send({
                 error: true,
                 data: error
-            };
+            });
         }
     }
 

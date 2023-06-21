@@ -1,4 +1,4 @@
-import ExercisesServices from "./exercises.services.js";
+import ExercisesServices from "../../../services/v1/Exercises/exercises.services.js";
 
 class ExercisesControllers {
     
@@ -7,10 +7,10 @@ class ExercisesControllers {
             const exercises = await ExercisesServices.getAllExercises();
             res.status(200).send(exercises);
         } catch (error) {
-            return {
+            res.status(404).send({
                 error: true,
                 data: error
-            };
+            });
         }
     }
 
@@ -20,10 +20,10 @@ class ExercisesControllers {
             const exercise = await ExercisesServices.getExerciseById(id);
             res.status(200).send(exercise);
         } catch (error) {
-            return {
+            res.status(404).send({
                 error: true,
                 data: error
-            };
+            });
         }
     }
 
@@ -33,34 +33,37 @@ class ExercisesControllers {
             const newExercise = await ExercisesServices.newExercise(exercise);
             res.status(201).send(newExercise);
         } catch (error) {
-            return {
+            res.status(404).send({
                 error: true,
                 data: error
-            };
+            });
+        }
+    }
+    
+    static async updateExercise(req, res) {
+        try {
+            const exercise = req.body;
+            const { id } = req.params;
+            const updateExercise = await ExercisesServices.updateExercise(id, exercise);
+            res.status(200).send(updateExercise);
+        } catch (error) {
+            res.status(404).send({
+                error: true,
+                data: error
+            });
         }
     }
 
     static async deleteExercise(req, res) {
         try {
-            const { name } = req.body;
-            const res = await ExercisesServices.deleteExercise(name);
+            const { id } = req.params;
+            const res = await ExercisesServices.deleteExercise(id);
             res.status(200).send(res);
         } catch (error) {
-            return {
+            res.status(404).send({
                 error: true,
                 data: error
-            };
-        }
-    }
-
-    static async updateExercise(req, res) {
-        try {
-
-        } catch (error) {
-            return {
-                error: true,
-                data: error
-            };
+            });
         }
     }
 

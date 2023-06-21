@@ -18,7 +18,7 @@ export default class GroupsServices {
                 name: name,
                 users: []
             });
-            newGroup.save();
+            await newGroup.save();
             return newGroup;
         } catch (error) {
             return {
