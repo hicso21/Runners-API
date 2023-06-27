@@ -3,9 +3,9 @@ import GroupsControllers from "../../../controllers/v1/Groups/groups.controllers
 
 const router = Router();
 
-router.get("/groups/getAll", GroupsControllers.getGroups);
-router.get("/groups/getOne/:id", GroupsControllers.getOneGroup);
-router.post("/groups/create", GroupsControllers.newGroup);
-router.delete("/groups/delete", GroupsControllers.deleteGroup);
+router.get("/getAll", GroupsControllers.getGroups);
+router.get("/getOne/:id", GroupsControllers.getOneGroup);
+router.post("/create", GroupsControllers.newGroup);
+router.delete("/delete", GroupsControllers.deleteGroup);
 
 export default router;
