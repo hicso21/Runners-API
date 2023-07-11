@@ -38,9 +38,9 @@ export default class GroupsServices {
             }
         }
     }
-    static async deleteGroup (name) {
+    static async deleteGroup (id) {
         try {
-            await Groups.deleteOne({ name: name });
+            await Groups.findByIdAndDelete(id);
             return {
                 error: false
             }

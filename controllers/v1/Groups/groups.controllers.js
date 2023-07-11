@@ -53,8 +53,8 @@ class GroupsController {
 
     static async deleteGroup(req, res) {
         try {
-            const { name } = req.body;
-            const res = await GroupsServices.deleteGroup(name);
+            const { group_id } = req.params;
+            const res = await GroupsServices.deleteGroup(group_id);
             res.status(200).send(res)
         } catch (error) {
             res.status(404).send({

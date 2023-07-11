@@ -6,6 +6,6 @@ const router = Router();
 router.get("/getAll", GroupsControllers.getGroups);
 router.get("/getOne/:id", GroupsControllers.getOneGroup);
 router.post("/create", GroupsControllers.newGroup);
-router.delete("/delete", GroupsControllers.deleteGroup);
+router.delete("/delete/group_id", GroupsControllers.deleteGroup);
 
 export default router;
