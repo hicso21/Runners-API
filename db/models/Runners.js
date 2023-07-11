@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 
 const runnerSchema = new Schema({
-    brandId: String,
+    brand_id: String,
     name: String,
     email: String,
     password: String,
