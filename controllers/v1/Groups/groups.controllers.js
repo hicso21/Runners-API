@@ -26,6 +26,20 @@ class GroupsController {
             });
         }
     }
+    
+    static async updateGroup(req, res) {
+        try {
+            const { id } = req.params;
+            const data = req.body;
+            const newGroup = await GroupsServices.putGroup(id, data);
+            res.status(201).send(newGroup);
+        } catch (error) {
+            res.status(404).send({
+                error: true,
+                data: error
+            });
+        }
+    }
 
     static async getOneGroup(req, res) {
         try {
@@ -40,21 +54,10 @@ class GroupsController {
         }
     }
 
-    static async updateGroup(req, res) {
-        try {
-            const { id } = req.params;
-        } catch (error) {
-            res.status(404).send({
-                error: true,
-                data: error
-            });
-        }
-    }
-
     static async deleteGroup(req, res) {
         try {
-            const { group_id } = req.params;
-            const res = await GroupsServices.deleteGroup(group_id);
+            const { id } = req.params;
+            const res = await GroupsServices.deleteGroup(id);
             res.status(200).send(res)
         } catch (error) {
             res.status(404).send({

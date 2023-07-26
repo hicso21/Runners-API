@@ -6,7 +6,7 @@ const router = Router();
 router.get("/getAll", RunnersControllers.getAll);
 router.get("/getById/:id", RunnersControllers.getById);
 router.post("/create", RunnersControllers.newRunner);
-router.put("/update", RunnersControllers.updateRunner);
-router.delete("/delete", RunnersControllers.deleteRunner);
+router.put("/update/:id", RunnersControllers.updateRunner);
+router.delete("/delete/:id", RunnersControllers.deleteRunner);
 
 export default router;

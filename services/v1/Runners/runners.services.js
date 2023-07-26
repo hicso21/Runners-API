@@ -39,9 +39,9 @@ export default class RunnersServices {
         }
     }
 
-    static async update(name, runner) {
+    static async update(id, runner) {
         try {
-            const res = await Runners.updateOne({ name: name }, runner);
+            const res = await Runners.findByIdAndUpdate(id, runner);
             return {
                 error: false,
                 runner: res
@@ -54,9 +54,9 @@ export default class RunnersServices {
         }
     }
 
-    static async delete(name) {
+    static async delete(id) {
         try {
-            await Runners.deleteOne({ name: name });
+            await Runners.findByIdAndDelete(id);
             return {
                 error: false
             };

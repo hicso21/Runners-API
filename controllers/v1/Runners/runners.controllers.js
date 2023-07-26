@@ -42,9 +42,9 @@ export default class RunnersControllers {
 
     static async updateRunner(req, res) {
         try {
-            const { name } = req.body;
+            const { id } = req.params;
             const data = req.body;
-            const runner = await RunnersServices.update(name, data);
+            const runner = await RunnersServices.update(id, data);
             res.status(200).send(runner);
         } catch (error) {
             res.status(404).send({
@@ -56,8 +56,8 @@ export default class RunnersControllers {
 
     static async deleteRunner(req, res) {
         try {
-            const { name } = req.body;
-            const runner = await RunnersServices.delete(name);
+            const { id } = req.params;
+            const runner = await RunnersServices.delete(id);
             res.status(200).send(runner);
         } catch (error) {
             res.status(404).send({
