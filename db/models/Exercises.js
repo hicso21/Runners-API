@@ -4,7 +4,7 @@ const exercisesSchema = new Schema({
     name: String,
     type: String,
     category: String, /* Running, Funcional, Bike */
-    duration: String,
+    duration: Number,
     intensity: String,
     comentary: String
 });
