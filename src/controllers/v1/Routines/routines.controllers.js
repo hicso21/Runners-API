@@ -58,8 +58,8 @@ class RoutinesController {
 
 	static async deleteRoutine(req, res) {
 		try {
-			const { name } = req.body;
-			const res = await RoutinesServices.deleteRoutine(name);
+			const { id } = req.params;
+			const res = await RoutinesServices.deleteRoutine(id);
 			res.status(200).send(res);
 		} catch (error) {
 			res.status(404).send({

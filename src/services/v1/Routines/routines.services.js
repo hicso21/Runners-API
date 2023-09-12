@@ -57,9 +57,9 @@ export default class RoutinesServices {
 		}
 	}
 
-	static async deleteRoutine(name) {
+	static async deleteRoutine(id) {
 		try {
-			await Routines.deleteOne({ name: name });
+			await Routines.findByIdAndDelete(id);
 			return {
 				error: false,
 			};
