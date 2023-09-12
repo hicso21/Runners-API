@@ -5,9 +5,13 @@ const runnerSchema = new Schema({
 	name: String,
 	email: String,
 	password: String,
+	age: String,
 	brand: String,
 	group: String,
 	calendar: Array,
+	token_type: String,
+	access_token: String,
+	refresh_token: String,
 });
 
 const Runners = model('Runner', runnerSchema);
