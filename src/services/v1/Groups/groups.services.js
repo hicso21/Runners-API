@@ -1,7 +1,6 @@
 import Groups from '../../../db/models/Groups.js';
 
 export default class GroupsServices {
-
 	static async getAllGroups() {
 		try {
 			const groups = await Groups.find({});
@@ -30,9 +29,9 @@ export default class GroupsServices {
 		}
 	}
 
-    static async putGroup(id, data) {
+	static async putGroup(id, data) {
 		try {
-			const updated = await Groups.findByIdAndUpdate(id, data)
+			const updated = await Groups.findByIdAndUpdate(id, data);
 			return updated;
 		} catch (error) {
 			return {
@@ -56,9 +55,10 @@ export default class GroupsServices {
 
 	static async deleteGroup(id) {
 		try {
-			await Groups.findByIdAndDelete(id);
+			const res = await Groups.findByIdAndDelete(id);
 			return {
 				error: false,
+				data: res
 			};
 		} catch (error) {
 			return {
@@ -67,5 +67,4 @@ export default class GroupsServices {
 			};
 		}
 	}
-
 }
