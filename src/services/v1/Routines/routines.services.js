@@ -59,14 +59,17 @@ export default class RoutinesServices {
 
 	static async deleteRoutine(id) {
 		try {
-			await Routines.findByIdAndDelete(id);
+			const res = await Routines.findByIdAndDelete(id);
 			return {
 				error: false,
+				data: res,
+				status: 200,
 			};
 		} catch (error) {
 			return {
 				error: true,
 				data: error,
+				status: 500,
 			};
 		}
 	}
