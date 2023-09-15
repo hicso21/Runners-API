@@ -17,3 +17,14 @@ const runnerSchema = new Schema({
 const Runners = model('Runner', runnerSchema);
 
 export default Runners;
+
+/* 
+const date = new Date()
+calendar : [
+	{
+		date: date.toLocaleDateString(),
+		routine: routine
+	}
+]
+
+*/
