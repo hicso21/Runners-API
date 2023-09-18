@@ -33,15 +33,15 @@ app.use(
 );
 
 // version 1 of the api routes to all brands
-app.use('/api/version', () => {
-	res.send(currentVersion);
+app.use('/api/version', (req, res) => {
+	res.send('Version in use: ' + currentVersion);
 });
 app.use('/api/v1', router);
 
 app.get('/', async (req, res) => {
 	res.send(`
 		Welcome to Runners API <br/>
-		We are using V1 at this moment ${new Date()}`);
+		We are using version ${currentVersion} at this moment ${new Date()}`);
 });
 
 app.listen(PORT, () => {
