@@ -6,7 +6,8 @@ const exercisesSchema = new Schema({
     category: String, /* Running, Funcional, Bike */
     duration: Number,
     intensity: String,
-    comentary: String
+    comentary: String,
+    // gif: Gif
 });
 
 const Exercises = model("Exercise", exercisesSchema);
