@@ -3,6 +3,10 @@ import SuuntoController from "../../../controllers/v1/Suunto/suunto.controllers.
 
 const router = Router();
 
+router.get('/', (req, res) => {
+	res.send('<h3>In this path, we have all the Suunto requests</h3>');
+});
+
 // router.use("/suunto", "");
 
 export default router

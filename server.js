@@ -8,6 +8,7 @@ import methodOverride from 'method-override';
 import multer from 'multer';
 import { GridFsStorage } from 'multer-gridfs-storage';
 import { config } from 'dotenv';
+import currentVersion from './src/utils/constants/currentVersion.js';
 config();
 
 const PORT = process.env.PORT || 8000;
@@ -32,6 +33,9 @@ app.use(
 );
 
 // version 1 of the api routes to all brands
+app.use('/api/version', () => {
+	res.send(currentVersion);
+});
 app.use('/api/v1', router);
 
 app.get('/', async (req, res) => {

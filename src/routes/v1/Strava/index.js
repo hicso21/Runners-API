@@ -4,6 +4,9 @@ import refreshTokenMiddleWare from './middleware/refreshToken.js';
 
 const router = Router();
 
+router.get('/', (req, res) => {
+	res.send('<h3>In this path, we have all the Strava requests</h3>');
+});
 router.get('/authorize/:db_id', StravaControllers.authorize);
 router.get('/exchange_token/:db_id', StravaControllers.manageUserCode);
 router.get(
