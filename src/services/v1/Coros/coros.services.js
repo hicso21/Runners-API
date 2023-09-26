@@ -4,7 +4,7 @@ import config from '../../../config/corosData.json' assert { type: 'json' };
 class CorosServices {
 	static async oauth(id) {
 		try {
-			const redirectUri = `${config.redirect_uri}/api/v1/coros/exchange_token`;
+			const redirectUri = `${config.redirect_uri}/api/v1/coros/`;
 			const uri =
 				`${config.test.test_url}/oauth2/authorize?` +
 				`client_id=${config.client_id}` +
