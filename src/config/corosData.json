@@ -8,5 +8,5 @@
 		"test_url" : "http://opentest.coros.com"
 	},
 	"grant_type": "authorization_code",
-	"redirect_uri": "https://localhost:8000"
+	"redirect_uri": "https://runners-api.onrender.com"
 }
