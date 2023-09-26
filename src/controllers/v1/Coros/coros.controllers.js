@@ -17,8 +17,8 @@ class CorosController {
 	static async manageUserCode(req, res) {
 		try {
 			const { code, state: user_id } = req.query;
-			const res = await CorosServices.accessToken(code, user_id);
-			console.log(res)
+			const response = await CorosServices.accessToken(code, user_id);
+			res.send(response)
 		} catch (error) {
 			return {
 				error: true,

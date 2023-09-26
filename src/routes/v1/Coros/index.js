@@ -4,10 +4,12 @@ import refreshTokenMiddleWare from './middleware/refreshTokenMiddleware.js';
 
 const router = Router();
 
+router.get('/', (req, res) => {
+	res.send('<h3>In this path, we have all the Coros requests</h3>');
+});
 
-
-router.get('/', CorosController.authorize);
-router.get('/exchange_token', CorosController.manageUserCode);
+router.get('/authorize/:db_id', CorosController.authorize);
+router.get('/', CorosController.manageUserCode);
 router.get(
 	'/get_user/:id',
 	refreshTokenMiddleWare,
