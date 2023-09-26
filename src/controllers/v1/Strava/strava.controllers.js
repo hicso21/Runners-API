@@ -19,8 +19,8 @@ class StravaController {
 	static async manageUserCode(req, res) {
 		try {
 			const user_id = req.params.db_id;
-			const query = req.query;
-			const token = await StravaServices.token(query.code);
+			const { code } = req.query;
+			const token = await StravaServices.token(code);
 			const token_type = token.token_type;
 			const access_token = token.access_token;
 			const refresh_token = token.refresh_token;

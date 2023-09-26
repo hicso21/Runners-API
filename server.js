@@ -36,6 +36,7 @@ app.use(
 app.use('/api/version', (req, res) => {
 	res.send('Version in use: ' + currentVersion);
 });
+
 app.use('/api/v1', router);
 
 app.get('/', async (req, res) => {
