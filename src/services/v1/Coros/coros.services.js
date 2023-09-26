@@ -4,7 +4,7 @@ import config from '../../../config/corosData.json' assert { type: 'json' };
 class CorosServices {
 	static async oauth(id) {
 		try {
-			const redirectUri = `${config.redirect_uri}/api/v1/coros/`;
+			const redirectUri = `${config.redirect_uri}/api/v1/coros/exchange_token`;
 			const uri =
 				`${config.test.test_url}/oauth2/authorize?` +
 				`client_id=${config.client_id}` +
@@ -20,10 +20,10 @@ class CorosServices {
 		}
 	}
 
-	static async accessToken(code, id) {
+	static async accessToken(code) {
 		try {
 			const uri = `${config.test.test_url}/oauth2/accesstoken`;
-			const redirectUri = `${config.redirect_uri}/api/v1/coros/exchange_token/${id}`;
+			const redirectUri = `${config.redirect_uri}/api/v1/coros/exchange_token`;
 			const body = {
 				client_id: config.client_id,
 				redirect_uri: redirectUri,

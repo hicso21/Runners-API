@@ -3,7 +3,7 @@ import CorosServices from '../../../services/v1/Coros/coros.services.js';
 class CorosController {
 	static async authorize(req, res) {
 		try {
-			const id = req.body.user_id;
+			const id = req.params.db_id;
 			const uri = await CorosServices.oauth(id);
 			res.redirect(uri);
 		} catch (error) {
@@ -16,8 +16,8 @@ class CorosController {
 
 	static async manageUserCode(req, res) {
 		try {
-			const { code, state: user_id } = req.query;
-			const response = await CorosServices.accessToken(code, user_id);
+			const { code } = req.query;
+			const response = await CorosServices.accessToken(code);
 			res.send(response)
 		} catch (error) {
 			return {
