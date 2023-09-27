@@ -24,14 +24,21 @@ class CorosServices {
 		try {
 			const uri = `${config.base_url}/oauth2/accesstoken`;
 			const redirectUri = `${config.redirect_uri}/api/v1/coros/exchange_token`;
-			const body = {
+			const data = {
 				client_id: config.client_id,
 				redirect_uri: redirectUri,
 				code,
 				client_secret: config.client_secret,
 				grant_type: config.grant_type,
 			};
-			return await fetchCoros.post(uri, encodeURIComponent(JSON.stringify(body)));
+			const encodedData = Object.keys(data)
+				.map((key) => {
+					return `${encodeURIComponent(key)}=${encodeURIComponent(
+						data[key]
+					)}`;
+				})
+				.join('&');
+			return await fetchCoros.post(uri, encodedData);
 		} catch (error) {
 			return {
 				error: true,
