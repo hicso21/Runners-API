@@ -38,7 +38,9 @@ class CorosServices {
 					)}`;
 				})
 				.join('&');
-			return await fetchCoros.post(uri, encodedData);
+			const { data: response } = await fetchCoros.post(uri, encodedData);
+			return response;
+			//rg2-01a9e53ec169f73a64a41502061198a1
 		} catch (error) {
 			return {
 				error: true,
