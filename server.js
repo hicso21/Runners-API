@@ -1,22 +1,17 @@
-import './src/db/mongoDB.js';
-import express from 'express';
-import session from 'express-session';
-import cors from 'cors';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
-import router from './src/routes/v1/index.js';
-import methodOverride from 'method-override';
-import multer from 'multer';
-import { GridFsStorage } from 'multer-gridfs-storage';
+import cors from 'cors';
 import { config } from 'dotenv';
+import express from 'express';
+import './src/db/mongoDB.js';
+import session from 'express-session';
+import flash from 'connect-flash';
+import router from './src/routes/v1/index.js';
 import currentVersion from './src/utils/constants/currentVersion.js';
 config();
 
 const PORT = process.env.PORT || 8000;
 const app = express();
-
-app.set('views', './src/views');
-app.set('view engine', 'ejs');
 
 // Middleware
 app.use(bodyParser.json());
@@ -33,18 +28,15 @@ app.use(
 		methods: ['OPTIONS', 'GET', 'PATCH', 'DELETE', 'POST', 'UPDATE', 'PUT'],
 	})
 );
-
-// Sessions
 app.use(
 	session({
-		secret: '0x9D93Ce5B8032257c3585A6130380381E296cdd16',
+		secret: 'hicso',
+		saveUninitialized: true,
 		resave: true,
-		saveUninitialized: false,
-		unset: 'keep',
-		cookie: { secure: true, expires: 86400 },
-		key: 'hicso',
 	})
 );
+
+app.use(flash());
 
 // version 1 of the api routes to all brands
 app.use('/api/version', (req, res) => {
@@ -53,24 +45,16 @@ app.use('/api/version', (req, res) => {
 
 app.use(
 	'/api/v1',
-	(req, res) => {
-		req.href = `${req.protocol}://${req.hostname}${req.url}`;
+	(req, res, next) => {
+		req.href = `${req.protocol}://${req.hostname}`;
+		next();
 	},
 	router
 );
 
 app.get('/', async (req, res) => {
-	req.session.cookie.usuario = 'hicso';
-	req.session.cookie.rol = 'admin';
-	req.session.cookie.visitas = req.session.cookie.visitas
-		? req.session.cookie.visitas++
-		: 1;
-	res.send(`
-		usuario => ${req.session.cookie.usuario} <br/>
-		rol => ${req.session.cookie.rol} <br/>
-		visitas => ${req.session.cookie.visitas} <br/>
-		${JSON.stringify(req.session.cookie)}
-	`);
+	req.flash('num', req.flash('num') ? req.flash('num') + 1 : 1);
+	res.send(`The number is ${req.flash('num')}`);
 	// res.send(`
 	// 	Welcome to Runners API <br/>
 	// 	We are using version ${currentVersion} at this moment ${new Date()}`);

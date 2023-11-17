@@ -12,6 +12,10 @@ import LoginController from './login/login.controllers.js';
 
 const router = Router();
 
+router.get('/', (req, res) => {
+	res.send(req.href);
+});
+
 router.post('/login', LoginController.login);
 //router.post("/register", LoginController.register)
 
