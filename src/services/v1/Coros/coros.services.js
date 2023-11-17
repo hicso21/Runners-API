@@ -40,7 +40,63 @@ class CorosServices {
 				.join('&');
 			const { data: response } = await fetchCoros.post(uri, encodedData);
 			return response;
-			//rg2-01a9e53ec169f73a64a41502061198a1
+		} catch (error) {
+			return {
+				error: true,
+				data: error,
+			};
+		}
+	}
+
+	static async getRunnerData(access_token, brand_id) {
+		try {
+			const { data } = await fetchCoros.get(
+				`/userinfosim?token=${access_token}&openId=${brand_id}`
+			);
+			return data;
+		} catch (error) {
+			return {
+				error: true,
+				data: error,
+			};
+		}
+	}
+
+	static async workoutByDate(access_token, brand_id, start_date, end_date) {
+		try {
+			// modes: 8(run), 9(bike), 15(trailrun), 31(walk)
+			const { data } = await fetchCoros.get(
+				'/v2/coros/sport/list?' +
+					`token=${access_token}` +
+					'&' +
+					`openId=${brand_id}` +
+					'&' +
+					`startDate=${start_date}` +
+					'&' +
+					`endDate=${end_date}`
+			);
+			return data.data;
+		} catch (error) {
+			return {
+				error: true,
+				data: error,
+			};
+		}
+	}
+
+	static async restDailyData(access_token, brand_id, start_date, end_date) {
+		try {
+			const { data } = await fetchCoros.get(
+				'/coros/daily/query?' +
+					`token=${access_token}` +
+					'&' +
+					`openId=${brand_id}` +
+					'&' +
+					`startDate=${start_date}` +
+					'&' +
+					`endDate=${end_date}`
+			);
+			return data.data;
 		} catch (error) {
 			return {
 				error: true,

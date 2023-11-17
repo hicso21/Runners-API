@@ -1,18 +1,25 @@
 import { Schema, model } from 'mongoose';
 
-const runnerSchema = new Schema({
-	brand_id: String,
-	name: String,
-	email: String,
-	password: String,
-	age: String,
-	brand: String,
-	group: String,
-	calendar: Array,
-	token_type: String,
-	access_token: String,
-	refresh_token: String,
-});
+const runnerSchema = new Schema(
+	{
+		brand_id: String,
+		name: String,
+		email: String,
+		password: String,
+		age: String,
+		brand: String,
+		group: String,
+		calendar: Array,
+		membership: String,
+		membership_timestamp: String,
+		token_type: String,
+		access_token: String,
+		refresh_token: String,
+	},
+	{ timestamps: true }
+);
+
+runnerSchema.pre('findOneAndUpdate', function (next) {});
 
 const Runners = model('Runner', runnerSchema);
 

@@ -27,7 +27,7 @@ export default class RunnersServices {
 
 	static async create(runner) {
 		try {
-			const newRunner = await new Runners(runner);
+			const newRunner = new Runners(runner);
 			await newRunner.save();
 			return newRunner;
 		} catch (error) {
@@ -40,7 +40,7 @@ export default class RunnersServices {
 
 	static async update(id, runner) {
 		try {
-			const res = await Runners.findByIdAndUpdate(id, { $set: runner });
+			const res = await Runners.findByIdAndUpdate(id, runner);
 			return {
 				error: false,
 				runner: res,

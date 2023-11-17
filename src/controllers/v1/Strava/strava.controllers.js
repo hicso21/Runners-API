@@ -32,8 +32,8 @@ class StravaController {
 				brand_id,
 			});
 			if (response.error)
-				res.send('<h2>Ocurrió un error en la autorización</h2>');
-			res.send('<h2>Vuelve a la app</h2>');
+				res.send('<h2>Ocurrió un error en la autorización, intenta nuevamente.</h2>');
+			else res.send('<h2>Vuelve a la app</h2>');
 		} catch (error) {
 			console.log(error);
 			return {

@@ -18,13 +18,13 @@ router.get(
 router.get(
 	'/get_user/:id/data',
 	refreshTokenMiddleWare,
-	CorosController.getData
+	CorosController.getDataByDate
 );
-router.get(
-	'/get_user/:id/zones',
-	refreshTokenMiddleWare,
-	CorosController.getZones
-);
+// router.get(
+// 	'/get_user/:id/zones',
+// 	refreshTokenMiddleWare,
+// 	CorosController.getZones
+// );
 router.get(
 	'/get_user/:id/stats',
 	refreshTokenMiddleWare,
