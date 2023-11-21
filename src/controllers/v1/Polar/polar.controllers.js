@@ -14,8 +14,7 @@ class PolarController {
 				`response_type=code&` +
 				`client_id=${config.client_id}&` +
 				`redirect_uri=${redirect_uri}&` +
-				`state=${user_id}&` +
-				`scope=accesslink.read_all`;
+				`state=${user_id}`;
 			res.redirect(uri);
 		} catch (error) {
 			return {
@@ -87,7 +86,6 @@ class PolarController {
 			(item) => item['user-id'] == user_id
 		);
 		if (haveUserDailyActivity.length > 0) {
-			
 		}
 	}
 }
