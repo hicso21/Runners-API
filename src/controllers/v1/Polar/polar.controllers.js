@@ -8,7 +8,10 @@ class PolarController {
 	static async authUser(req, res) {
 		try {
 			const user_id = req.params.user_id;
-			const redirect_uri = `${mainUrl}/api/v1/polar/exchange_token`;
+			const baseUrl = req.hostname.includes('localhost')
+				? 'http://localhost:8000'
+				: mainUrl;
+			const redirect_uri = `${baseUrl}/api/v1/polar/exchange_token`;
 			const uri =
 				`${config.oauth_endpoint}/oauth2/authorization?` +
 				`response_type=code&` +
