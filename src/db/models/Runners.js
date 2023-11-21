@@ -29,7 +29,7 @@ export default Runners;
 const date = new Date()
 calendar : [
 	{
-		date: date.toLocaleDateString(),
+		date: date.toLocaleDateString(), -> 20/11/2023
 		routine: routine
 	}
 ]

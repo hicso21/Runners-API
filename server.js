@@ -36,8 +36,6 @@ app.use(
 	})
 );
 
-app.use(flash());
-
 // version 1 of the api routes to all brands
 app.use('/api/version', (req, res) => {
 	res.send('Version in use: ' + currentVersion);
@@ -53,11 +51,9 @@ app.use(
 );
 
 app.get('/', async (req, res) => {
-	req.flash('num', req.flash('num') ? req.flash('num') + 1 : 1);
-	res.send(`The number is ${req.flash('num')}`);
-	// res.send(`
-	// 	Welcome to Runners API <br/>
-	// 	We are using version ${currentVersion} at this moment ${new Date()}`);
+	res.send(`
+		Welcome to Runners API <br/>
+		We are using version ${currentVersion} at this moment ${new Date()}`);
 });
 
 app.listen(PORT, () => {
