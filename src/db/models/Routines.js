@@ -1,10 +1,10 @@
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose';
 
 const RoutineSchema = new Schema({
-    name: String,
-    exercises: Array
-})
+	name: String,
+	exercises: Array,
+});
 
-const Routines = model("Routine", RoutineSchema)
+const Routines = model('Routine', RoutineSchema);
 
-export default Routines
+export default Routines;

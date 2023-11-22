@@ -47,14 +47,27 @@ app.use(
 );
 
 app.get('/terms', (req, res) => {
-	let file = fs.createReadStream(
-		'./public/pdfs/terms&conditions.pdf'
-	);
-	let stat = fs.statSync('./public/pdfs/terms&conditions.pdf');
-	res.setHeader('Content-Length', stat.size);
-	res.setHeader('Content-Type', 'application/pdf');
-	res.setHeader('Content-Disposition', 'attachment; filename=quote.pdf');
-	file.pipe(res);
+	// let file = fs.createReadStream('./public/pdfs/terms&conditions.pdf');
+	// let stat = fs.statSync('./public/pdfs/terms&conditions.pdf');
+	// res.setHeader('Content-Length', stat.size);
+	// res.setHeader('Content-Type', 'application/pdf');
+	// res.setHeader(
+	// 	'Content-Disposition',
+	// 	'attachment; filename=terms&privacy_policy.pdf'
+	// );
+	// file.pipe(res);
+	fs.readFile('./public/pdfs/terms&conditions.pdf', (err, data) => {
+		if (err) {
+			console.error(err);
+			return;
+		}
+
+		// Convert the data to base64
+		const base64 = data.toString('base64');
+
+		// Use the base64 string as needed
+		res.send(base64)
+	});
 });
 
 // version 1 of the api routes to all brands
