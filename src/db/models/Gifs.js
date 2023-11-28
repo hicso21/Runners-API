@@ -2,11 +2,11 @@ import { Schema, model } from 'mongoose';
 
 const gifSchema = new Schema(
 	{
-		gif: Object()
+		name: String,
+		gif: String,
 	},
 	{ timestamps: true }
 );
-
 
 const Gifs = model('Gif', gifSchema);
 

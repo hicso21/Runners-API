@@ -1,6 +1,6 @@
 import axios from 'axios';
 import fetchStrava from '../../../utils/fetches/fetchStravaAPI.js';
-import config from '../../../config/stravaData.json' assert { type: 'json' };
+import config from '../../../config/stravaData.js';
 import mainUrl from '../../../utils/constants/mainUrl.js';
 
 class StravaServices {

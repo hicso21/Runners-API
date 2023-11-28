@@ -1,7 +1,7 @@
 import Logs from '../../../db/models/Logs.js';
 
 export default class LogsServices {
-	static async create(name, description, date) {
+	static async create(name, description, date = new Date().toLocaleString()) {
 		try {
 			const logs = new Logs({ name, description, date });
 			await logs.save();

@@ -8,6 +8,7 @@ import routines from './Routines/index.js';
 import runners from './Runners/index.js';
 import strava from './Strava/index.js';
 import suunto from './Suunto/index.js';
+import uploads from './Uploads/index.js';
 import LoginController from './login/login.controllers.js';
 
 const router = Router();
@@ -17,17 +18,17 @@ router.get('/', (req, res) => {
 });
 
 router.post('/login', LoginController.login);
-//router.post("/register", LoginController.register)
 
 router.use('/groups', groups);
 router.use('/routines', routines);
 router.use('/exercises', exercises);
 router.use('/runners', runners);
+router.use('/upload', uploads);
 
-router.use('/garmin', garmin);
-router.use('/polar', polar);
+router.use('/coros', coros);
 router.use('/suunto', suunto);
 router.use('/strava', strava);
-router.use('/coros', coros);
+router.use('/polar', polar);
+router.use('/garmin', garmin);
 
 export default router;

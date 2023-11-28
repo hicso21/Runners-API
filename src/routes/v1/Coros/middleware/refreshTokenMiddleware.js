@@ -1,5 +1,5 @@
 import fetchCoros from '../../../../utils/fetches/fetchCorosAPI.js';
-import config from '../../../../config/corosData.json' assert { type: 'json' };
+import config from '../../../../config/corosData.js';
 import RunnersServices from '../../../../services/v1/Runners/runners.services.js';
 
 export default async function refreshTokenMiddleWare(req, res, next) {
@@ -20,15 +20,12 @@ export default async function refreshTokenMiddleWare(req, res, next) {
 				)}`;
 			})
 			.join('&');
-		await fetchCoros.post(
-			'/oauth2/refresh-token',
-			encodedBody
-		);
+		await fetchCoros.post('/oauth2/refresh-token', encodedBody);
 		next();
 	} catch (error) {
-		return {
+		return res.send({
 			error: true,
 			data: error,
-		};
+		});
 	}
 }

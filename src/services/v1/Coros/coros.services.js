@@ -1,5 +1,5 @@
 import fetchCoros from '../../../utils/fetches/fetchCorosAPI.js';
-import config from '../../../config/corosData.json' assert { type: 'json' };
+import config from '../../../config/corosData.js';
 
 class CorosServices {
 	static async oauth(id) {

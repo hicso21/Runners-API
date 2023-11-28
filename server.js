@@ -13,24 +13,20 @@ import { fileURLToPath } from 'url';
 // import pdf from './src/utils/terms&conditions';
 config();
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 8080;
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const dirPath = path.join(__dirname, 'public/pdfs');
 
 // Middleware
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb'}));
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(
 	cors({
-		origin: [
-			'http://localhost:5173',
-			'http://localhost:8000',
-			'https://runners-desktop.vercel.app',
-		],
+		origin: ['http://localhost:5173', 'https://runners-desktop.vercel.app'],
 		methods: ['OPTIONS', 'GET', 'PATCH', 'DELETE', 'POST', 'UPDATE', 'PUT'],
 	})
 );
@@ -47,15 +43,6 @@ app.use(
 );
 
 app.get('/terms', (req, res) => {
-	// let file = fs.createReadStream('./public/pdfs/terms&conditions.pdf');
-	// let stat = fs.statSync('./public/pdfs/terms&conditions.pdf');
-	// res.setHeader('Content-Length', stat.size);
-	// res.setHeader('Content-Type', 'application/pdf');
-	// res.setHeader(
-	// 	'Content-Disposition',
-	// 	'attachment; filename=terms&privacy_policy.pdf'
-	// );
-	// file.pipe(res);
 	fs.readFile('./public/pdfs/terms&conditions.pdf', (err, data) => {
 		if (err) {
 			console.error(err);
@@ -66,7 +53,7 @@ app.get('/terms', (req, res) => {
 		const base64 = data.toString('base64');
 
 		// Use the base64 string as needed
-		res.send(base64)
+		res.send(base64);
 	});
 });
 

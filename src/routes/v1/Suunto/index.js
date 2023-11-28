@@ -6,9 +6,12 @@ const router = Router();
 router.get('/', (req, res) => {
 	res.send('<h3>In this path, we have all the Suunto requests</h3>');
 });
+
 router.get('/authorize/:db_id', SuuntoController.auth);
 router.get('/exchange_token/:db_id', SuuntoController.getToken);
 
-// router.use("/suunto", "");
+router.get('/daily_activity/:db_id', SuuntoController.getActivitySamples);
+router.get('/daily_statistics/:db_id', SuuntoController.getActivityStatistics);
+router.get('/sleep_data/:db_id', SuuntoController.getSleepData);
 
 export default router;

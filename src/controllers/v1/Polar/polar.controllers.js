@@ -1,4 +1,4 @@
-import config from '../../../config/polarData.json' assert { type: 'json' };
+import config from '../../../config/polarData.js';
 import LogsServices from '../../../services/v1/Logs/logs.services.js';
 import PolarServices from '../../../services/v1/Polar/polar.services.js';
 import RunnersServices from '../../../services/v1/Runners/runners.services.js';
@@ -20,10 +20,10 @@ class PolarController {
 				`state=${user_id}`;
 			res.redirect(uri);
 		} catch (error) {
-			return {
+			res.send({
 				error: true,
 				data: error,
-			};
+			});
 		}
 	}
 
@@ -48,23 +48,23 @@ class PolarController {
 					token_type: response.token_type,
 					brand_id: response.x_user_id,
 				});
-				return res.send('<h2>Vuelve a la app</h2>');
+				res.send('<h2>Vuelve a la app</h2>');
 			} else {
-				const log = LogsServices.create(
+				await LogsServices.create(
 					'token error polar',
-					JSON.stringify(response),
-					new Date().toLocaleString()
+					JSON.stringify(response)
 				);
-				await log.save();
-				return res.send(
-					'<h2>Ocurrió un error. Intenta nuevamente</h2>'
-				);
+				res.send('<h2>Ocurrió un error. Intenta nuevamente</h2>');
 			}
 		} catch (error) {
-			return {
+			await LogsServices.create(
+				'token error polar',
+				JSON.stringify(error)
+			);
+			res.send({
 				error: true,
 				data: error,
-			};
+			});
 		}
 	}
 
@@ -72,12 +72,16 @@ class PolarController {
 		try {
 			const { user_id } = req.params;
 			const response = await PolarServices.getUser(user_id);
-			return res.send(response);
+			res.send(response);
 		} catch (error) {
-			return {
+			await LogsServices.create(
+				'getRunnerData error polar',
+				JSON.stringify(error)
+			);
+			res.send({
 				error: true,
 				data: error,
-			};
+			});
 		}
 	}
 

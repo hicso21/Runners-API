@@ -1,3 +1,4 @@
+import LogsServices from '../../../services/v1/Logs/logs.services.js';
 import RunnersServices from '../../../services/v1/Runners/runners.services.js';
 import StravaServices from '../../../services/v1/Strava/strava.services.js';
 
@@ -9,10 +10,10 @@ class StravaController {
 			res.redirect(uri);
 		} catch (error) {
 			console.log(error);
-			return {
+			res.send({
 				error: true,
-				content: error,
-			};
+				data: error,
+			});
 		}
 	}
 
@@ -32,14 +33,19 @@ class StravaController {
 				brand_id,
 			});
 			if (response.error)
-				res.send('<h2>Ocurrió un error en la autorización, intenta nuevamente.</h2>');
+				res.send(
+					'<h2>Ocurrió un error en la autorización, intenta nuevamente.</h2>'
+				);
 			else res.send('<h2>Vuelve a la app</h2>');
 		} catch (error) {
-			console.log(error);
-			return {
+			await LogsServices.create(
+				'manageUserCode error strava',
+				JSON.stringify(error)
+			);
+			res.send({
 				error: true,
-				content: error,
-			};
+				data: error,
+			});
 		}
 	}
 
@@ -50,11 +56,14 @@ class StravaController {
 			const user = await StravaServices.getUserById(auth_header, user_id);
 			res.send(user);
 		} catch (error) {
-			console.log(error);
-			return {
+			await LogsServices.create(
+				'getCompleteUser error strava',
+				JSON.stringify(error)
+			);
+			res.send({
 				error: true,
-				content: error,
-			};
+				data: error,
+			});
 		}
 	}
 
@@ -64,11 +73,14 @@ class StravaController {
 			const user = await StravaServices.getUserData(auth_header);
 			res.send(user);
 		} catch (error) {
-			console.log(error);
-			return {
+			await LogsServices.create(
+				'getData error strava',
+				JSON.stringify(error)
+			);
+			res.send({
 				error: true,
-				content: error,
-			};
+				data: error,
+			});
 		}
 	}
 
@@ -78,11 +90,14 @@ class StravaController {
 			const user = await StravaServices.getUserZones(auth_header);
 			res.send(user);
 		} catch (error) {
-			console.log(error);
-			return {
+			await LogsServices.create(
+				'getZones error strava',
+				JSON.stringify(error)
+			);
+			res.send({
 				error: true,
-				content: error,
-			};
+				data: error,
+			});
 		}
 	}
 
@@ -96,11 +111,15 @@ class StravaController {
 			);
 			res.send(user);
 		} catch (error) {
+			await LogsServices.create(
+				'getStats error strava',
+				JSON.stringify(error)
+			);
 			console.log(error);
-			return {
+			res.send({
 				error: true,
-				content: error,
-			};
+				data: error,
+			});
 		}
 	}
 
@@ -114,11 +133,14 @@ class StravaController {
 			);
 			res.send(user);
 		} catch (error) {
-			console.log(error);
-			return {
+			await LogsServices.create(
+				'getActivities error strava',
+				JSON.stringify(error)
+			);
+			res.send({
 				error: true,
-				content: error,
-			};
+				data: error,
+			});
 		}
 	}
 }

@@ -11,29 +11,19 @@ router.get('/', (req, res) => {
 router.get('/authorize/:db_id', CorosController.authorize);
 router.get('/exchange_token', CorosController.manageUserCode);
 router.get(
-	'/get_user/:id',
+	'/user_data/:id',
 	refreshTokenMiddleWare,
 	CorosController.getCompleteUser
 );
 router.get(
-	'/get_user/:id/data',
+	'/data_by_date/:id/data',
 	refreshTokenMiddleWare,
 	CorosController.getDataByDate
 );
-// router.get(
-// 	'/get_user/:id/zones',
-// 	refreshTokenMiddleWare,
-// 	CorosController.getZones
-// );
 router.get(
-	'/get_user/:id/stats',
+	'/data_by_date/:id/data',
 	refreshTokenMiddleWare,
-	CorosController.getStats
-);
-router.get(
-	'/get_user/:id/activities/:page',
-	refreshTokenMiddleWare,
-	CorosController.getActivities
+	CorosController.getRestDataByDate
 );
 
 export default router;

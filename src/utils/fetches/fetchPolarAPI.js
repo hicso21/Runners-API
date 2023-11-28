@@ -1,5 +1,5 @@
 import axios from 'axios';
-import config from '../../config/polarData.json' assert { type: 'json' };
+import config from '../../config/polarData.js';
 
 const fetchPolar = axios.create({
 	baseURL: config.base_url,

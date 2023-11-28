@@ -34,4 +34,6 @@ calendar : [
 	}
 ]
 
+membership: 'none', 'silver', 'gold' 
+
 */
