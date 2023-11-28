@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import multer from 'multer';
 import GifsControllers from '../../../controllers/v1/Gifs/gifs.controllers.js';
-import '../../../Gifs'
 
 const router = Router();
 
