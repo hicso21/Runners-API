@@ -44,7 +44,6 @@ class GifsControllers {
 	static async postGif(req, res) {
 		try {
 			const { name, gifData } = req.body;
-			console.log(gifData);
 			if (name && gifData) {
 				const newGif = new Gifs({
 					name,
