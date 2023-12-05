@@ -1,6 +1,5 @@
 import Gifs from '../../../db/models/Gifs.js';
 import GifsServices from '../../../services/v1/Gifs/gifs.services.js';
-import fs from 'fs';
 
 class GifsControllers {
 	static async getByName(req, res) {

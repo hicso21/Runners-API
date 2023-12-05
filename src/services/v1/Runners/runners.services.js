@@ -25,6 +25,18 @@ export default class RunnersServices {
 		}
 	}
 
+	static async getByEmail(email) {
+		try {
+			const runner = await Runners.find({ email });
+			return runner;
+		} catch (error) {
+			return {
+				error: true,
+				data: error,
+			};
+		}
+	}
+
 	static async create(runner) {
 		try {
 			const newRunner = new Runners(runner);

@@ -1,4 +1,5 @@
 // import stripe from 'stripe';
+import { Stripe } from 'stripe';
 
 // stripe(
 // 	'sk_test_51OF3gIKYlUxdQCJckVTWdKqzAtl3eEXpg0QCpQfCwNncKcE7D8RhmAptd5UuwB31NdJzrx3KpaCDHEmuEf7Ob8H100abDfSC9P'
@@ -29,3 +30,19 @@
 // 				);
 // 			});
 // 	});
+
+const stripe = new Stripe('API_KEY');
+const prices = await stripe.prices.list();
+
+await stripe.checkout.sessions.create({
+	mode: 'payment',
+	payment_method_types: ['card'],
+	line_items: [
+		{
+			price: 'priceId',
+			quantity: 1,
+		},
+	],
+	success_url: 'redirect_url when success payment',
+	cancel_url: 'redirect_url when user cancel payment',
+});
