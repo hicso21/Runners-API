@@ -6,6 +6,7 @@ const runnerSchema = new Schema(
 		name: String,
 		email: String,
 		password: String,
+		country: String,
 		age: String,
 		brand: String,
 		group: String,
@@ -19,7 +20,7 @@ const runnerSchema = new Schema(
 	{ timestamps: true }
 );
 
-runnerSchema.pre('findOneAndUpdate', function (next) {});
+//runnerSchema.pre('findOneAndUpdate', function (next) {});
 
 const Runners = model('Runner', runnerSchema);
 

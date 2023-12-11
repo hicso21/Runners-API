@@ -2,6 +2,7 @@ import { Router } from 'express';
 import coros from './Coros/index.js';
 import exercises from './Exercises/index.js';
 import garmin from './Garmin/index.js';
+import stripe from './Stripe/index.js';
 import groups from './Groups/index.js';
 import polar from './Polar/index.js';
 import routines from './Routines/index.js';
@@ -30,5 +31,7 @@ router.use('/suunto', suunto);
 router.use('/strava', strava);
 router.use('/polar', polar);
 router.use('/garmin', garmin);
+
+router.use('/stripe', stripe);
 
 export default router;
