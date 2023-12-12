@@ -7,7 +7,7 @@ import OAuth from 'oauth-1.0a';
 import mainUrl from '../../../utils/constants/mainUrl.js';
 
 class GarminController {
-	static async requestTokens(req, res) {
+	static async auth(req, res) {
 		try {
 			const { db_id } = req.params;
 			const oauth = OAuth({
@@ -41,28 +41,10 @@ class GarminController {
 			const tokens = data.split('&');
 			const request_token = tokens[0].split('=')[1];
 			const request_token_secret = tokens[1].split('=')[1];
-			const response = RunnersServices.update(db_id, {
-				access_token: request_token,
-				refresh_token: request_token_secret,
-			});
-			console.log(data);
-			res.send({ error: false, data });
-		} catch (error) {
-			res.status(500).send({
-				error: true,
-				msg: 'An error has ocurred',
-				data: error,
-			});
-		}
-	}
-
-	static async auth(req, res) {
-		try {
-			const { db_id } = req.params;
-			const runner = await RunnersServices.getById(db_id);
 			const oauth_callback = `${mainUrl}/api/v1/garmin/exchange_token?db_id=${db_id}`;
-			const url = `https://connect.garmin.com/oauthConfirm?oauth_token=${runner.access_token}&oauth_callback=${oauth_callback}`;
+			const url = `https://connect.garmin.com/oauthConfirm?oauth_token=${request_token}&oauth_callback=${oauth_callback}`;
 			res.redirect(url);
+			// res.send({ error: false, data });
 		} catch (error) {
 			res.status(500).send({
 				error: true,
@@ -89,17 +71,29 @@ class GarminController {
 				},
 			});
 			const requestData = {
-				url: 'https://connectapi.garmin.com/oauth-service/oauth/request_token',
+				url: 'https://connectapi.garmin.com/oauth-service/oauth/access_token',
 				method: 'POST',
-				data: { oauth_verifier },
+				data: {
+					oauth_verifier,
+					oauth_consumer_key: config.client_id,
+					oauth_token,
+					oauth_signature_method: 'HMAC-SHA1',
+					oauth_nonce: db_id,
+					oauth_timestamp: new Date.now(),
+					oauth_version: 1.0
+				},
 			};
 
 			const authorizationHeader = oauth.toHeader(
 				oauth.authorize(requestData)
 			);
-			const { data } = await fetchGarmin.post('/oauth-service/oauth/access_token', null, {
-				headers: authorizationHeader,
-			});
+			const { data } = await fetchGarmin.post(
+				'/oauth-service/oauth/access_token',
+				null,
+				{
+					headers: authorizationHeader,
+				}
+			);
 			res.send(data);
 		} catch (error) {
 			res.status(500).send({
