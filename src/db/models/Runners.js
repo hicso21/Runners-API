@@ -8,6 +8,7 @@ const runnerSchema = new Schema(
 		password: String,
 		country: String,
 		age: String,
+		phone: String,
 		brand: String,
 		group: String,
 		calendar: Array,
@@ -31,7 +32,8 @@ const date = new Date()
 calendar : [
 	{
 		date: date.toLocaleDateString(), -> 20/11/2023
-		routine: routine
+		routine: routine,
+		description: ''
 	}
 ]
 

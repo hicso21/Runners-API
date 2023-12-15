@@ -1,5 +1,7 @@
+import RoutineType from "./Routine";
+
 const UserCalendarType = {
 	description: String(),
-	date: new Date().toLocaleDateString(), // 'example: 21/11/2023'
-	routine: String(),
+	date: new Date().getTime(), // 'example: 1702588178834'
+	routine: RoutineType,
 };

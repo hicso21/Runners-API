@@ -13,11 +13,15 @@ export default class RoutinesServices {
 		}
 	}
 
-	static async postRoutine(name) {
+	static async postRoutine(name, exercises = []) {
 		try {
-			const newRoutine = await new Routines({
-				name: name,
-				exercises: [],
+			console.log({
+				name,
+				exercises,
+			});
+			const newRoutine = new Routines({
+				name,
+				exercises,
 			});
 			await newRoutine.save();
 			return newRoutine;

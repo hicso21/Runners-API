@@ -16,7 +16,39 @@ class RoutinesController {
 	static async newRoutine(req, res) {
 		try {
 			const { name } = req.body;
-			const newRoutine = await RoutinesServices.postRoutine(name);
+			const exercises = [
+				{
+					name: 'Calentamiento básico',
+					type: 'heating',
+					category: 'heating',
+					measure: 'sec',
+					duration: 900,
+					measurement_unit: 'sec',
+					commentary: '',
+				},
+				{
+					name: 'Carrera básica',
+					type: 'race',
+					category: 'frequency_running',
+					measure: 'km',
+					duration: 10,
+					measurement_unit: 'km',
+					commentary: '',
+				},
+				{
+					name: 'Enfriamiento básico',
+					type: 'cooling',
+					category: 'cooling',
+					measure: 'sec',
+					duration: 900,
+					measurement_unit: 'sec',
+					commentary: '',
+				},
+			];
+			const newRoutine = await RoutinesServices.postRoutine(
+				name,
+				exercises
+			);
 			res.status(201).send(newRoutine);
 		} catch (error) {
 			res.status(404).send({
@@ -59,8 +91,11 @@ class RoutinesController {
 	static async deleteRoutine(req, res) {
 		try {
 			const { id } = req.params;
-			const res = await RoutinesServices.deleteRoutine(id);
-			res.status(200).send(res);
+			await RoutinesServices.deleteRoutine(id);
+			res.status(200).send({
+				error: false,
+				data: 'Routine deleted correctly',
+			});
 		} catch (error) {
 			res.status(404).send({
 				error: true,

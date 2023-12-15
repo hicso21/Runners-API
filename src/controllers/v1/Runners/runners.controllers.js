@@ -8,7 +8,7 @@ export default class RunnersControllers {
 			const runners = await RunnersServices.getAll();
 			res.status(200).send(runners);
 		} catch (error) {
-			res.status(404).send({
+			res.status(500).send({
 				error: true,
 				data: error,
 			});
@@ -21,7 +21,7 @@ export default class RunnersControllers {
 			const runner = await RunnersServices.getById(id);
 			res.status(200).send(runner);
 		} catch (error) {
-			res.status(404).send({
+			res.status(500).send({
 				error: true,
 				data: error,
 			});
@@ -38,7 +38,7 @@ export default class RunnersControllers {
 				'newRunner error',
 				'Error when trying to create user'
 			);
-			res.status(404).send({
+			res.status(500).send({
 				error: true,
 				data: error,
 			});
@@ -64,7 +64,7 @@ export default class RunnersControllers {
 				'login error',
 				'Error when trying to login'
 			);
-			res.status(404).send({
+			res.status(500).send({
 				error: true,
 				data: error,
 			});
@@ -82,7 +82,7 @@ export default class RunnersControllers {
 				'updateRunner error',
 				'Error when trying to update user data'
 			);
-			res.status(404).send({
+			res.status(500).send({
 				error: true,
 				data: error,
 			});
@@ -99,7 +99,37 @@ export default class RunnersControllers {
 				'deleteRunner error',
 				'Error when trying to delete user data'
 			);
-			res.status(404).send({
+			res.status(500).send({
+				error: true,
+				data: error,
+			});
+		}
+	}
+
+	static async updateRoutine(req, res) {
+		try {
+			const { id } = req.params;
+			const { date, routine } = req.body;
+			const runner = await RunnersServices.getById(id);
+			const newRoutine = { date, routine };
+			if (runner.calendar.some((item) => item.date == date)) {
+				const filteredCalendar = runner.calendar.filter(
+					(item) => item.date != date
+				);
+				const updatedCalendar = filteredCalendar.push(newRoutine);
+				runner.calendar = updatedCalendar;
+			} else {
+				const updatedCalendar = runner.calendar.push(newRoutine);
+				runner.calendar = updatedCalendar;
+			}
+			const updatedRunner = await RunnersServices.update(id, runner);
+			res.send(updatedRunner);
+		} catch (error) {
+			await LogsServices.create(
+				'updateRoutine error',
+				'Error when trying to find or update user'
+			);
+			res.status(500).send({
 				error: true,
 				data: error,
 			});

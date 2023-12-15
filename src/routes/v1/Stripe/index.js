@@ -3,6 +3,7 @@ import StripeControllers from '../../../controllers/v1/Stripe/stripe.controllers
 
 const router = Router();
 
-router.get('/', StripeControllers.getPrices);
+router.get('/prices', StripeControllers.getPrices);
+router.post('/checkout', StripeControllers.checkout);
 
 export default router;
