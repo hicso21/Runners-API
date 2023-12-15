@@ -18,7 +18,7 @@ class RoutinesController {
 			const { name } = req.body;
 			const exercises = [
 				{
-					name: 'Calentamiento básico',
+					name: 'Calentamiento basico',
 					type: 'heating',
 					category: 'heating',
 					measure: 'sec',
@@ -27,7 +27,7 @@ class RoutinesController {
 					commentary: '',
 				},
 				{
-					name: 'Carrera básica',
+					name: 'Carrera basica',
 					type: 'race',
 					category: 'frequency_running',
 					measure: 'km',
@@ -36,7 +36,7 @@ class RoutinesController {
 					commentary: '',
 				},
 				{
-					name: 'Enfriamiento básico',
+					name: 'Enfriamiento basico',
 					type: 'cooling',
 					category: 'cooling',
 					measure: 'sec',
