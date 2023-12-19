@@ -1,13 +1,14 @@
 import { Schema, model } from 'mongoose';
 
 const exercisesSchema = new Schema({
-	name: String,
+	name: String /* running, functional, bike, elliptical, others */,
 	type: String,
-	category: String /* running, funcional, bike, elliptical, other */,
+	category: String, /* lightly_demanded, slow, comfortable, demanded */
 	measure: String, 
 	duration: Number,
 	measurement_unit : String,
 	comentary: String,
+	repeat: Number,
 	// gif: Gif
 });
 

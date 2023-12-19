@@ -1,4 +1,4 @@
-const RoutineType = {
+export default RoutineType = {
 	name: String(),
 	exercises: [
 		{
@@ -12,5 +12,3 @@ const RoutineType = {
 		},
 	],
 };
-
-export default RoutineType;

@@ -8,7 +8,6 @@ const runnerSchema = new Schema(
 		password: String,
 		country: String,
 		age: String,
-		phone: String,
 		brand: String,
 		group: String,
 		calendar: Array,
