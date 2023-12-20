@@ -15,10 +15,6 @@ export default class RoutinesServices {
 
 	static async postRoutine(name, exercises) {
 		try {
-			console.log({
-				name,
-				exercises,
-			});
 			const newRoutine = new Routines({
 				name,
 				exercises

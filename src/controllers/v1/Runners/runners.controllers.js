@@ -135,4 +135,25 @@ export default class RunnersControllers {
 			});
 		}
 	}
+
+	static async updateCalendar(req, res) {
+		try {
+			const { id } = req.params;
+			const runner = req.body;
+			const updatedRunner = await RunnersServices.update(id, runner);
+			res.send({
+				error: false,
+				data: updatedRunner,
+			});
+		} catch (error) {
+			await LogsServices.create(
+				'updateCalendar error',
+				'Error when trying to find or update user'
+			);
+			res.status(500).send({
+				error: true,
+				data: error,
+			});
+		}
+	}
 }

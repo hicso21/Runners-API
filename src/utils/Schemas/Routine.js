@@ -11,4 +11,7 @@ export default RoutineType = {
 			commentary: String(),
 		},
 	],
+	start: Date(),
+	end: Date(),
+	isDraggable: Boolean(),
 };

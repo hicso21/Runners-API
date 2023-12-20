@@ -10,5 +10,6 @@ router.post('/login', RunnersControllers.login);
 router.put('/update/:id', RunnersControllers.updateRunner);
 router.delete('/delete/:id', RunnersControllers.deleteRunner);
 router.put('/updateRoutine/:id', RunnersControllers.updateRoutine);
+router.put('/updateCalendar/:id', RunnersControllers.updateCalendar);
 
 export default router;

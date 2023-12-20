@@ -10,7 +10,7 @@ const runnerSchema = new Schema(
 		age: String,
 		brand: String,
 		group: String,
-		calendar: Array,
+		calendar: Object,
 		membership: String,
 		membership_timestamp: String,
 		token_type: String,

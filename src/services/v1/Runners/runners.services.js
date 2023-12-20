@@ -57,7 +57,6 @@ export default class RunnersServices {
 				error: false,
 				runner: res,
 			};
-			return res;
 		} catch (error) {
 			return {
 				error: true,

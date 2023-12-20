@@ -28,7 +28,7 @@ class RoutinesController {
 					commentary: '',
 				},
 				{
-					name: 'race',
+					name: 'running',
 					type: 'frequency_running',
 					category: 'lightly_demanded',
 					measure: 'distance',
