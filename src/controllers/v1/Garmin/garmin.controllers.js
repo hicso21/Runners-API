@@ -59,7 +59,7 @@ class GarminController {
 			const tokens = data.split('&');
 			const request_token = tokens[0].split('=')[1];
 			const request_token_secret = tokens[1].split('=')[1];
-			const oauth_callback = `http://localhost:8080/api/v1/garmin/exchange_token?db_id=${db_id}&token_secret=${request_token_secret}`;
+			const oauth_callback = `${mainUrl}/api/v1/garmin/exchange_token?db_id=${db_id}&token_secret=${request_token_secret}`;
 			const url = `https://connect.garmin.com/oauthConfirm?oauth_token=${request_token}&oauth_callback=${oauth_callback}`;
 			res.redirect(url);
 		} catch (error) {
