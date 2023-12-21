@@ -36,6 +36,14 @@ app.use(
 );
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
+app.use((req, res, next) => {
+	res.header('Access-Control-Allow-Origin', 'https://delaf.host');
+	res.header(
+		'Access-Control-Allow-Headers',
+		'Origin, X-Requested-With, Content-Type, Accept'
+	);
+	next();
+});
 
 app.use(
 	'/api/v1',
