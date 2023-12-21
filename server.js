@@ -20,13 +20,17 @@ const __dirname = path.dirname(__filename);
 const dirPath = path.join(__dirname, 'public/pdfs');
 
 // Middleware
-app.use(bodyParser.json({ limit: '50mb'}));
+app.use(bodyParser.json({ limit: '50mb' }));
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(
 	cors({
-		origin: ['http://localhost:5173', 'https://runners-desktop.vercel.app'],
+		origin: [
+			'http://localhost:5173',
+			'https://runners-desktop.vercel.app',
+			'https://delaf.host/',
+		],
 		methods: ['OPTIONS', 'GET', 'PATCH', 'DELETE', 'POST', 'UPDATE', 'PUT'],
 	})
 );
@@ -36,7 +40,7 @@ app.use(express.static('public'));
 app.use(
 	'/api/v1',
 	(req, res, next) => {
-		req.href = `${req.protocol}://${req.hostname}`;
+		req.href = `${req.protocol}://${req.hostname}:${PORT}`;
 		next();
 	},
 	router
@@ -62,10 +66,14 @@ app.get('/api/version', (req, res) => {
 	res.send('Version in use: ' + currentVersion);
 });
 
-app.get('/', async (req, res) => {
+app.get('/api', async (req, res) => {
 	res.send(`
 		Welcome to Runners API <br/>
 		We are using version ${currentVersion} at this moment ${new Date()}`);
+});
+
+app.get('/hostname', async (req, res) => {
+	res.send(`Hostname: ${req.hostname}`);
 });
 
 app.listen(PORT, () => {
