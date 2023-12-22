@@ -29,21 +29,23 @@ app.use(
 		origin: [
 			'http://localhost:5173',
 			'https://runners-desktop.vercel.app',
-			'https://delaf.host/',
+			'https://delaf.host',
+			'https://desktop.delaf.host',
 		],
 		methods: ['OPTIONS', 'GET', 'PATCH', 'DELETE', 'POST', 'UPDATE', 'PUT'],
 	})
 );
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
-app.use((req, res, next) => {
-	res.header('Access-Control-Allow-Origin', 'https://delaf.host');
-	res.header(
-		'Access-Control-Allow-Headers',
-		'Origin, X-Requested-With, Content-Type, Accept'
-	);
-	next();
-});
+// app.use((req, res, next) => {
+// 	res.header('Access-Control-Allow-Origin', 'https://delaf.host');
+// 	res.header('Access-Control-Allow-Origin', 'https://desktop.delaf.host');
+// 	res.header(
+// 		'Access-Control-Allow-Headers',
+// 		'Origin, X-Requested-With, Content-Type, Accept'
+// 	);
+// 	next();
+// });
 
 app.use(
 	'/api/v1',
@@ -54,27 +56,12 @@ app.use(
 	router
 );
 
-app.get('/terms', (req, res) => {
-	fs.readFile('./public/pdfs/terms&conditions.pdf', (err, data) => {
-		if (err) {
-			console.error(err);
-			return;
-		}
-
-		// Convert the data to base64
-		const base64 = data.toString('base64');
-
-		// Use the base64 string as needed
-		res.send(base64);
-	});
-});
-
 // version 1 of the api routes to all brands
 app.get('/api/version', (req, res) => {
 	res.send('Version in use: ' + currentVersion);
 });
 
-app.get('/api', async (req, res) => {
+app.get('/', async (req, res) => {
 	res.send(`
 		Welcome to Runners API <br/>
 		We are using version ${currentVersion} at this moment ${new Date()}`);
