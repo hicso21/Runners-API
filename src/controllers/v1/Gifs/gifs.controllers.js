@@ -31,10 +31,7 @@ class GifsControllers {
 		try {
 			const { _id } = req.params;
 			const gif = await GifsServices.eraseGifById(_id);
-			res.send({
-				error: false,
-				data: gif,
-			});
+			res.send(gif);
 		} catch (error) {
 			res.send({
 				error: true,
@@ -47,27 +44,28 @@ class GifsControllers {
 		try {
 			const { name, gifData } = req.body;
 			if (name && gifData) {
-				const gif = await Gifs.where({ name }).findOne();
-				if (gif.name == name)
-					return res.send({
-						error: true,
-						msg: 'Another gif with this name exist',
-					});
 				const newGif = new Gifs({
 					name,
 					gif: gifData,
 				});
-
+				const alreadyExistGif = await Gifs.find({ name: name });
+				if (alreadyExistGif.length)
+					return res.send({
+						error: true,
+						msg: 'Another gif with this name exist',
+					});
 				newGif
 					.save()
-					.then((e) => {
+					.then((gif) => {
+						// File saved successfully
 						res.send({
 							error: false,
 							msg: 'File uploaded and saved to MongoDB',
-							data: newGif,
+							data: gif,
 						});
 					})
 					.catch((error) => {
+						// Error saving the file
 						res.status(500).send({
 							error: true,
 							msg: 'Error saving the file to MongoDB',
