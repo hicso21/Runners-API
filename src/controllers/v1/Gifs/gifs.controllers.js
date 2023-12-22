@@ -47,7 +47,7 @@ class GifsControllers {
 		try {
 			const { name, gifData } = req.body;
 			if (name && gifData) {
-				const gif = await Gifs.findOne({ name: name });
+				const gif = await Gifs.where({ name }).findOne();
 				if (gif.name == name)
 					return res.send({
 						error: true,
