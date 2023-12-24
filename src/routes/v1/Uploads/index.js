@@ -7,6 +7,7 @@ const router = Router();
 router.post('/gif', GifsControllers.postGif);
 
 router.get('/gif', GifsControllers.getAllGif);
+router.get('/gif/just_names', GifsControllers.justNameGif);
 router.get('/gif/:name', GifsControllers.getByName);
 router.delete('/gif/:_id', GifsControllers.deleteGifById);
 

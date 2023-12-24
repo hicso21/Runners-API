@@ -56,6 +56,17 @@ app.use(
 	router
 );
 
+app.get('/terms', (req, res) => {
+	fs.readFile('./public/pdfs/terms&conditions.pdf', (err, data) => {
+		if (err) {
+			console.error(err);
+			return;
+		}
+		const base64 = data.toString('base64');
+		res.send(base64);
+	});
+});
+
 // version 1 of the api routes to all brands
 app.get('/api/version', (req, res) => {
 	res.send('Version in use: ' + currentVersion);

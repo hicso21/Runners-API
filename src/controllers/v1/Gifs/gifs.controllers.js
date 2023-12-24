@@ -3,8 +3,8 @@ import GifsServices from '../../../services/v1/Gifs/gifs.services.js';
 
 class GifsControllers {
 	static async getByName(req, res) {
+		const { name } = req.params;
 		try {
-			const { name } = req.params;
 			const gif = await GifsServices.byName(name);
 			res.send(gif);
 		} catch (error) {
@@ -16,8 +16,12 @@ class GifsControllers {
 	}
 
 	static async getAllGif(req, res) {
+		const { without } = req.query;
+		let gifs;
 		try {
-			const gifs = await GifsServices.allGif();
+			if (without === 'gif')
+				gifs = await GifsServices.getAllGifWithoutGif();
+			if (!without) gifs = await GifsServices.allGif();
 			res.send(gifs);
 		} catch (error) {
 			res.send({
@@ -28,8 +32,8 @@ class GifsControllers {
 	}
 
 	static async deleteGifById(req, res) {
+		const { _id } = req.params;
 		try {
-			const { _id } = req.params;
 			const gif = await GifsServices.eraseGifById(_id);
 			res.send(gif);
 		} catch (error) {
@@ -41,8 +45,8 @@ class GifsControllers {
 	}
 
 	static async postGif(req, res) {
+		const { name, gifData } = req.body;
 		try {
-			const { name, gifData } = req.body;
 			if (name && gifData) {
 				const newGif = new Gifs({
 					name,
@@ -75,6 +79,21 @@ class GifsControllers {
 				// Invalid request
 				res.status(400).send({ error: true, msg: 'Invalid request' });
 			}
+		} catch (error) {
+			res.send({
+				error: true,
+				data: error,
+			});
+		}
+	}
+
+	static async justNameGif(req, res) {
+		try {
+			const gifs = await GifsServices.allGif();
+			res.send({
+				error: false,
+				data: gifs,
+			});
 		} catch (error) {
 			res.send({
 				error: true,

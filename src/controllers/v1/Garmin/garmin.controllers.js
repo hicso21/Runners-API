@@ -6,6 +6,7 @@ import crypto from 'crypto';
 import OAuth from 'oauth-1.0a';
 import { environment } from '../../../utils/constants/mainUrl.js';
 import querystring from 'querystring';
+import axios from 'axios';
 
 function generateAuthorizationHeader(
 	httpMethod,
@@ -122,7 +123,6 @@ class GarminController {
 				data: { oauth_nonce: db_id },
 			};
 			const authHeader = oauth.toHeader(oauth.authorize(requestData));
-			console.log(authHeader);
 			const { data } = await fetchGarmin.post(
 				'/oauth-service/oauth/request_token',
 				null,
@@ -153,82 +153,61 @@ class GarminController {
 			const { personal_data, oauth_token, oauth_verifier } = req.query;
 			const nonce = personal_data.split('||')[0];
 			const token_secret = personal_data.split('||')[1];
-			// const url =
-			// 	'https://connectapi.garmin.com/oauth-service/oauth/access_token';
-			// const consumerKey = config.client_id;
-			// const consumerSecret = config.client_secret;
-			// const oauthParams = {
-			// 	oauth_consumer_key: consumerKey,
-			// 	oauth_token: oauth_token,
-			// 	oauth_signature_method: 'HMAC-SHA1',
-			// 	oauth_timestamp: Math.floor(Date.now() / 1000),
-			// 	oauth_nonce: nonce,
-			// 	oauth_version: '1.0',
-			// 	oauth_verifier,
-			// };
+			const consumerKey = config.client_id;
+			const consumerSecret = config.client_secret;
 
-			// const signature = generateSignature(
-			// 	'POST',
-			// 	url,
-			// 	oauthParams,
-			// 	consumerSecret,
-			// 	token_secret
-			// ).replace('=', '');
+			// Replace with the request token and verifier obtained from the previous step
+			const requestToken = oauth_token;
+			const verifier = oauth_verifier;
 
-			// console.log('SIGNATURE: ' + signature);
-
-			// const headers = {
-			// 	Authorization: generateAuthorizationHeader(
-			// 		'POST',
-			// 		url,
-			// 		config.client_id,
-			// 		config.client_secret,
-			// 		oauth_token,
-			// 		token_secret,
-			// 		nonce
-			// 	),
-			// };
-
-			// console.log('Headers: ',  headers);
-			// console.log('Url: ' + url);
+			// Create an OAuth instance
 			const oauth = OAuth({
 				consumer: {
-					key: config.client_id,
-					secret: config.client_secret,
+					key: consumerKey,
+					secret: consumerSecret,
 				},
 				signature_method: 'HMAC-SHA1',
-				hash_function: (base_string, key) => {
+				hash_function(base_string, key) {
 					return crypto
 						.createHmac('sha1', key)
 						.update(base_string)
 						.digest('base64');
 				},
 			});
-			const requestTokenUrl = `${config.base_url}/oauth-service/oauth/request_token`;
-			const requestData = {
-				url: requestTokenUrl,
-				method: 'POST',
-				data: { oauth_nonce: nonce, oauth_token, oauth_verifier },
-			};
-			const authHeader = oauth.toHeader(oauth.authorize(requestData));
 
-			console.log(authHeader);
-			const response = await fetchGarmin.post(
-				'/oauth-service/oauth/access_token',
-				null,
-				{ headers: authHeader }
+			// Generate the Authorization header
+			const requestData = {
+				url: 'https://connectapi.garmin.com/oauth-service/oauth/access_token',
+				method: 'POST',
+				data: {
+					oauth_token: requestToken,
+					oauth_verifier: verifier,
+				},
+			};
+			const authorizationHeader = oauth.toHeader(
+				oauth.authorize(requestData)
 			);
 
-			const responseData = response.data;
-			console.log('Response latest: ' + responseData);
-			// const accessToken = extractValueFromResponse(
-			// 	responseData,
-			// 	'oauth_token'
-			// );
-			// const accessTokenSecret = extractValueFromResponse(
-			// 	responseData,
-			// 	'oauth_token_secret'
-			// );
+			console.log('Authorization: ', authorizationHeader);
+
+			// Send the request to obtain the access token and secret token
+			const res = await fetchGarmin
+				.post('/oauth-service/oauth/access_token', null, {
+					headers: authorizationHeader,
+				})
+				.then((response) => {
+					// Access token and secret token are available in the response
+					console.log('RESPONSE: ', response);
+					const accessToken = response.data.oauth_token;
+					const secretToken = response.data.oauth_token_secret;
+
+					console.log('Access Token:', accessToken);
+					console.log('Secret Token:', secretToken);
+				})
+				.catch((error) => {
+					console.error('Error:', error);
+				});
+			res.end(res);
 		} catch (error) {
 			res.status(500).send({
 				error: true,
