@@ -16,6 +16,7 @@ const runnerSchema = new Schema(
 		token_type: String,
 		access_token: String,
 		refresh_token: String,
+		stripe_id: String,
 	},
 	{ timestamps: true }
 );

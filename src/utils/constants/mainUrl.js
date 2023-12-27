@@ -1,4 +1,4 @@
-const mainUrl = 'https://runners-api.onrender.com';
+const mainUrl = 'https://delaf.click';
 
 export function environment(href) {
 	console.log(href && href.includes('localhost'));

@@ -191,7 +191,7 @@ class GarminController {
 			console.log('Authorization: ', authorizationHeader);
 
 			// Send the request to obtain the access token and secret token
-			const res = await fetchGarmin
+			const tokens = await fetchGarmin
 				.post('/oauth-service/oauth/access_token', null, {
 					headers: authorizationHeader,
 				})
@@ -205,17 +205,21 @@ class GarminController {
 					console.log('Secret Token:', secretToken);
 				})
 				.catch((error) => {
-					console.error('Error:', error);
+					console.error('Error:', error.response.data);
+					res.send(error.response.data)
 				});
-			res.end(res);
+			res.end(tokens);
 		} catch (error) {
-			res.status(500).send({
-				error: true,
-				msg: 'An error has ocurred',
-				data: error,
-			});
+			// res.status(500).send({
+			// 	error: true,
+			// 	msg: 'An error has ocurred',
+			// 	data: error,
+			// });
+			res.send(error)
 		}
 	}
+
+	
 
 	static async getUser(req, res) {
 		try {
