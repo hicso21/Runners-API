@@ -50,7 +50,7 @@ export default class RunnersControllers {
 			const { email, password } = req.body;
 			const runner = await RunnersServices.getByEmail(email);
 			if (runner.password !== password) {
-				return res.status(401).send({
+				return res.status(400).send({
 					error: true,
 					data: 'Incorrect Password.',
 				});
