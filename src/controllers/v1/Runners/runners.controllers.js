@@ -57,7 +57,7 @@ export default class RunnersControllers {
 			}
 			res.status(200).send({
 				error: false,
-				data: 'Password is correct',
+				data: runner,
 			});
 		} catch (error) {
 			await LogsServices.create(
