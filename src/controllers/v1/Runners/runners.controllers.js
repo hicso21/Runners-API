@@ -6,7 +6,7 @@ export default class RunnersControllers {
 	static async getAll(req, res) {
 		try {
 			const runners = await RunnersServices.getAll();
-			res.status(200).send(runners);
+			res.status(200).send({ error: false, data: runners });
 		} catch (error) {
 			res.status(500).send({
 				error: true,
@@ -19,7 +19,7 @@ export default class RunnersControllers {
 		try {
 			const { id } = req.params;
 			const runner = await RunnersServices.getById(id);
-			res.status(200).send(runner);
+			res.status(200).send({ error: false, data: runner });
 		} catch (error) {
 			res.status(500).send({
 				error: true,
@@ -32,7 +32,7 @@ export default class RunnersControllers {
 		try {
 			const data = req.body;
 			const runner = await RunnersServices.create(data);
-			res.status(201).send(runner);
+			res.status(201).send({ error: false, data: runner });
 		} catch (error) {
 			await LogsServices.create(
 				'newRunner error',
@@ -56,7 +56,7 @@ export default class RunnersControllers {
 				});
 			}
 			res.status(200).send({
-				error: true,
+				error: false,
 				data: 'Password is correct',
 			});
 		} catch (error) {
@@ -76,7 +76,7 @@ export default class RunnersControllers {
 			const { id } = req.params;
 			const data = req.body;
 			const runner = await RunnersServices.update(id, data);
-			res.status(200).send(runner);
+			res.status(200).send({ error: false, data: runner });
 		} catch (error) {
 			await LogsServices.create(
 				'updateRunner error',
@@ -93,7 +93,7 @@ export default class RunnersControllers {
 		try {
 			const { id } = req.params;
 			const runner = await RunnersServices.delete(id);
-			res.status(200).send(runner);
+			res.status(200).send({ error: false, data: runner });
 		} catch (error) {
 			await LogsServices.create(
 				'deleteRunner error',
@@ -123,7 +123,7 @@ export default class RunnersControllers {
 				runner.calendar = updatedCalendar;
 			}
 			const updatedRunner = await RunnersServices.update(id, runner);
-			res.send(updatedRunner);
+			res.send({ error: false, data: updatedRunner });
 		} catch (error) {
 			await LogsServices.create(
 				'updateRoutine error',

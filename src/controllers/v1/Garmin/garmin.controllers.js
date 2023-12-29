@@ -4,6 +4,7 @@ import fetchGarmin from '../../../utils/fetches/fetchGarminAPI.js';
 import config from '../../../config/garminData.js';
 import crypto from 'crypto';
 import OAuth from 'oauth-1.0a';
+import Oauth from 'oauth';
 import { environment } from '../../../utils/constants/mainUrl.js';
 import querystring from 'querystring';
 import axios from 'axios';
@@ -156,73 +157,104 @@ class GarminController {
 			const consumerKey = config.client_id;
 			const consumerSecret = config.client_secret;
 
-			// Replace with the request token and verifier obtained from the previous step
-			const requestToken = oauth_token;
-			const verifier = oauth_verifier;
-
-			// Create an OAuth instance
-			const oauth = OAuth({
-				consumer: {
-					key: consumerKey,
-					secret: consumerSecret,
-				},
-				signature_method: 'HMAC-SHA1',
-				hash_function(base_string, key) {
-					return crypto
-						.createHmac('sha1', key)
-						.update(base_string)
-						.digest('base64');
-				},
-			});
-
-			// Generate the Authorization header
-			const requestData = {
-				url: 'https://connectapi.garmin.com/oauth-service/oauth/access_token',
-				method: 'POST',
-				data: {
-					oauth_token: requestToken,
-					oauth_verifier: verifier,
-				},
-			};
-			const authorizationHeader = oauth.toHeader(
-				oauth.authorize(requestData)
+			const oauth = new Oauth.OAuth(
+				'https://connectapi.garmin.com/oauth-service/oauth/request_token',
+				'https://connectapi.garmin.com/oauth-service/oauth/access_token',
+				consumerKey,
+				consumerSecret,
+				'1.0',
+				null,
+				'HMAC-SHA1'
 			);
 
-			console.log('Authorization: ', authorizationHeader);
+			console.log(oauth);
 
-			// Send the request to obtain the access token and secret token
-			const tokens = await fetchGarmin
-				.post('/oauth-service/oauth/access_token', null, {
-					headers: authorizationHeader,
-				})
-				.then((response) => {
-					// Access token and secret token are available in the response
-					console.log('RESPONSE: ', response);
-					const accessToken = response.data.oauth_token;
-					const secretToken = response.data.oauth_token_secret;
+			oauth.getOAuthAccessToken(
+				oauth_token,
+				token_secret,
+				oauth_verifier,
+				async function (error, accessToken, accessTokenSecret) {
+					if (error) {
+						console.error(
+							'Error getting OAuth access token:',
+							error
+						);
+					} else {
+						console.log('OAuth access token:', accessToken);
+						console.log(
+							'OAuth access token secret:',
+							accessTokenSecret
+						);
+						const runner = await RunnersServices.getById(nonce);
+						const updatedRunner = {
+							...runner,
+							access_token: accessToken,
+							refresh_token: accessTokenSecret,
+						};
+						const response = await RunnersServices.update(
+							nonce,
+							updatedRunner
+						);
 
-					console.log('Access Token:', accessToken);
-					console.log('Secret Token:', secretToken);
-				})
-				.catch((error) => {
-					console.error('Error:', error.response.data);
-					res.send(error.response.data)
-				});
-			res.end(tokens);
+						const Oauth = OAuth({
+							consumer: {
+								key: config.client_id,
+								secret: config.client_secret,
+							},
+							signature_method: 'HMAC-SHA1',
+							hash_function: (base_string, key) => {
+								return crypto
+									.createHmac('sha1', key)
+									.update(base_string)
+									.digest('base64');
+							},
+						});
+
+						const requestData = {
+							url: `${config.base_url}/oauth-service/oauth/access_token`,
+							method: 'POST',
+							data: { oauth_token: accessToken },
+						};
+						const authHeader = Oauth.toHeader(
+							Oauth.authorize(requestData)
+						);
+						await axios
+							.get(
+								'https://apis.garmin.com/wellness-api/rest/user/id',
+								{
+									headers: authHeader,
+								}
+							)
+							.then((response) => {
+								console.log('ID de usuario:', response.data);
+							})
+							.catch((error) => {
+								console.error(
+									'Error al obtener el ID de usuario:',
+									error
+								);
+							});
+						res.send(response);
+					}
+				}
+			);
 		} catch (error) {
-			// res.status(500).send({
-			// 	error: true,
-			// 	msg: 'An error has ocurred',
-			// 	data: error,
-			// });
-			res.send(error)
+			res.status(500).send({
+				error: true,
+				msg: 'An error has ocurred',
+				data: error,
+			});
 		}
 	}
 
-	
-
-	static async getUser(req, res) {
+	static async getActivities(req, res) {
+		const { db_id } = req.params;
 		try {
+			const response = await axios.post(
+				`https://delaf.click/activities?userId=${db_id}`,
+				null
+			);
+			res.send(response);
 		} catch (error) {
 			res.status(500).send({
 				error: true,
