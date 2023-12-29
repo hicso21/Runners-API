@@ -31,6 +31,7 @@ app.use(
 			'https://runners-desktop.vercel.app',
 			'https://delaf.host',
 			'https://desktop.delaf.host',
+			'exp://hg-cet.hicso.8081.exp.direct',
 		],
 		methods: ['OPTIONS', 'GET', 'PATCH', 'DELETE', 'POST', 'UPDATE', 'PUT'],
 	})
