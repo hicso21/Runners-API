@@ -28,7 +28,7 @@ export default class RunnersControllers {
 		}
 	}
 
-	static async newRunner(req, res) {
+	static async register(req, res) {
 		try {
 			const data = req.body;
 			const runner = await RunnersServices.create(data);
