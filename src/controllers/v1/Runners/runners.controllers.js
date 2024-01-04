@@ -1,6 +1,8 @@
 import LogsServices from '../../../services/v1/Logs/logs.services.js';
 import RunnersServices from '../../../services/v1/Runners/runners.services.js';
-import { Stripe } from 'stripe';
+import crypto from 'crypto';
+import encrypt from '../../../utils/functions/encrypt.js';
+import decrypt from '../../../utils/functions/decrypt.js';
 
 export default class RunnersControllers {
 	static async getAll(req, res) {
@@ -31,7 +33,8 @@ export default class RunnersControllers {
 	static async register(req, res) {
 		try {
 			const data = req.body;
-			const runner = await RunnersServices.create(data);
+			const runnerData = { ...data, password: encrypt(data.password) };
+			const runner = await RunnersServices.create(runnerData);
 			res.status(201).send({ error: false, data: runner });
 		} catch (error) {
 			await LogsServices.create(
@@ -49,15 +52,28 @@ export default class RunnersControllers {
 		try {
 			const { email, password } = req.body;
 			const runner = await RunnersServices.getByEmail(email);
-			if (runner.password !== password) {
+			if (runner == null)
+				return res.status(200).send({
+					error: true,
+					data: 'There is no runner with that email address.',
+					exist: false,
+				});
+			const passwordDecrypted = decrypt(
+				runner.password.cipherText,
+				runner.password.key,
+				runner.password.iv
+			);
+			if (passwordDecrypted !== password) {
 				return res.status(400).send({
 					error: true,
 					data: 'Incorrect Password.',
+					exist: false,
 				});
 			}
 			res.status(200).send({
 				error: false,
 				data: runner,
+				exist: true,
 			});
 		} catch (error) {
 			await LogsServices.create(

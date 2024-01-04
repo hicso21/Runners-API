@@ -10,6 +10,7 @@ import fs from 'fs';
 import path from 'path';
 import ejs from 'ejs';
 import { fileURLToPath } from 'url';
+import crypto from 'crypto';
 // import pdf from './src/utils/terms&conditions';
 config();
 

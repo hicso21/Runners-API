@@ -53,7 +53,6 @@ class StripeControllers {
 				amount: amount,
 				currency: currency,
 				customer: customer.id,
-				shipping: defaultShippingDetails,
 				automatic_payment_methods: {
 					enabled: true,
 				},

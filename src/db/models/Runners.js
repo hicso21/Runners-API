@@ -5,7 +5,7 @@ const runnerSchema = new Schema(
 		brand_id: String,
 		name: String,
 		email: String,
-		password: String,
+		password: Object,
 		country: String,
 		city: String,
 		age: String,
