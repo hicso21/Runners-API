@@ -1,9 +1,9 @@
 import crypto from 'crypto';
 
 export default function decrypt(cipherText, key, iv) {
-	const algoritmo = 'aes-256-ctr';
+	const algorithm = 'aes-256-ctr';
 	let decipher = crypto.createDecipheriv(
-		algoritmo,
+		algorithm,
 		Buffer.from(key, 'hex'),
 		Buffer.from(iv, 'hex')
 	);

@@ -42,13 +42,14 @@ class StripeControllers {
 				name,
 			});
 			const runner = await RunnersServices.getByEmail(email);
-			RunnersServices.update(runner._id, {
-				...runner,
-				stripe_id: customer.id,
-			});
-			const ephemeralKey = await stripe.ephemeralKeys.create({
-				customer: customer.id,
-			});
+			if (runner?._id)
+				RunnersServices.update(runner._id, {
+					...runner,
+					stripe_id: customer.id,
+				});
+			// const ephemeralKey = await stripe.ephemeralKeys.create({
+			// 	customer: customer.id,
+			// });
 			const paymentIntent = await stripe.paymentIntents.create({
 				amount: amount,
 				currency: currency,
@@ -57,13 +58,17 @@ class StripeControllers {
 					enabled: true,
 				},
 			});
-
+			console.log({
+				paymentIntent: paymentIntent.client_secret,
+				// ephemeralKey: ephemeralKey.secret,
+				customer: customer.id,
+				publishableKey: config.development.publishable_key,
+			});
 			res.json({
 				paymentIntent: paymentIntent.client_secret,
-				ephemeralKey: ephemeralKey.secret,
+				// ephemeralKey: ephemeralKey.secret,
 				customer: customer.id,
-				publishableKey:
-					'pk_test_51OIeNnAhFKbqBWSpWbGEjoy71Ghml1FKOJ5Mt52nAxHOgUipwzyEgQtxtaajqIXkVB4cG6FuW8kCSCagyJI92bxe00EWfahL01',
+				publishableKey: config.development.publishable_key,
 			});
 		} catch (error) {
 			res.status(500).send({

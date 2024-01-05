@@ -3,14 +3,14 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { config } from 'dotenv';
 import express from 'express';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import './src/db/mongoDB.js';
 import router from './src/routes/v1/index.js';
 import currentVersion from './src/utils/constants/currentVersion.js';
-import fs from 'fs';
-import path from 'path';
-import ejs from 'ejs';
-import { fileURLToPath } from 'url';
-import crypto from 'crypto';
+import encrypt from './src/utils/functions/encrypt.js';
+import decrypt from './src/utils/functions/decrypt.js';
 // import pdf from './src/utils/terms&conditions';
 config();
 
@@ -72,6 +72,10 @@ app.get('/terms', (req, res) => {
 // version 1 of the api routes to all brands
 app.get('/api/version', (req, res) => {
 	res.send('Version in use: ' + currentVersion);
+});
+
+app.get('/test', (req, res) => {
+	res.end();
 });
 
 app.get('/', async (req, res) => {
