@@ -7,7 +7,7 @@ class CorosController {
 		try {
 			const id = req.params.db_id;
 			const uri = await CorosServices.oauth(id);
-			res.redirect(uri);
+			res.send(uri);
 		} catch (error) {
 			res.send({
 				error: true,
@@ -21,7 +21,7 @@ class CorosController {
 			const { code, state } = req.query;
 			const response = await CorosServices.accessToken(code);
 			const { access_token, refresh_token, openId } = response;
-			const runnerUpdated = await RunnersServices.update(user_id, {
+			const runnerUpdated = await RunnersServices.update(state, {
 				refresh_token,
 				access_token,
 				brand_id: openId,

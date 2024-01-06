@@ -5,9 +5,9 @@ import StravaServices from '../../../services/v1/Strava/strava.services.js';
 class StravaController {
 	static async authorize(req, res) {
 		try {
-			const id = req.params.db_id;
+			const id = req.params?.db_id;
 			const uri = await StravaServices.authorize(id);
-			res.redirect(uri);
+			res.send(uri);
 		} catch (error) {
 			console.log(error);
 			res.send({
@@ -19,7 +19,7 @@ class StravaController {
 
 	static async manageUserCode(req, res) {
 		try {
-			const user_id = req.params.db_id;
+			const user_id = req.params?.db_id;
 			const { code } = req.query;
 			const token = await StravaServices.token(code);
 			const token_type = token.token_type;
@@ -52,7 +52,7 @@ class StravaController {
 	static async getCompleteUser(req, res) {
 		try {
 			const auth_header = req.bearer_token;
-			const user_id = req.params.id;
+			const user_id = req.params?.id;
 			const user = await StravaServices.getUserById(auth_header, user_id);
 			res.send(user);
 		} catch (error) {
@@ -104,7 +104,7 @@ class StravaController {
 	static async getStats(req, res) {
 		try {
 			const auth_header = req.bearer_token;
-			const user_id = req.params.id;
+			const user_id = req.params?.id;
 			const user = await StravaServices.getUserStats(
 				auth_header,
 				user_id
@@ -126,7 +126,7 @@ class StravaController {
 	static async getActivities(req, res) {
 		try {
 			const auth_header = req.bearer_token;
-			const page_number = req.params.page;
+			const page_number = req.params?.page;
 			const user = await StravaServices.getUserActivities(
 				auth_header,
 				page_number

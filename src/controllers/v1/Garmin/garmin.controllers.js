@@ -11,7 +11,7 @@ import querystring from 'querystring';
 class GarminController {
 	static async auth(req, res) {
 		try {
-			const { db_id } = req.params;
+			const db_id = req.params?.db_id;
 			const oauth = OAuth({
 				consumer: {
 					key: config.client_id,
@@ -53,7 +53,7 @@ class GarminController {
 					.split('"')[0]
 			}&token_secret=${request_token_secret}`;
 			const redirect_url = `https://connect.garmin.com/oauthConfirm?oauth_token=${request_token}&oauth_callback=${oauth_callback}`;
-			res.redirect(redirect_url);
+			res.send(redirect_url);
 		} catch (error) {
 			res.status(500).send({
 				error: true,
@@ -173,7 +173,7 @@ class GarminController {
 	}
 
 	static async getActivities(req, res) {
-		const { db_id } = req.params;
+		const db_id = req.params?.db_id;
 		try {
 			const response = await axios.post(
 				`https://delaf.click/activities?userId=${db_id}`,

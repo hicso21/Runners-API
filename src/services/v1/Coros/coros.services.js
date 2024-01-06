@@ -9,7 +9,7 @@ class CorosServices {
 				`${config.base_url}/oauth2/authorize?` +
 				`client_id=${config.client_id}` +
 				`&redirect_uri=${redirectUri}` +
-				`&state=${id ? id : '2110'}` +
+				`&state=${id}` +
 				`&response_type=code`;
 			return uri;
 		} catch (error) {

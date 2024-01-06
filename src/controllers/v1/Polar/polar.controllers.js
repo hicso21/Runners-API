@@ -9,7 +9,7 @@ import fetchPolar from '../../../utils/fetches/fetchPolarAPI.js';
 class PolarController {
 	static async authUser(req, res) {
 		try {
-			const user_id = req.params.user_id;
+			const db_id = req.params?.db_id;
 			const baseUrl = req.hostname.includes('localhost')
 				? 'http://localhost:8000'
 				: mainUrl;
@@ -19,8 +19,8 @@ class PolarController {
 				`response_type=code&` +
 				`client_id=${config.client_id}&` +
 				`redirect_uri=${redirect_uri}&` +
-				`state=${user_id}`;
-			res.redirect(uri);
+				`state=${db_id}`;
+			res.send(uri);
 		} catch (error) {
 			res.send({
 				error: true,
@@ -30,7 +30,7 @@ class PolarController {
 	}
 
 	static async getExchangeToken(req, res) {
-		const { code, state } = req.params;
+		const { code, state } = req.params?;
 		const body = {
 			grant_type: 'authorization_code',
 			code,
@@ -77,8 +77,8 @@ class PolarController {
 
 	static async getRunnerData(req, res) {
 		try {
-			const { user_id } = req.params;
-			const response = await PolarServices.getUser(user_id);
+			const { db_id } = req.params?;
+			const response = await PolarServices.getUser(db_id);
 			res.send(response);
 		} catch (error) {
 			await LogsServices.create(
@@ -93,16 +93,16 @@ class PolarController {
 	}
 
 	static async getDailyActivity(req, res) {
-		const { user_id } = req.params;
+		const { db_id } = req.params?;
 		const headers = new Headers();
 		try {
 			const { 'available-user-data': data } =
 				await PolarServices.pullNotifications();
 			const haveUserDailyActivity = data?.some(
-				(item) => item['user-id'] == user_id
+				(item) => item['user-id'] == db_id
 			);
 			if (haveUserDailyActivity) {
-				const userData = await RunnersServices.getById(user_id);
+				const userData = await RunnersServices.getById(db_id);
 				if (!userData?.access_token) {
 					await LogsServices.create(
 						'getDailyActivity error polar',
@@ -119,7 +119,7 @@ class PolarController {
 					`Bearer ${userData?.access_token}`
 				);
 				const { data: transaction } = await fetchPolar({
-					url: `/v3/users/${user_id}/activity-transactions`,
+					url: `/v3/users/${db_id}/activity-transactions`,
 					method: 'POST',
 					headers,
 				}); // { transaction-id, resource-uri }
@@ -129,12 +129,12 @@ class PolarController {
 						data: 'The transaction request could not be executed correctly',
 					});
 				await fetchPolar({
-					url: `/v3/users/${user_id}/activity-transactions/${transaction['transaction-id']}`,
+					url: `/v3/users/${db_id}/activity-transactions/${transaction['transaction-id']}`,
 					method: 'PUT',
 					headers,
 				});
 				const { data: summary } = await fetchPolar({
-					url: `/v3/users/${user_id}/activity-transactions/${transaction['transaction-id']}`,
+					url: `/v3/users/${db_id}/activity-transactions/${transaction['transaction-id']}`,
 					method: 'GET',
 					headers,
 				});
@@ -164,16 +164,16 @@ class PolarController {
 	}
 
 	static async getTrainingData(req, res) {
-		const { user_id } = req.params;
+		const { db_id } = req.params?;
 		const headers = new Headers();
 		try {
 			const { 'available-user-data': data } =
 				await PolarServices.pullNotifications();
 			const haveUserDailyActivity = data?.some(
-				(item) => item['user-id'] == user_id
+				(item) => item['user-id'] == db_id
 			);
 			if (haveUserDailyActivity) {
-				const userData = await RunnersServices.getById(user_id);
+				const userData = await RunnersServices.getById(db_id);
 				if (!userData?.access_token) {
 					await LogsServices.create(
 						'getTrainingData error polar',
@@ -190,7 +190,7 @@ class PolarController {
 					`Bearer ${userData?.access_token}`
 				);
 				const { data: transaction } = await fetchPolar({
-					url: `/v3/users/${user_id}/exercise-transactions`,
+					url: `/v3/users/${db_id}/exercise-transactions`,
 					method: 'POST',
 					headers,
 				}); // { transaction-id, resource-uri }
@@ -200,12 +200,12 @@ class PolarController {
 						data: 'The transaction request could not be executed correctly',
 					});
 				await fetchPolar({
-					url: `/v3/users/${user_id}/exercise-transactions/${transaction['transaction-id']}`,
+					url: `/v3/users/${db_id}/exercise-transactions/${transaction['transaction-id']}`,
 					method: 'PUT',
 					headers,
 				});
 				const { data: summary } = await fetchPolar({
-					url: `/v3/users/${user_id}/exercise-transactions/${transaction['transaction-id']}`,
+					url: `/v3/users/${db_id}/exercise-transactions/${transaction['transaction-id']}`,
 					method: 'GET',
 					headers,
 				});
@@ -235,16 +235,16 @@ class PolarController {
 	}
 
 	static async getPhysicalData(req, res) {
-		const { user_id } = req.params;
+		const { db_id } = req.params?;
 		const headers = new Headers();
 		try {
 			const { 'available-user-data': data } =
 				await PolarServices.pullNotifications();
 			const haveUserDailyActivity = data?.some(
-				(item) => item['user-id'] == user_id
+				(item) => item['user-id'] == db_id
 			);
 			if (haveUserDailyActivity) {
-				const userData = await RunnersServices.getById(user_id);
+				const userData = await RunnersServices.getById(db_id);
 				if (!userData?.access_token) {
 					await LogsServices.create(
 						'getPhysicalData error polar',
@@ -261,7 +261,7 @@ class PolarController {
 					`Bearer ${userData?.access_token}`
 				);
 				const { data: transaction } = await fetchPolar({
-					url: `/v3/users/${user_id}/physical-information-transactions`,
+					url: `/v3/users/${db_id}/physical-information-transactions`,
 					method: 'POST',
 					headers,
 				}); // { transaction-id, resource-uri }
@@ -271,12 +271,12 @@ class PolarController {
 						data: 'The transaction request could not be executed correctly',
 					});
 				await fetchPolar({
-					url: `/v3/users/${user_id}/physical-information-transactions/${transaction['transaction-id']}`,
+					url: `/v3/users/${db_id}/physical-information-transactions/${transaction['transaction-id']}`,
 					method: 'PUT',
 					headers,
 				});
 				const { data: summary } = await fetchPolar({
-					url: `/v3/users/${user_id}/physical-information-transactions/${transaction['transaction-id']}`,
+					url: `/v3/users/${db_id}/physical-information-transactions/${transaction['transaction-id']}`,
 					method: 'GET',
 					headers,
 				});
