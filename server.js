@@ -70,13 +70,11 @@ app.get('/terms', (req, res) => {
 });
 
 // version 1 of the api routes to all brands
-app.get('/api/version', (req, res) => {
-	res.send('Version in use: ' + currentVersion);
-});
+app.get('/api/version', (req, res) =>
+	res.send('Version in use: ' + currentVersion)
+);
 
-app.get('/test', (req, res) => {
-	res.end();
-});
+app.get('/test', (req, res) => res.end());
 
 app.get('/', async (req, res) => {
 	res.send(`

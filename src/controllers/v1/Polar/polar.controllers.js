@@ -30,7 +30,7 @@ class PolarController {
 	}
 
 	static async getExchangeToken(req, res) {
-		const { code, state } = req.params?;
+		const { code, state } = req.params;
 		const body = {
 			grant_type: 'authorization_code',
 			code,
@@ -77,7 +77,7 @@ class PolarController {
 
 	static async getRunnerData(req, res) {
 		try {
-			const { db_id } = req.params?;
+			const { db_id } = req.params;
 			const response = await PolarServices.getUser(db_id);
 			res.send(response);
 		} catch (error) {
@@ -93,7 +93,7 @@ class PolarController {
 	}
 
 	static async getDailyActivity(req, res) {
-		const { db_id } = req.params?;
+		const { db_id } = req.params;
 		const headers = new Headers();
 		try {
 			const { 'available-user-data': data } =
@@ -164,7 +164,7 @@ class PolarController {
 	}
 
 	static async getTrainingData(req, res) {
-		const { db_id } = req.params?;
+		const { db_id } = req.params;
 		const headers = new Headers();
 		try {
 			const { 'available-user-data': data } =
@@ -235,7 +235,7 @@ class PolarController {
 	}
 
 	static async getPhysicalData(req, res) {
-		const { db_id } = req.params?;
+		const { db_id } = req.params;
 		const headers = new Headers();
 		try {
 			const { 'available-user-data': data } =
