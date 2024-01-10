@@ -33,8 +33,11 @@ export default class RunnersControllers {
 	static async register(req, res) {
 		try {
 			const data = req.body;
+			console.log('data', data);
 			const runnerData = { ...data, password: encrypt(data.password) };
+			console.log('runnerData', runnerData);
 			const runner = await RunnersServices.create(runnerData);
+			console.log('runner', runner);
 			res.status(201).send({ error: false, data: runner });
 		} catch (error) {
 			await LogsServices.create(

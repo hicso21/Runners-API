@@ -9,9 +9,10 @@ import { fileURLToPath } from 'url';
 import './src/db/mongoDB.js';
 import router from './src/routes/v1/index.js';
 import currentVersion from './src/utils/constants/currentVersion.js';
-import encrypt from './src/utils/functions/encrypt.js';
-import decrypt from './src/utils/functions/decrypt.js';
-// import pdf from './src/utils/terms&conditions';
+import logger from 'morgan';
+import { Server } from 'socket.io';
+import { createServer } from 'node:http';
+import GlobalChats from './src/db/models/GlobalChat.js';
 config();
 
 const PORT = process.env.PORT || 8080;
@@ -19,6 +20,20 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const dirPath = path.join(__dirname, 'public/pdfs');
+const server = createServer(app);
+const io = new Server(server, {
+	cors: {
+		origin: [
+			'http://localhost:5173',
+			'https://runners-desktop.vercel.app',
+			'https://delaf.host',
+			'https://desktop.delaf.host',
+			'exp://hg-cet.hicso.8081.exp.direct',
+		],
+		methods: ['OPTIONS', 'GET', 'PATCH', 'DELETE', 'POST', 'UPDATE', 'PUT'],
+	},
+	connectionStateRecovery: {},
+});
 
 // Middleware
 app.use(bodyParser.json({ limit: '50mb' }));
@@ -39,15 +54,67 @@ app.use(
 );
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
-// app.use((req, res, next) => {
-// 	res.header('Access-Control-Allow-Origin', 'https://delaf.host');
-// 	res.header('Access-Control-Allow-Origin', 'https://desktop.delaf.host');
-// 	res.header(
-// 		'Access-Control-Allow-Headers',
-// 		'Origin, X-Requested-With, Content-Type, Accept'
-// 	);
-// 	next();
-// });
+app.use(logger('dev'));
+
+io.on('connection', async (socket) => {
+	console.log('An user has connected!');
+
+	console.log(socket.handshake.auth);
+
+	socket.on('global chat', async (msg) => {
+		let result;
+		const username = socket.handshake.auth.username ?? 'anonymous';
+		console.log({ username });
+		try {
+			result = await GlobalChats.create(msg);
+			result.save();
+			console.log(result.createdAt);
+			console.log(new Date(result.createdAt).getTime());
+		} catch (error) {
+			console.error(error);
+			return;
+		}
+		io.emit(
+			'global chat',
+			msg,
+			new Date(result.createdAt).getTime(),
+			username
+		);
+	});
+
+	// socket.on('user chat', (msg) => {
+	// 	console.log(msg);
+	// 	io.emit('user chat', msg);
+	// });
+
+	socket.on('disconnect', () => {
+		console.log('An user has disconnected');
+	});
+
+	if (!socket.recovered) {
+		// <- recuperase los mensajes sin conexión
+		try {
+			//Traer los mensaje desde db
+			const results = await GlobalChats.find({
+				createdAt: { $gt: socket.handshake.auth.serverOffset ?? 0 },
+			});
+			console.log(socket.handshake.auth.serverOffset ?? 0);
+			console.log(results);
+			//Enviarselo a los usuarios que se conecten
+			results.forEach((item) => {
+				socket.emit(
+					'global chat',
+					item.message,
+					item.createdAt,
+					item.from
+				);
+			});
+		} catch (e) {
+			console.error(e);
+			return;
+		}
+	}
+});
 
 app.use(
 	'/api/v1',
@@ -86,6 +153,6 @@ app.get('/hostname', async (req, res) => {
 	res.send(`Hostname: ${req.hostname}`);
 });
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
 	console.log(`Server running on port ${PORT}`);
 });
