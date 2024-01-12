@@ -8,6 +8,7 @@ router.get('/getAll', RunnersControllers.getAll);
 router.get('/getById/:id', RunnersControllers.getById);
 router.post('/register', RunnersControllers.register);
 router.post('/login', RunnersControllers.login);
+router.post('/resetPassword', RunnersControllers.resetPassword);
 router.put('/update/:id', RunnersControllers.updateRunner);
 router.delete('/delete/:id', RunnersControllers.deleteRunner);
 router.put('/updateRoutine/:id', RunnersControllers.updateRoutine);

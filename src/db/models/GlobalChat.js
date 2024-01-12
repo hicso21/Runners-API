@@ -7,7 +7,7 @@ const globalChatSchema = new Schema(
 		createdAt: {
 			type: Date,
 			default: Date.now,
-			expires: 129600,
+			index: { expires: 129600 },
 		},
 	},
 	{ timestamps: true }

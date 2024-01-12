@@ -37,6 +37,22 @@ export default class RunnersServices {
 		}
 	}
 
+	static async changePassword(id, newPassword) {
+		try {
+			const updatedRunner = await Runners.findByIdAndUpdate(
+				id,
+				{ $set: { password: newPassword } },
+				{ new: true }
+			);
+			return updatedRunner;
+		} catch (error) {
+			return {
+				error: true,
+				data: error,
+			};
+		}
+	}
+
 	static async create(runner) {
 		try {
 			const newRunner = new Runners(runner);

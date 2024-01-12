@@ -11,6 +11,7 @@ import strava from './Strava/index.js';
 import suunto from './Suunto/index.js';
 import uploads from './Uploads/index.js';
 import LoginController from './login/login.controllers.js';
+import EmailServices from '../../services/v1/Email/email.services.js';
 
 const router = Router();
 
@@ -31,6 +32,15 @@ router.use('/suunto', suunto);
 router.use('/strava', strava);
 router.use('/polar', polar);
 router.use('/garmin', garmin);
+
+router.get('/email', (req, res) => {
+	EmailServices.sendEmail(
+		'hicso.dev@gmail.com',
+		'Cambio de contraseña',
+		'Esto es una prueba de testeo'
+	);
+	res.end()
+});
 
 router.use('/stripe', stripe);
 

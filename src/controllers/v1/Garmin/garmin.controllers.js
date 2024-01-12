@@ -53,7 +53,7 @@ class GarminController {
 					.split('"')[0]
 			}&token_secret=${request_token_secret}`;
 			const redirect_url = `https://connect.garmin.com/oauthConfirm?oauth_token=${request_token}&oauth_callback=${oauth_callback}`;
-			res.send(redirect_url);
+			res.redirect(redirect_url);
 		} catch (error) {
 			res.status(500).send({
 				error: true,
@@ -114,25 +114,27 @@ class GarminController {
 						let oauth_consumer_secret = config.client_secret;
 						let oauth_signatureMethod = 'HMAC-SHA1';
 						let oauth_version = '1.0';
-
-						let base_signature =
-							'GET&' +
-							querystring.escape(requestBaseUrl) +
-							'&' +
-							querystring.escape(
-								'oauth_consumer_key=' +
-									oauth_consumer_key +
-									'&oauth_nonce=' +
-									oauth_nonce +
-									'&oauth_signature_method=' +
-									oauth_signatureMethod +
-									'&oauth_timestamp=' +
-									oauth_timestamp +
-									'&oauth_token=' +
-									oauth_token +
-									'&oauth_version=' +
-									oauth_version
-							);
+						
+						let base_signature = 'GET&https%3A%2F%2Fapis.garmin.com%2Fwellness-api%2Frest%2Fuser%2Fid&oauth_consumer_key%3D8ea9745c-56a3-4f5f-961f-9731a83a172b%26oauth_nonce%3D65831a2b1ca037de10bb0cab%26oauth_signature_method%3DHMAC-SHA1%26oauth_timestamp%3D1704456645%26oauth_token%3D4b5a7472-e5d2-4073-bae4-5191a023f0ee%26oauth_version%3D1.0'
+						// let base_signature = `GET&https%3A%2F%2Fapis.garmin.com%2Fwellness-api%2Frest%2Fuser%2Fid&oauth_consumer_key%3D${oauth_consumer_key}%26oauth_nonce%3D${oauth_nonce}%26oauth_signature_method%3D${oauth_signatureMethod}%26oauth_timestamp%3D${oauth_timestamp}%26oauth_token%3D${oauth_token}%26oauth_version%3D${oauth_version}`;
+						// let base_signature =
+						// 	'GET&' +
+						// 	querystring.escape(requestBaseUrl) +
+						// 	'&' +
+						// 	querystring.escape(
+						// 		'oauth_consumer_key=' +
+						// 			oauth_consumer_key +
+						// 			'&oauth_nonce=' +
+						// 			oauth_nonce +
+						// 			'&oauth_signature_method=' +
+						// 			oauth_signatureMethod +
+						// 			'&oauth_timestamp=' +
+						// 			oauth_timestamp +
+						// 			'&oauth_token=' +
+						// 			oauth_token +
+						// 			'&oauth_version=' +
+						// 			oauth_version
+						// 	);
 
 						let hmac = crypto.createHmac(
 							'sha1',

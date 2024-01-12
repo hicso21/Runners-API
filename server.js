@@ -74,12 +74,10 @@ io.on('connection', async (socket) => {
 			console.error(error);
 			return;
 		}
-		io.emit(
-			'global chat',
-			msg,
-			new Date(result.createdAt).getTime(),
-			username
-		);
+		io.emit('global chat', {
+			...result._doc,
+			createdAt: new Date(result.createdAt).getTime(),
+		});
 	});
 
 	// socket.on('user chat', (msg) => {
@@ -102,12 +100,7 @@ io.on('connection', async (socket) => {
 			console.log(results);
 			//Enviarselo a los usuarios que se conecten
 			results.forEach((item) => {
-				socket.emit(
-					'global chat',
-					item.message,
-					item.createdAt,
-					item.from
-				);
+				socket.emit('global chat', item);
 			});
 		} catch (e) {
 			console.error(e);

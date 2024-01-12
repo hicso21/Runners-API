@@ -34,6 +34,12 @@ export default class RunnersControllers {
 		try {
 			const data = req.body;
 			console.log('data', data);
+			const anotherRunner = await RunnersServices.getByEmail(data.email);
+			if (anotherRunner.email == data.email)
+				return res.send({
+					error: true,
+					data: 'Another runner is registered with this email',
+				});
 			const runnerData = { ...data, password: encrypt(data.password) };
 			console.log('runnerData', runnerData);
 			const runner = await RunnersServices.create(runnerData);
@@ -82,6 +88,38 @@ export default class RunnersControllers {
 			await LogsServices.create(
 				'login error',
 				'Error when trying to login'
+			);
+			res.status(500).send({
+				error: true,
+				data: error,
+			});
+		}
+	}
+
+	static async resetPassword(req, res) {
+		try {
+			const data = req.body;
+			const { email, password: newPassword } = data;
+			const runner = await RunnersServices.getByEmail(email);
+			if (runner == null)
+				return res.status(200).send({
+					error: true,
+					data: 'There is no runner with that email address.',
+					exist: false,
+				});
+			const updatedRunner = await RunnersServices.changePassword(
+				runner._id,
+				encrypt(newPassword)
+			);
+			if (updatedRunner.password == newPassword)
+				return res.status(200).send({
+					error: false,
+					data: updatedRunner,
+				});
+		} catch (error) {
+			await LogsServices.create(
+				'resetPassword error',
+				'Error when trying to update user data'
 			);
 			res.status(500).send({
 				error: true,
