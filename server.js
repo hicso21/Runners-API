@@ -62,8 +62,10 @@ io.on('connection', async (socket) => {
 	socket.on('global chat', async (msg) => {
 		let result;
 		try {
+			console.log('newMessage => ', msg);
 			result = await GlobalChats.create(msg);
 			result.save();
+			console.log('Result => ', result);
 		} catch (error) {
 			console.error(error);
 			return;
