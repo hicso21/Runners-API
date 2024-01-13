@@ -59,13 +59,13 @@ app.use(logger('dev'));
 io.on('connection', async (socket) => {
 	console.log('An user has connected!');
 
-	socket.on('global chat', async (message) => {
+	console.log(socket.handshake.auth);
+
+	socket.on('global chat', async (msg) => {
 		let result;
 		try {
-			console.log('newMessage => ', { message }); // { message: 'Testing', from: null, user_id: null }
-			result = await GlobalChats.create(JSON.parse(message));
+			result = await GlobalChats.create(msg);
 			result.save();
-			console.log('Result => ', result);
 		} catch (error) {
 			console.error(error);
 			return;
@@ -92,6 +92,8 @@ io.on('connection', async (socket) => {
 			const results = await GlobalChats.find({
 				createdAt: { $gt: socket.handshake.auth.serverOffset ?? 0 },
 			});
+			console.log(socket.handshake.auth.serverOffset ?? 0);
+			console.log(results);
 			//Enviarselo a los usuarios que se conecten
 			results.forEach((item) => {
 				socket.emit('global chat', item);
