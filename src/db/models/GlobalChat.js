@@ -3,7 +3,9 @@ import { Schema, model } from 'mongoose';
 const globalChatSchema = new Schema(
 	{
 		message: String,
-		from: Object, // { name: '', _id: '', profile_picture: '' }
+		from: String,
+		user_id: String,
+		profile_picture: String,
 		createdAt: {
 			type: Date,
 			default: Date.now,

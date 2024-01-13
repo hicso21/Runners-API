@@ -59,10 +59,8 @@ app.use(logger('dev'));
 io.on('connection', async (socket) => {
 	console.log('An user has connected!');
 
-
 	socket.on('global chat', async (msg) => {
 		let result;
-		const username = socket.handshake.auth.username ?? 'anonymous';
 		try {
 			result = await GlobalChats.create(msg);
 			result.save();

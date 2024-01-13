@@ -40,9 +40,7 @@ export default class RunnersControllers {
 					data: 'Another runner is registered with this email',
 				});
 			const runnerData = { ...data, password: encrypt(data.password) };
-			console.log('runnerData', runnerData);
 			const runner = await RunnersServices.create(runnerData);
-			console.log('runner', runner);
 			res.status(201).send({ error: false, data: runner });
 		} catch (error) {
 			await LogsServices.create(
