@@ -18,7 +18,8 @@ class SuuntoServices {
 		} catch (error) {
 			await LogsServices.create(
 				'getAuthorizeUrl error suunto',
-				JSON.stringify(error)
+				JSON.stringify(error),
+				error
 			);
 			return { error: true, data: error };
 		}
@@ -45,7 +46,8 @@ class SuuntoServices {
 		} catch (error) {
 			await LogsServices.create(
 				'token error suunto',
-				JSON.stringify(error)
+				JSON.stringify(error),
+				error
 			);
 			return { error: true, data: error };
 		}
@@ -66,7 +68,8 @@ class SuuntoServices {
 		} catch (error) {
 			await LogsServices.create(
 				'dailyActivity error suunto',
-				JSON.stringify(error)
+				JSON.stringify(error),
+				error
 			);
 			return { error: true, data: error };
 		}
@@ -86,7 +89,8 @@ class SuuntoServices {
 		} catch (error) {
 			await LogsServices.create(
 				'activityStatistics error suunto',
-				JSON.stringify(error)
+				JSON.stringify(error),
+				error
 			);
 			return { error: true, data: error };
 		}
@@ -107,7 +111,8 @@ class SuuntoServices {
 		} catch (error) {
 			await LogsServices.create(
 				'sleepData error suunto',
-				JSON.stringify(error)
+				JSON.stringify(error),
+				error
 			);
 			return { error: true, data: error };
 		}

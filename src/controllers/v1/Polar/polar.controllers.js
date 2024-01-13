@@ -66,7 +66,8 @@ class PolarController {
 		} catch (error) {
 			await LogsServices.create(
 				'token error polar',
-				JSON.stringify(error)
+				JSON.stringify(error),
+				error
 			);
 			res.send({
 				error: true,
@@ -83,7 +84,8 @@ class PolarController {
 		} catch (error) {
 			await LogsServices.create(
 				'getRunnerData error polar',
-				JSON.stringify(error)
+				JSON.stringify(error),
+				error
 			);
 			res.send({
 				error: true,
@@ -154,7 +156,8 @@ class PolarController {
 		} catch (error) {
 			await LogsServices.create(
 				'getDailyActivity error polar',
-				JSON.stringify(error)
+				JSON.stringify(error),
+				error
 			);
 			res.send({
 				error: true,
@@ -225,7 +228,8 @@ class PolarController {
 		} catch (error) {
 			await LogsServices.create(
 				'getTrainingData error polar',
-				JSON.stringify(error)
+				JSON.stringify(error),
+				error
 			);
 			res.send({
 				error: true,
@@ -298,7 +302,8 @@ class PolarController {
 		} catch (error) {
 			await LogsServices.create(
 				'getPhysicalData error polar',
-				JSON.stringify(error)
+				JSON.stringify(error),
+				error
 			);
 			res.send({
 				error: true,

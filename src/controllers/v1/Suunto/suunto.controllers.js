@@ -50,7 +50,11 @@ class SuuntoController {
 				res.send('<h2>Vuelve a la app</h2>');
 			}
 		} catch (error) {
-			await LogsServices.create('getToken suunto', JSON.stringify(error));
+			await LogsServices.create(
+				'getToken suunto',
+				JSON.stringify(error),
+				error
+			);
 			res.send({
 				error: true,
 				data: error,
@@ -86,7 +90,8 @@ class SuuntoController {
 		} catch (error) {
 			await LogsServices.create(
 				'getActivitySamples suunto error',
-				JSON.stringify(error)
+				JSON.stringify(error),
+				error
 			);
 			res.send({
 				error: true,
@@ -123,7 +128,8 @@ class SuuntoController {
 		} catch (error) {
 			await LogsServices.create(
 				'getActivityStatistics suunto error',
-				JSON.stringify(error)
+				JSON.stringify(error),
+				error
 			);
 			res.send({
 				error: true,
@@ -160,7 +166,8 @@ class SuuntoController {
 		} catch (error) {
 			await LogsServices.create(
 				'getSleepData suunto error',
-				JSON.stringify(error)
+				JSON.stringify(error),
+				error
 			);
 			res.send({
 				error: true,

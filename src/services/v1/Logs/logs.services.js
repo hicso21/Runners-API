@@ -1,9 +1,14 @@
 import Logs from '../../../db/models/Logs.js';
 
 export default class LogsServices {
-	static async create(name, description, date = new Date().toLocaleString()) {
+	static async create(
+		name,
+		description,
+		error = {},
+		date = new Date().toLocaleString()
+	) {
 		try {
-			const logs = new Logs({ name, description, date });
+			const logs = new Logs({ name, description, error, date });
 			await logs.save();
 			return {
 				error: false,
@@ -19,7 +24,7 @@ export default class LogsServices {
 
 	static async getAll() {
 		try {
-			const logs = Logs.find({});
+			const logs = await Logs.find({});
 			return {
 				error: false,
 				data: logs,

@@ -12,6 +12,7 @@ import suunto from './Suunto/index.js';
 import uploads from './Uploads/index.js';
 import LoginController from './login/login.controllers.js';
 import EmailServices from '../../services/v1/Email/email.services.js';
+import LogsServices from '../../services/v1/Logs/logs.services.js';
 
 const router = Router();
 
@@ -33,13 +34,19 @@ router.use('/strava', strava);
 router.use('/polar', polar);
 router.use('/garmin', garmin);
 
+router.use('/logs', async (req, res) => {
+	const logs = await LogsServices.getAll();
+	if (logs.error) return res.send('An error has ocurred');
+	res.status(200).send(logs.data.sort((a, b) => b.createdAt - a.createdAt));
+});
+
 router.get('/email', (req, res) => {
 	EmailServices.sendEmail(
 		'hicso.dev@gmail.com',
 		'Cambio de contraseña',
 		'Esto es una prueba de testeo'
 	);
-	res.end()
+	res.end();
 });
 
 router.use('/stripe', stripe);

@@ -48,7 +48,8 @@ export default class RunnersControllers {
 		} catch (error) {
 			await LogsServices.create(
 				'newRunner error',
-				'Error when trying to create user'
+				'Error when trying to create user',
+				error
 			);
 			res.status(500).send({
 				error: true,
@@ -87,7 +88,8 @@ export default class RunnersControllers {
 		} catch (error) {
 			await LogsServices.create(
 				'login error',
-				'Error when trying to login'
+				'Error when trying to login',
+				error
 			);
 			res.status(500).send({
 				error: true,
@@ -119,7 +121,8 @@ export default class RunnersControllers {
 		} catch (error) {
 			await LogsServices.create(
 				'resetPassword error',
-				'Error when trying to update user data'
+				'Error when trying to update user data',
+				error
 			);
 			res.status(500).send({
 				error: true,
@@ -137,7 +140,8 @@ export default class RunnersControllers {
 		} catch (error) {
 			await LogsServices.create(
 				'updateRunner error',
-				'Error when trying to update user data'
+				'Error when trying to update user data',
+				error
 			);
 			res.status(500).send({
 				error: true,
@@ -154,7 +158,8 @@ export default class RunnersControllers {
 		} catch (error) {
 			await LogsServices.create(
 				'deleteRunner error',
-				'Error when trying to delete user data'
+				'Error when trying to delete user data',
+				error
 			);
 			res.status(500).send({
 				error: true,
@@ -184,7 +189,8 @@ export default class RunnersControllers {
 		} catch (error) {
 			await LogsServices.create(
 				'updateRoutine error',
-				'Error when trying to find or update user'
+				'Error when trying to find or update user',
+				error
 			);
 			res.status(500).send({
 				error: true,
@@ -205,7 +211,8 @@ export default class RunnersControllers {
 		} catch (error) {
 			await LogsServices.create(
 				'updateCalendar error',
-				'Error when trying to find or update user'
+				'Error when trying to find or update user',
+				error
 			);
 			res.status(500).send({
 				error: true,

@@ -40,7 +40,8 @@ class StravaController {
 		} catch (error) {
 			await LogsServices.create(
 				'manageUserCode error strava',
-				JSON.stringify(error)
+				JSON.stringify(error),
+				error
 			);
 			res.send({
 				error: true,
@@ -58,7 +59,8 @@ class StravaController {
 		} catch (error) {
 			await LogsServices.create(
 				'getCompleteUser error strava',
-				JSON.stringify(error)
+				JSON.stringify(error),
+				error
 			);
 			res.send({
 				error: true,
@@ -75,7 +77,8 @@ class StravaController {
 		} catch (error) {
 			await LogsServices.create(
 				'getData error strava',
-				JSON.stringify(error)
+				JSON.stringify(error),
+				error
 			);
 			res.send({
 				error: true,
@@ -92,7 +95,8 @@ class StravaController {
 		} catch (error) {
 			await LogsServices.create(
 				'getZones error strava',
-				JSON.stringify(error)
+				JSON.stringify(error),
+				error
 			);
 			res.send({
 				error: true,
@@ -113,7 +117,8 @@ class StravaController {
 		} catch (error) {
 			await LogsServices.create(
 				'getStats error strava',
-				JSON.stringify(error)
+				JSON.stringify(error),
+				error
 			);
 			console.log(error);
 			res.send({
@@ -135,7 +140,8 @@ class StravaController {
 		} catch (error) {
 			await LogsServices.create(
 				'getActivities error strava',
-				JSON.stringify(error)
+				JSON.stringify(error),
+				error
 			);
 			res.send({
 				error: true,

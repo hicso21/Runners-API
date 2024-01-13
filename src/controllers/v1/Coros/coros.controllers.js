@@ -32,7 +32,8 @@ class CorosController {
 		} catch (error) {
 			LogsServices.create(
 				'manageUserCode error coros',
-				JSON.stringify(error)
+				JSON.stringify(error),
+				error
 			);
 			res.send({
 				error: true,
@@ -52,7 +53,8 @@ class CorosController {
 		} catch (error) {
 			LogsServices.create(
 				'getCompleteUser error coros',
-				JSON.stringify(error)
+				JSON.stringify(error),
+				error
 			);
 			res.send({
 				error: true,
@@ -75,7 +77,8 @@ class CorosController {
 		} catch (error) {
 			LogsServices.create(
 				'getDataByDate error coros',
-				JSON.stringify(error)
+				JSON.stringify(error),
+				error
 			);
 			res.send({
 				error: true,
@@ -98,7 +101,8 @@ class CorosController {
 		} catch (error) {
 			LogsServices.create(
 				'getRestDataByDate error coros',
-				JSON.stringify(error)
+				JSON.stringify(error),
+				error
 			);
 			res.send({
 				error: true,

@@ -4,6 +4,7 @@ const LogSchema = new Schema(
 	{
 		name: String,
 		date: Date,
+		error: Object,
 		description: String,
 	},
 	{ timestamps: true }
