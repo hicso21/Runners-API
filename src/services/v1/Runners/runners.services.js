@@ -28,6 +28,7 @@ export default class RunnersServices {
 	static async getByEmail(email) {
 		try {
 			const runner = await Runners.findOne({ email });
+			console.log(runner)
 			return runner;
 		} catch (error) {
 			return {

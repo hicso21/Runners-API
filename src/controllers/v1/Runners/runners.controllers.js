@@ -33,9 +33,8 @@ export default class RunnersControllers {
 	static async register(req, res) {
 		try {
 			const data = req.body;
-			console.log('data', data);
-			const anotherRunner = await RunnersServices.getByEmail(data.email);
-			if (anotherRunner.email == data.email)
+			const anotherRunner = await RunnersServices.getByEmail(data?.email);
+			if (anotherRunner != null)
 				return res.send({
 					error: true,
 					data: 'Another runner is registered with this email',
