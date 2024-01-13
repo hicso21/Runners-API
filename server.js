@@ -59,10 +59,10 @@ app.use(logger('dev'));
 io.on('connection', async (socket) => {
 	console.log('An user has connected!');
 
-	socket.on('global chat', async (msg) => {
+	socket.on('global chat', async (message, from, user_id) => {
 		let result;
 		try {
-			console.log('newMessage => ', msg);
+			console.log('newMessage => ', { message, from, user_id });
 			result = await GlobalChats.create(msg);
 			result.save();
 			console.log('Result => ', result);
