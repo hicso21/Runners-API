@@ -13,6 +13,7 @@ import logger from 'morgan';
 import { Server } from 'socket.io';
 import { createServer } from 'node:http';
 import GlobalChats from './src/db/models/GlobalChat.js';
+import UserChats from './src/db/models/UserChat.js';
 config();
 
 const PORT = process.env.PORT || 8080;
@@ -59,8 +60,6 @@ app.use(logger('dev'));
 io.on('connection', async (socket) => {
 	console.log('An user has connected!');
 
-	console.log(socket.handshake.auth);
-
 	socket.on('global chat', async (msg) => {
 		let result;
 		try {
@@ -76,10 +75,20 @@ io.on('connection', async (socket) => {
 		});
 	});
 
-	// socket.on('user chat', (msg) => {
-	// 	console.log(msg);
-	// 	io.emit('user chat', msg);
-	// });
+	socket.on('user chat', async (msg) => {
+		let result;
+		try {
+			result = await UserChats.create(msg);
+			result.save();
+		} catch (error) {
+			console.error(error);
+			return;
+		}
+		io.emit('user chat', {
+			...result._doc,
+			createdAt: new Date(result.createdAt).getTime(),
+		});
+	});
 
 	socket.on('disconnect', () => {
 		console.log('An user has disconnected');
@@ -88,16 +97,23 @@ io.on('connection', async (socket) => {
 	if (!socket.recovered) {
 		// <- recuperase los mensajes sin conexión
 		try {
-			//Traer los mensaje desde db
-			const results = await GlobalChats.find({
-				createdAt: { $gt: socket.handshake.auth.serverOffset ?? 0 },
-			});
-			console.log(socket.handshake.auth.serverOffset ?? 0);
-			console.log(results);
-			//Enviarselo a los usuarios que se conecten
-			results.forEach((item) => {
-				socket.emit('global chat', item);
-			});
+			if (socket.handshake.auth.user_id) {
+				const userChat = await GlobalChats.find({
+					createdAt: { $gt: socket.handshake.auth.serverOffset ?? 0 },
+					user_id: socket.handshake.auth.user_id,
+				});
+				//Enviarselo a los usuarios que se conecten
+				userChat.forEach((item) => {
+					socket.emit('user chat', item);
+				});
+			} else {
+				const globalChat = await GlobalChats.find({
+					createdAt: { $gt: socket.handshake.auth.serverOffset ?? 0 },
+				});
+				globalChat.forEach((item) => {
+					socket.emit('global chat', item);
+				});
+			}
 		} catch (e) {
 			console.error(e);
 			return;
