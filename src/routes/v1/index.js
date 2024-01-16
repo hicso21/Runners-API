@@ -13,6 +13,7 @@ import uploads from './Uploads/index.js';
 import LoginController from './login/login.controllers.js';
 import EmailServices from '../../services/v1/Email/email.services.js';
 import LogsServices from '../../services/v1/Logs/logs.services.js';
+import UserChats from '../../db/models/UserChat.js';
 
 const router = Router();
 
@@ -34,7 +35,12 @@ router.use('/strava', strava);
 router.use('/polar', polar);
 router.use('/garmin', garmin);
 
-router.use('/logs', async (req, res) => {
+router.get('/chats', async (req, res) => {
+	const chats = await UserChats.find({});
+	res.status(200).send(chats);
+});
+
+router.get('/logs', async (req, res) => {
 	const logs = await LogsServices.getAll();
 	if (logs.error) return res.send('An error has ocurred');
 	res.status(200).send(logs.data.sort((a, b) => b.createdAt - a.createdAt));

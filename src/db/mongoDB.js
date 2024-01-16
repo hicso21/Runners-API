@@ -1,12 +1,12 @@
 import mongoose from 'mongoose';
 
-// const connectionString = 'mongodb://mongo:Thomas2110$@runners_db:27017';
+// const url = 'mongodb://mongo:Thomas2110$@runners_db:27017';
 
-const connectionString =
+const url =
 	'mongodb+srv://hicso:thomas2110@runnersdb.kso8gvp.mongodb.net/?retryWrites=true&w=majority';
 
 const db = mongoose
-	.connect(connectionString, {
+	.connect(url, {
 		dbName: 'runners_api',
 	})
 	.then(() => console.log('DB was connected successfully'))

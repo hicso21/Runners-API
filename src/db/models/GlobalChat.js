@@ -6,7 +6,8 @@ const globalChatSchema = new Schema(
 		from: String,
 		user_id: String,
 		profile_picture: String,
-		// on_response: Object,
+		timestamp: Number,
+		on_response: Object,
 		createdAt: {
 			type: Date,
 			default: Date.now,
