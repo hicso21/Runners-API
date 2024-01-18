@@ -53,10 +53,7 @@ class GarminController {
 					.split('"')[0]
 			}&token_secret=${request_token_secret}`;
 			const redirect_url = `https://connect.garmin.com/oauthConfirm?oauth_token=${request_token}&oauth_callback=${oauth_callback}`;
-			res.send({
-				error: false,
-				data: redirect_url,
-			});
+			res.redirect(redirect_url);
 		} catch (error) {
 			res.status(500).send({
 				error: true,
