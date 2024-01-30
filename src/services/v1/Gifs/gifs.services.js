@@ -12,6 +12,17 @@ class GifsServices {
 		}
 	}
 
+	static async gifsById(id_list) {
+		try {
+			return await Gifs.find({ _id: { $in: id_list } });
+		} catch (error) {
+			return {
+				error: true,
+				data: error,
+			};
+		}
+	}
+
 	static async getAllGifWithoutGif() {
 		try {
 			return await Gifs.find({}, '-gif');

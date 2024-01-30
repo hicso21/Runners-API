@@ -1,19 +1,19 @@
 import { Router } from 'express';
+import UserChats from '../../db/models/UserChat.js';
+import EmailServices from '../../services/v1/Email/email.services.js';
+import LogsServices from '../../services/v1/Logs/logs.services.js';
 import coros from './Coros/index.js';
 import exercises from './Exercises/index.js';
 import garmin from './Garmin/index.js';
-import stripe from './Stripe/index.js';
 import groups from './Groups/index.js';
 import polar from './Polar/index.js';
 import routines from './Routines/index.js';
 import runners from './Runners/index.js';
 import strava from './Strava/index.js';
+import stripe from './Stripe/index.js';
 import suunto from './Suunto/index.js';
 import uploads from './Uploads/index.js';
 import LoginController from './login/login.controllers.js';
-import EmailServices from '../../services/v1/Email/email.services.js';
-import LogsServices from '../../services/v1/Logs/logs.services.js';
-import UserChats from '../../db/models/UserChat.js';
 
 const router = Router();
 

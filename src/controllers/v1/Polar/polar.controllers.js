@@ -20,7 +20,7 @@ class PolarController {
 				`client_id=${config.client_id}&` +
 				`redirect_uri=${redirect_uri}&` +
 				`state=${db_id}`;
-			res.send(uri);
+			res.redirect(uri);
 		} catch (error) {
 			res.send({
 				error: true,

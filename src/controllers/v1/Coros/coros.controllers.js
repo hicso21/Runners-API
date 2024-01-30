@@ -7,7 +7,7 @@ class CorosController {
 		try {
 			const id = req.params.db_id;
 			const uri = await CorosServices.oauth(id);
-			res.send(uri);
+			res.redirect(uri);
 		} catch (error) {
 			res.send({
 				error: true,

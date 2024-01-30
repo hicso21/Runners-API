@@ -101,6 +101,22 @@ class GifsControllers {
 			});
 		}
 	}
+
+	static async byIdList(req, res) {
+		const list = req.body;
+		try {
+			const gifs = await GifsServices.gifsById(list);
+			res.send({
+				error: false,
+				data: gifs,
+			});
+		} catch (error) {
+			res.send({
+				error: true,
+				data: error,
+			});
+		}
+	}
 }
 
 export default GifsControllers;

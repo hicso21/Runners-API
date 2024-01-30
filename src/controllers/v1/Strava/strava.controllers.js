@@ -7,7 +7,7 @@ class StravaController {
 		try {
 			const id = req.params?.db_id;
 			const uri = await StravaServices.authorize(id);
-			res.send(uri);
+			res.redirect(uri);
 		} catch (error) {
 			console.log(error);
 			res.send({
