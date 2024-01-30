@@ -46,8 +46,8 @@ const router = Router();
 /* GIF */
 router.get('/gif', GifsControllers.getAllGif);
 router.get('/gif/just_names', GifsControllers.justNameGif);
-router.get('/gif/id_list', GifsControllers.byIdList);
 router.get('/gif/:name', GifsControllers.getByName);
+router.post('/gif/id_list', GifsControllers.byIdList);
 router.post('/gif', GifsControllers.postGif);
 router.delete('/gif/:_id', GifsControllers.deleteGifById);
 
