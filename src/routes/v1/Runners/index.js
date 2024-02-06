@@ -6,6 +6,7 @@ const router = Router();
 
 router.get('/getAll', RunnersControllers.getAll);
 router.get('/getById/:id', RunnersControllers.getById);
+router.get('/getByEmail/:email', RunnersControllers.getByEmail);
 router.post('/register', RunnersControllers.register);
 router.post('/login', RunnersControllers.login);
 router.post('/resetPassword', RunnersControllers.resetPassword);

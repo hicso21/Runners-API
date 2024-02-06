@@ -30,6 +30,19 @@ export default class RunnersControllers {
 		}
 	}
 
+	static async getByEmail(req, res) {
+		try {
+			const { email } = req.params;
+			const runner = await RunnersServices.getByEmail(email);
+			res.status(200).send({ error: false, data: runner });
+		} catch (error) {
+			res.status(500).send({
+				error: true,
+				data: error,
+			});
+		}
+	}
+
 	static async register(req, res) {
 		try {
 			const data = req.body;

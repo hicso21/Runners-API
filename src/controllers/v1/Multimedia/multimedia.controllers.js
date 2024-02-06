@@ -35,6 +35,28 @@ class MultimediaController {
 		}
 	}
 
+	/* { type: 'video', data: { name: String, description: String, src: String }} */
+	static async postVideo(req, res) {
+		try {
+			const body = req.body;
+			if (body.type != 'video')
+				return res.send({
+					error: true,
+					data: 'Type must be "video" to upload some video on multimedia',
+				});
+			const data = await Multimedias.create(body);
+			res.send({
+				error: false,
+				data,
+			});
+		} catch (error) {
+			res.send({
+				error: true,
+				data: error,
+			});
+		}
+	}
+
 	static async getAudios(req, res) {
 		try {
 			const data = await Multimedias.find({ type: 'audio' });
@@ -47,6 +69,28 @@ class MultimediaController {
 				error: true,
 				data: error,
 			};
+		}
+	}
+
+	/* { type: 'audio', data: { name: String, description: String, src: String }} */
+	static async postAudio(req, res) {
+		try {
+			const body = req.body;
+			if (body.type != 'audio')
+				return res.send({
+					error: true,
+					data: 'Type must be "audio" to upload some audio on multimedia',
+				});
+			const data = await Multimedias.create(body);
+			res.send({
+				error: false,
+				data,
+			});
+		} catch (error) {
+			res.send({
+				error: true,
+				data: error,
+			});
 		}
 	}
 
@@ -65,6 +109,28 @@ class MultimediaController {
 		}
 	}
 
+	/* { type: 'tip', data: { name: String, description: String }} */
+	static async postTip(req, res) {
+		try {
+			const body = req.body;
+			if (body.type != 'tip')
+				return res.send({
+					error: true,
+					data: 'Type must be "tip" to upload some tip on multimedia',
+				});
+			const data = await Multimedias.create(body);
+			res.send({
+				error: false,
+				data,
+			});
+		} catch (error) {
+			res.send({
+				error: true,
+				data: error,
+			});
+		}
+	}
+
 	static async getTexts(req, res) {
 		try {
 			const data = await Multimedias.find({ type: 'text' });
@@ -77,6 +143,28 @@ class MultimediaController {
 				error: true,
 				data: error,
 			};
+		}
+	}
+
+	/* { type: 'text', data: { name: String, description: String }} */
+	static async postText(req, res) {
+		try {
+			const body = req.body;
+			if (body.type != 'text')
+				return res.send({
+					error: true,
+					data: 'Type must be "text" to upload some text on multimedia',
+				});
+			const data = await Multimedias.create(body);
+			res.send({
+				error: false,
+				data,
+			});
+		} catch (error) {
+			res.send({
+				error: true,
+				data: error,
+			});
 		}
 	}
 

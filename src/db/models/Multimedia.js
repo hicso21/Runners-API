@@ -6,7 +6,7 @@ import { Schema, model } from 'mongoose';
 		name: String,
 		description: String,
 	}
-// type: 'tips'
+// type: 'tip'
 	data: {
 		name: String,
 		description: String,
