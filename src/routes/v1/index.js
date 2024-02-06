@@ -35,6 +35,11 @@ router.use('/strava', strava);
 router.use('/polar', polar);
 router.use('/garmin', garmin);
 
+router.post('/mercadopago', (req, res) => {
+	const data = req.body
+	console.log('Mercado Pago Data => ', data)
+});
+
 router.get('/chats', async (req, res) => {
 	const chats = await UserChats.find({});
 	res.status(200).send(chats);
