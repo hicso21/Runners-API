@@ -62,19 +62,19 @@ router.get('/multimedia', MultimediaController.getAll);
 
 /* Videos */
 router.get('/multimedia/getVideos', MultimediaController.getVideos);
-router.post('/multimedia/postVideos', MultimediaController.postVideo);
+router.post('/multimedia/postVideo', MultimediaController.postVideo);
 
 /* Audios */
 router.get('/multimedia/getAudios', MultimediaController.getAudios);
-router.post('/multimedia/postAudios', MultimediaController.postAudio);
+router.post('/multimedia/postAudio', MultimediaController.postAudio);
 
 /* Texts */
 router.get('/multimedia/getTexts', MultimediaController.getTexts);
-router.post('/multimedia/postTexts', MultimediaController.postText);
+router.post('/multimedia/postText', MultimediaController.postText);
 
 /* Tips */
 router.get('/multimedia/getTips', MultimediaController.getTips);
-router.post('/multimedia/postTips', MultimediaController.postTip);
+router.post('/multimedia/postTip', MultimediaController.postTip);
 
 // router.post('/multimedia', upload.single('file'), MultimediaController.upload);
 router.delete('/multimedia/:id', MultimediaController.delete);
