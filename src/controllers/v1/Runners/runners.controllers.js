@@ -144,8 +144,8 @@ export default class RunnersControllers {
 	static async updateRunner(req, res) {
 		try {
 			const { id } = req.params;
-			const data = req.body;
-			const runner = await RunnersServices.update(id, data);
+			const { group } = req.body;
+			const runner = await RunnersServices.update(id, { group });
 			res.status(200).send({ error: false, data: runner });
 		} catch (error) {
 			await LogsServices.create(

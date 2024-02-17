@@ -11,6 +11,7 @@ export default RoutineType = {
 			commentary: String(),
 		},
 	],
+	pdf: String(),
 	start: Date(),
 	end: Date(),
 	isDraggable: Boolean(),
