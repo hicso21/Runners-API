@@ -13,10 +13,10 @@ class MultimediaController {
 				data,
 			});
 		} catch (error) {
-			return {
+			res.send({
 				error: true,
 				data: error,
-			};
+			});
 		}
 	}
 
@@ -28,10 +28,10 @@ class MultimediaController {
 				data,
 			});
 		} catch (error) {
-			return {
+			res.send({
 				error: true,
 				data: error,
-			};
+			});
 		}
 	}
 
@@ -65,10 +65,10 @@ class MultimediaController {
 				data,
 			});
 		} catch (error) {
-			return {
+			res.send({
 				error: true,
 				data: error,
-			};
+			});
 		}
 	}
 
@@ -102,10 +102,10 @@ class MultimediaController {
 				data,
 			});
 		} catch (error) {
-			return {
+			res.send({
 				error: true,
 				data: error,
-			};
+			});
 		}
 	}
 
@@ -139,10 +139,10 @@ class MultimediaController {
 				data,
 			});
 		} catch (error) {
-			return {
+			res.send({
 				error: true,
 				data: error,
-			};
+			});
 		}
 	}
 
@@ -173,10 +173,10 @@ class MultimediaController {
 			const file = req?.file;
 			res.json({ file });
 		} catch (error) {
-			return {
+			res.send({
 				error: true,
 				data: error,
-			};
+			});
 		}
 	}
 
@@ -184,15 +184,15 @@ class MultimediaController {
 		const id = req.params.id;
 		try {
 			await Multimedias.findByIdAndDelete(id);
-			return {
+			res.send({
 				error: false,
 				data: 'Deleted successfully',
-			};
+			});
 		} catch (error) {
-			return {
+			res.send({
 				error: true,
 				data: error,
-			};
+			});
 		}
 	}
 }
