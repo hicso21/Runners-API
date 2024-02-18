@@ -3,6 +3,7 @@ import RunnersServices from '../../../services/v1/Runners/runners.services.js';
 import crypto from 'crypto';
 import encrypt from '../../../utils/functions/encrypt.js';
 import decrypt from '../../../utils/functions/decrypt.js';
+import GroupsServices from '../../../services/v1/Groups/groups.services.js';
 
 export default class RunnersControllers {
 	static async getAll(req, res) {
@@ -145,8 +146,12 @@ export default class RunnersControllers {
 		try {
 			const { id } = req.params;
 			const { group } = req.body;
-			const runner = await RunnersServices.update(id, { group });
-			res.status(200).send({ error: false, data: runner });
+			const { oldGroupId } = (await RunnersServices.getById(id))?.data;
+			if (oldGroupId)
+				await GroupsServices.deleteUserFromGroup(oldGroupId, id);
+			await GroupsServices.addUserFromGroup(group, id);
+			const updatedRunner = await RunnersServices.update(id, { group });
+			res.status(200).send({ error: false, data: updatedRunner });
 		} catch (error) {
 			await LogsServices.create(
 				'updateRunner error',
