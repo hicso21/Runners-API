@@ -169,12 +169,10 @@ class GarminController {
 	}
 
 	static async getActivities(req, res) {
-		const db_id = req.params?.db_id;
+		const body = req.body;
 		try {
-			const response = await axios.get(
-				`https://delaf.click/activities?userId=${db_id}`
-			);
-			res.send(response);
+			console.log(body)
+			res.send(body);
 		} catch (error) {
 			res.status(500).send({
 				error: true,
