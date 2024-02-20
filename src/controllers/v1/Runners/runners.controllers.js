@@ -146,8 +146,10 @@ export default class RunnersControllers {
 		try {
 			const { id } = req.params;
 			const { group } = req.body;
-			const { oldGroupId } = (await RunnersServices.getById(id))?.data;
+			const runner = await RunnersServices.getById(id);
+			const oldGroupId = runner?.group;
 			if (oldGroupId)
+				console.log(oldGroupId)
 				await GroupsServices.deleteUserFromGroup(oldGroupId, id);
 			await GroupsServices.addUserFromGroup(group, id);
 			const updatedRunner = await RunnersServices.update(id, { group });

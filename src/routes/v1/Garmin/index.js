@@ -5,6 +5,6 @@ const router = Router();
 
 router.get('/authorize/:db_id', GarminController.auth);
 router.get('/exchange_token', GarminController.exchange);
-router.get('/getActivities/:db_id', GarminController.getActivities);
+router.get('/getActivities', GarminController.getActivities);
 
 export default router;
