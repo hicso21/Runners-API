@@ -6,6 +6,7 @@ import config from '../../../config/garminData.js';
 import RunnersServices from '../../../services/v1/Runners/runners.services.js';
 import { environment } from '../../../utils/constants/mainUrl.js';
 import fetchGarmin from '../../../utils/fetches/fetchGarminAPI.js';
+import Garmin from '../../../db/models/Garmin.js';
 
 function generateRandomNonce() {
 	const randomBytes = crypto.randomBytes(16);
@@ -169,10 +170,27 @@ class GarminController {
 	}
 
 	static async getActivities(req, res) {
-		const body = req.body;
+		const activityData = req.body;
 		try {
-			console.log(body)
-			res.send(body);
+			if (req.is('application/json')) {
+				// Procesar la notificación de actividad recibida
+				console.log('Notificación de actividad recibida:');
+				console.log(activityData);
+
+				// Realizar acciones adicionales según la notificación recibida
+
+				// Responder con un código de estado HTTP 200
+				const garmin = await Garmin.create({
+					activities: activityData,
+				});
+				console.log('Stored data on db => ', garmin);
+				res.sendStatus(200);
+			} else {
+				// Si la solicitud no es JSON, responder con un error
+				res.status(400).send(
+					'Bad Request - Se esperaba un cuerpo JSON'
+				);
+			}
 		} catch (error) {
 			res.status(500).send({
 				error: true,
