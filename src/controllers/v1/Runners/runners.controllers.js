@@ -239,12 +239,15 @@ export default class RunnersControllers {
 	static async routineCompleted(req, res) {
 		try {
 			const { routine_id, user_id, startDate } = req.body;
+			console.log('body => ', { routine_id, user_id, startDate });
 			const runner = await RunnersServices.getById(user_id);
 			const index = runner.calendar.routines.findIndex(
 				(item) => item.start == startDate && item._id == routine_id
 			);
+			console.log('index: ', index);
 			runner.calendar.routines[index].completed = true;
 			const updatedRunner = await RunnersServices.update(user_id, runner);
+			console.log('updatedRunner: ', updatedRunner);
 			res.send({
 				data: updatedRunner,
 				error: false,
