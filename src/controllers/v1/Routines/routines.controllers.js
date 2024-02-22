@@ -16,38 +16,7 @@ class RoutinesController {
 	static async newRoutine(req, res) {
 		try {
 			const { name } = req.body;
-			const exercises = [
-				{
-					name: 'heating',
-					type: 'heating',
-					category: 'slow',
-					measure: 'duration',
-					duration: 900,
-					measurement_unit: 'sec',
-					repeat: 1,
-					commentary: '',
-				},
-				{
-					name: 'running',
-					type: 'frequency_running',
-					category: 'lightly_demanded',
-					measure: 'distance',
-					duration: 10,
-					measurement_unit: 'km',
-					repeat: 1,
-					commentary: '',
-				},
-				{
-					name: 'cooling',
-					type: 'cooling',
-					category: 'slow',
-					measure: 'duration',
-					duration: 900,
-					measurement_unit: 'sec',
-					repeat: 1,
-					commentary: '',
-				},
-			];
+			const exercises = [];
 			const newRoutine = await RoutinesServices.postRoutine(
 				name,
 				exercises
