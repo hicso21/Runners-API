@@ -253,6 +253,11 @@ export default class RunnersControllers {
 				error: false,
 			});
 		} catch (error) {
+			await LogsServices.create(
+				'routineCompleted error',
+				'Error when trying to update calendar of user',
+				error
+			);
 			res.status(500).send({
 				error: true,
 				data: error,
