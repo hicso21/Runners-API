@@ -6,7 +6,7 @@ class RoutinesController {
 			const routines = await RoutinesServices.getAllRoutines();
 			res.status(200).send(routines);
 		} catch (error) {
-			res.status(404).send({
+			res.status(500).send({
 				error: true,
 				data: error,
 			});
@@ -23,7 +23,7 @@ class RoutinesController {
 			);
 			res.status(201).send(newRoutine);
 		} catch (error) {
-			res.status(404).send({
+			res.status(500).send({
 				error: true,
 				data: error,
 			});
@@ -36,7 +36,7 @@ class RoutinesController {
 			const routine = await RoutinesServices.getOneRoutine(id);
 			res.status(200).send(routine);
 		} catch (error) {
-			res.status(404).send({
+			res.status(500).send({
 				error: true,
 				data: error,
 			});
@@ -53,7 +53,7 @@ class RoutinesController {
 			);
 			res.status(200).send(updatedRoutine);
 		} catch (error) {
-			res.status(404).send({
+			res.status(500).send({
 				error: true,
 				data: error,
 			});
@@ -69,12 +69,14 @@ class RoutinesController {
 				data: 'Routine deleted correctly',
 			});
 		} catch (error) {
-			res.status(404).send({
+			res.status(500).send({
 				error: true,
 				data: error,
 			});
 		}
 	}
+
+	
 }
 
 export default RoutinesController;

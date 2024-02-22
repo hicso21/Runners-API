@@ -14,5 +14,6 @@ router.post('/update/:id', RunnersControllers.updateRunner);
 router.delete('/delete/:id', RunnersControllers.deleteRunner);
 router.put('/updateRoutine/:id', RunnersControllers.updateRoutine);
 router.put('/updateCalendar/:id', RunnersControllers.updateCalendar);
+router.put('/routineCompleted', RunnersControllers.routineCompleted);
 
 export default router;

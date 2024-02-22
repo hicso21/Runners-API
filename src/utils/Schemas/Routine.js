@@ -8,6 +8,9 @@ export default RoutineType = {
 			measure: String(),
 			duration: Number(),
 			measurement_unit: String(),
+			second_measure: String(),
+			second_duration: Number(),
+			second_measurement_unit: String(),
 			commentary: String(),
 		},
 	],
@@ -15,4 +18,5 @@ export default RoutineType = {
 	start: Date(),
 	end: Date(),
 	isDraggable: Boolean(),
+	completed: Boolean(),
 };

@@ -148,9 +148,7 @@ export default class RunnersControllers {
 			const { group } = req.body;
 			const runner = await RunnersServices.getById(id);
 			const oldGroupId = runner?.group;
-			if (oldGroupId)
-				console.log(oldGroupId)
-				await GroupsServices.deleteUserFromGroup(oldGroupId, id);
+			await GroupsServices.deleteUserFromGroup(oldGroupId, id);
 			await GroupsServices.addUserFromGroup(group, id);
 			const updatedRunner = await RunnersServices.update(id, { group });
 			res.status(200).send({ error: false, data: updatedRunner });
@@ -231,6 +229,27 @@ export default class RunnersControllers {
 				'Error when trying to find or update user',
 				error
 			);
+			res.status(500).send({
+				error: true,
+				data: error,
+			});
+		}
+	}
+
+	static async routineCompleted(req, res) {
+		try {
+			const { routine_id, user_id, startDate } = req.body;
+			const runner = await RunnersServices.getById(user_id);
+			const index = runner.calendar.routines.findIndex(
+				(item) => item.start == startDate && item._id == routine_id
+			);
+			runner.calendar.routines[index].completed = true;
+			const updatedRunner = await RunnersServices.update(user_id, runner);
+			res.send({
+				data: updatedRunner,
+				error: false,
+			});
+		} catch (error) {
 			res.status(500).send({
 				error: true,
 				data: error,
