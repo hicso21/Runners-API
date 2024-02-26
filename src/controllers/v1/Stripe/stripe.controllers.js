@@ -79,8 +79,13 @@ class StripeControllers {
 	}
 
 	static async paymentIntent(req, res) {
-		const { amount, currency, customer, payment_method } = req.body;
+		const { amount, currency, email, name, payment_method } = req.body;
+
 		try {
+			const customer = await stripe.customers.create({
+				email,
+				name,
+			});
 			const paymentIntent = await stripe.paymentIntents.create({
 				amount, // Monto en centavos
 				currency,
