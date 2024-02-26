@@ -1,3 +1,6 @@
+import { config } from 'dotenv';
+config();
+
 export default {
 	baseUrl: 'https://api.stripe.com',
 	production: {

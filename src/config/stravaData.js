@@ -1,3 +1,6 @@
+import { config } from 'dotenv';
+config();
+
 export default {
 	client_id: process.env.strava_client_id,
 	client_secret: process.env.strava_client_secret,
