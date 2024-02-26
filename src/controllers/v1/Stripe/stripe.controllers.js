@@ -79,12 +79,13 @@ class StripeControllers {
 	}
 
 	static async paymentIntent(req, res) {
+		const { amount, currency, customer, payment_method } = req.body;
 		try {
 			const paymentIntent = await stripe.paymentIntents.create({
-				amount: 1000, // Monto en centavos
-				currency: 'eur',
-				customer: 'cus_123456789', // ID del cliente
-				payment_method: 'pm_card_visa', // ID del método de pago
+				amount, // Monto en centavos
+				currency,
+				customer, // ID del cliente
+				payment_method, // ID del método de pago
 				confirm: true, // Confirmar el pago automáticamente
 			});
 			res.send(paymentIntent);

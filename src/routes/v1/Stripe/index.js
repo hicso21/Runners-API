@@ -7,5 +7,6 @@ router.get('/prices', StripeControllers.getPrices);
 router.get('/customers', StripeControllers.getCustomers);
 router.post('/payment-sheet', StripeControllers.paymentSheet);
 router.post('/checkout', StripeControllers.checkout);
+router.post('/create-payment', StripeControllers.paymentIntent);
 
 export default router;
