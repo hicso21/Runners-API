@@ -25,5 +25,6 @@ router.get(
 	refreshTokenMiddleWare,
 	CorosController.getRestDataByDate
 );
+router.get('/getStats', refreshTokenMiddleWare, CorosController.getStats);
 
 export default router;

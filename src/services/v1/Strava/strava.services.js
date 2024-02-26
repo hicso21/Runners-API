@@ -174,6 +174,28 @@ class StravaServices {
 			};
 		}
 	}
+
+	static async getStats(auth_header, after, before, page, per_page) {
+		try {
+			const { data } = await fetchStrava.get(
+				`/athlete/activities?before=${before}&after=${after}${
+					page ? `&page=${page}` : ''
+				}${per_page ? `&per_page=${per_page}` : ''}`,
+				{
+					headers: {
+						Authorization: auth_header,
+					},
+					withCredentials: true,
+				}
+			);
+			return data;
+		} catch (error) {
+			return {
+				error: true,
+				content: error,
+			};
+		}
+	}
 }
 
 export default StravaServices;

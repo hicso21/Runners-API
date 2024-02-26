@@ -73,7 +73,7 @@ class CorosController {
 				start_date,
 				end_date
 			);
-			res.send(workout);
+			if (workout.message == 'OK') res.send(workout.data);
 		} catch (error) {
 			LogsServices.create(
 				'getDataByDate error coros',
@@ -110,8 +110,40 @@ class CorosController {
 			});
 		}
 	}
+
+	static async getStats(req, res) {
+		const { brand_id, access_token } = req.user;
+		const { start_date, end_date } = req.query;
+		const modes = [
+			8 /*(run)*/, 9 /*(bike)*/, 15 /*(trailrun)*/, 18 /*(cardio)*/,
+			31 /*(walk)*/,
+		];
+		try {
+			const workout = await CorosServices.workoutByDate(
+				access_token,
+				brand_id,
+				start_date,
+				end_date
+			);
+			if (workout.message == 'OK')
+				res.send({
+					data: workout.data.filter(
+						(item) => modes.includes(item.mode) && true
+					),
+					error: false,
+				});
+		} catch (error) {
+			LogsServices.create(
+				'getStats error coros',
+				JSON.stringify(error),
+				error
+			);
+			res.send({
+				error: true,
+				data: error,
+			});
+		}
+	}
 }
 
 export default CorosController;
-
-//

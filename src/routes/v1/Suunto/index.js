@@ -13,5 +13,6 @@ router.get('/exchange_token/:db_id', SuuntoController.getToken);
 router.get('/daily_activity/:db_id', SuuntoController.getActivitySamples);
 router.get('/daily_statistics/:db_id', SuuntoController.getActivityStatistics);
 router.get('/sleep_data/:db_id', SuuntoController.getSleepData);
+router.get('/getStats', SuuntoController.getStats)
 
 export default router;

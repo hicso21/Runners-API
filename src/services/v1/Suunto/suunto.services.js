@@ -26,7 +26,10 @@ class SuuntoServices {
 	}
 
 	static async token(redirect_uri, code) {
-		const authHeader = btoa(`${config.client_id}:${config.client_secret}`);
+		const data = `${config.client_id}:${config.client_secret}`;
+		// const authHeader = btoa(data);
+		const buffer = Buffer.from(data, 'utf8');
+		const encodedString = buffer.toString('base64');
 		try {
 			const res = await fetchSuunto.post(
 				'/oauth/token',
@@ -38,7 +41,7 @@ class SuuntoServices {
 				{
 					headers: {
 						'Content-Type': 'application/x-www-form-urlencoded',
-						Authorization: `Basic ${authHeader}`,
+						Authorization: `Basic ${encodedString}`,
 					},
 				}
 			);

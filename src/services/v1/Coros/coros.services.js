@@ -64,7 +64,7 @@ class CorosServices {
 
 	static async workoutByDate(access_token, brand_id, start_date, end_date) {
 		try {
-			// modes: 8(run), 9(bike), 15(trailrun), 31(walk)
+			// modes: 8(run), 9(bike), 15(trailrun), 31(walk) 18(cardio)
 			const { data } = await fetchCoros.get(
 				'/v2/coros/sport/list?' +
 					`token=${access_token}` +
@@ -75,7 +75,7 @@ class CorosServices {
 					'&' +
 					`endDate=${end_date}`
 			);
-			return data.data;
+			return data;
 		} catch (error) {
 			return {
 				error: true,

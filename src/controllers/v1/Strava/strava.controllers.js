@@ -55,7 +55,7 @@ class StravaController {
 			const auth_header = req.bearer_token;
 			const user_id = req.params?.id;
 			const user = await StravaServices.getUserById(auth_header, user_id);
-			res.send(user);
+			res.send({ data: user, error: false });
 		} catch (error) {
 			await LogsServices.create(
 				'getCompleteUser error strava',
@@ -73,7 +73,7 @@ class StravaController {
 		try {
 			const auth_header = req.bearer_token;
 			const user = await StravaServices.getUserData(auth_header);
-			res.send(user);
+			res.send({ data: user, error: false });
 		} catch (error) {
 			await LogsServices.create(
 				'getData error strava',
@@ -91,7 +91,7 @@ class StravaController {
 		try {
 			const auth_header = req.bearer_token;
 			const user = await StravaServices.getUserZones(auth_header);
-			res.send(user);
+			res.send({ data: user, error: false });
 		} catch (error) {
 			await LogsServices.create(
 				'getZones error strava',
@@ -105,7 +105,7 @@ class StravaController {
 		}
 	}
 
-	static async getStats(req, res) {
+	static async getTotalStats(req, res) {
 		try {
 			const auth_header = req.bearer_token;
 			const user_id = req.params?.id;
@@ -113,10 +113,10 @@ class StravaController {
 				auth_header,
 				user_id
 			);
-			res.send(user);
+			res.send({ data: user, error: false });
 		} catch (error) {
 			await LogsServices.create(
-				'getStats error strava',
+				'getTotalStats error strava',
 				JSON.stringify(error),
 				error
 			);
@@ -136,13 +136,47 @@ class StravaController {
 				auth_header,
 				page_number
 			);
-			res.send(user);
+			res.send({ data: user, error: false });
 		} catch (error) {
 			await LogsServices.create(
 				'getActivities error strava',
 				JSON.stringify(error),
 				error
 			);
+			res.send({
+				error: true,
+				data: error,
+			});
+		}
+	}
+
+	static async getStats(req, res) {
+		try {
+			const auth_header = req.bearer_token;
+			const {
+				start_date,
+				end_date,
+				page,
+				per_page,
+				db_id: id,
+			} = req.query;
+			const { brand_id } = await RunnersServices.getById(id);
+			const stats = await StravaServices.getStats(
+				auth_header,
+				start_date,
+				end_date,
+				page,
+				per_page
+			);
+			const data = stats.filter((item) => item.athlete.id == brand_id);
+			res.send({ data, error: false });
+		} catch (error) {
+			await LogsServices.create(
+				'getStats error strava',
+				JSON.stringify(error),
+				error
+			);
+			console.log(error);
 			res.send({
 				error: true,
 				data: error,

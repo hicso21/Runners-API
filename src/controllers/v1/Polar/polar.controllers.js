@@ -103,56 +103,52 @@ class PolarController {
 			const haveUserDailyActivity = data?.some(
 				(item) => item['user-id'] == db_id
 			);
-			if (haveUserDailyActivity) {
-				const userData = await RunnersServices.getById(db_id);
-				if (!userData?.access_token) {
-					await LogsServices.create(
-						'getDailyActivity error polar',
-						"Data collection by the runners' service did not work as it should have"
-					);
-					return res.send({
-						error: true,
-						data: "Data collection by the runners' service did not work as it should have",
-					});
-				}
-				headers.append('Accept', 'application/json');
-				headers.append(
-					'Authorization',
-					`Bearer ${userData?.access_token}`
+			if (!haveUserDailyActivity) return res.send(false);
+			const userData = await RunnersServices.getById(db_id);
+			if (!userData?.access_token) {
+				await LogsServices.create(
+					'getDailyActivity error polar',
+					"Data collection by the runners' service did not work as it should have"
 				);
-				const { data: transaction } = await fetchPolar({
-					url: `/v3/users/${db_id}/activity-transactions`,
-					method: 'POST',
-					headers,
-				}); // { transaction-id, resource-uri }
-				if (transaction['transaction-id'] === undefined)
-					return res.send({
-						error: true,
-						data: 'The transaction request could not be executed correctly',
-					});
-				await fetchPolar({
-					url: `/v3/users/${db_id}/activity-transactions/${transaction['transaction-id']}`,
-					method: 'PUT',
-					headers,
+				return res.send({
+					error: true,
+					data: "Data collection by the runners' service did not work as it should have",
 				});
-				const { data: summary } = await fetchPolar({
-					url: `/v3/users/${db_id}/activity-transactions/${transaction['transaction-id']}`,
-					method: 'GET',
-					headers,
-				});
-				if (summary['activity-log'] === undefined)
-					return res.send({
-						error: true,
-						data: 'The summary of the list of activities could not be obtained correctly.',
-					});
-				const listOfActivity = await Promise.all(
-					summary['activity-log'].map(async (activityUrl) => {
-						const { data } = await fetchPolar.get(activityUrl);
-						return data;
-					})
-				);
-				res.send(listOfActivity);
 			}
+			headers.append('Accept', 'application/json');
+			headers.append('Authorization', `Bearer ${userData?.access_token}`);
+			const { data: transaction } = await fetchPolar({
+				url: `/v3/users/${db_id}/activity-transactions`,
+				method: 'POST',
+				headers,
+			}); // { transaction-id, resource-uri }
+			if (transaction['transaction-id'] === undefined)
+				return res.send({
+					error: true,
+					data: 'The transaction request could not be executed correctly',
+				});
+			await fetchPolar({
+				url: `/v3/users/${db_id}/activity-transactions/${transaction['transaction-id']}`,
+				method: 'PUT',
+				headers,
+			});
+			const { data: summary } = await fetchPolar({
+				url: `/v3/users/${db_id}/activity-transactions/${transaction['transaction-id']}`,
+				method: 'GET',
+				headers,
+			});
+			if (summary['activity-log'] === undefined)
+				return res.send({
+					error: true,
+					data: 'The summary of the list of activities could not be obtained correctly.',
+				});
+			const listOfActivity = await Promise.all(
+				summary['activity-log'].map(async (activityUrl) => {
+					const { data } = await fetchPolar.get(activityUrl);
+					return data;
+				})
+			);
+			res.send(listOfActivity);
 		} catch (error) {
 			await LogsServices.create(
 				'getDailyActivity error polar',
@@ -175,56 +171,52 @@ class PolarController {
 			const haveUserDailyActivity = data?.some(
 				(item) => item['user-id'] == db_id
 			);
-			if (haveUserDailyActivity) {
-				const userData = await RunnersServices.getById(db_id);
-				if (!userData?.access_token) {
-					await LogsServices.create(
-						'getTrainingData error polar',
-						"Data collection by the runners' service did not work as it should have"
-					);
-					return res.send({
-						error: true,
-						data: "Data collection by the runners' service did not work as it should have",
-					});
-				}
-				headers.append('Accept', 'application/json');
-				headers.append(
-					'Authorization',
-					`Bearer ${userData?.access_token}`
+			if (!haveUserDailyActivity) return res.send(false);
+			const userData = await RunnersServices.getById(db_id);
+			if (!userData?.access_token) {
+				await LogsServices.create(
+					'getTrainingData error polar',
+					"Data collection by the runners' service did not work as it should have"
 				);
-				const { data: transaction } = await fetchPolar({
-					url: `/v3/users/${db_id}/exercise-transactions`,
-					method: 'POST',
-					headers,
-				}); // { transaction-id, resource-uri }
-				if (transaction['transaction-id'] === undefined)
-					return res.send({
-						error: true,
-						data: 'The transaction request could not be executed correctly',
-					});
-				await fetchPolar({
-					url: `/v3/users/${db_id}/exercise-transactions/${transaction['transaction-id']}`,
-					method: 'PUT',
-					headers,
+				return res.send({
+					error: true,
+					data: "Data collection by the runners' service did not work as it should have",
 				});
-				const { data: summary } = await fetchPolar({
-					url: `/v3/users/${db_id}/exercise-transactions/${transaction['transaction-id']}`,
-					method: 'GET',
-					headers,
-				});
-				if (summary['exercises'] === undefined)
-					return res.send({
-						error: true,
-						data: 'The summary of the list of activities could not be obtained correctly.',
-					});
-				const listOfActivity = await Promise.all(
-					summary['exercises'].map(async (activityUrl) => {
-						const { data } = await fetchPolar.get(activityUrl);
-						return data;
-					})
-				);
-				res.send(listOfActivity);
 			}
+			headers.append('Accept', 'application/json');
+			headers.append('Authorization', `Bearer ${userData?.access_token}`);
+			const { data: transaction } = await fetchPolar({
+				url: `/v3/users/${db_id}/exercise-transactions`,
+				method: 'POST',
+				headers,
+			}); // { transaction-id, resource-uri }
+			if (transaction['transaction-id'] === undefined)
+				return res.send({
+					error: true,
+					data: 'The transaction request could not be executed correctly',
+				});
+			await fetchPolar({
+				url: `/v3/users/${db_id}/exercise-transactions/${transaction['transaction-id']}`,
+				method: 'PUT',
+				headers,
+			});
+			const { data: summary } = await fetchPolar({
+				url: `/v3/users/${db_id}/exercise-transactions/${transaction['transaction-id']}`,
+				method: 'GET',
+				headers,
+			});
+			if (summary['exercises'] === undefined)
+				return res.send({
+					error: true,
+					data: 'The summary of the list of activities could not be obtained correctly.',
+				});
+			const listOfActivity = await Promise.all(
+				summary['exercises'].map(async (activityUrl) => {
+					const { data } = await fetchPolar.get(activityUrl);
+					return data;
+				})
+			);
+			res.send(listOfActivity);
 		} catch (error) {
 			await LogsServices.create(
 				'getTrainingData error polar',
@@ -247,61 +239,124 @@ class PolarController {
 			const haveUserDailyActivity = data?.some(
 				(item) => item['user-id'] == db_id
 			);
-			if (haveUserDailyActivity) {
-				const userData = await RunnersServices.getById(db_id);
-				if (!userData?.access_token) {
-					await LogsServices.create(
-						'getPhysicalData error polar',
-						"Data collection by the runners' service did not work as it should have"
-					);
-					return res.send({
-						error: true,
-						data: "Data collection by the runners' service did not work as it should have",
-					});
-				}
-				headers.append('Accept', 'application/json');
-				headers.append(
-					'Authorization',
-					`Bearer ${userData?.access_token}`
+			if (!haveUserDailyActivity) return res.send(false);
+			const userData = await RunnersServices.getById(db_id);
+			if (!userData?.access_token) {
+				await LogsServices.create(
+					'getPhysicalData error polar',
+					"Data collection by the runners' service did not work as it should have"
 				);
-				const { data: transaction } = await fetchPolar({
-					url: `/v3/users/${db_id}/physical-information-transactions`,
-					method: 'POST',
-					headers,
-				}); // { transaction-id, resource-uri }
-				if (transaction['transaction-id'] === undefined)
-					return res.send({
-						error: true,
-						data: 'The transaction request could not be executed correctly',
-					});
-				await fetchPolar({
-					url: `/v3/users/${db_id}/physical-information-transactions/${transaction['transaction-id']}`,
-					method: 'PUT',
-					headers,
+				return res.send({
+					error: true,
+					data: "Data collection by the runners' service did not work as it should have",
 				});
-				const { data: summary } = await fetchPolar({
-					url: `/v3/users/${db_id}/physical-information-transactions/${transaction['transaction-id']}`,
-					method: 'GET',
-					headers,
-				});
-				if (summary['physical-informations'] === undefined)
-					return res.send({
-						error: true,
-						data: 'The summary of the list of activities could not be obtained correctly.',
-					});
-				const listOfActivity = await Promise.all(
-					summary['physical-informations'].map(
-						async (activityUrl) => {
-							const { data } = await fetchPolar.get(activityUrl);
-							return data;
-						}
-					)
-				);
-				res.send(listOfActivity);
 			}
+			headers.append('Accept', 'application/json');
+			headers.append('Authorization', `Bearer ${userData?.access_token}`);
+			const { data: transaction } = await fetchPolar({
+				url: `/v3/users/${db_id}/physical-information-transactions`,
+				method: 'POST',
+				headers,
+			}); // { transaction-id, resource-uri }
+			if (transaction['transaction-id'] === undefined)
+				return res.send({
+					error: true,
+					data: 'The transaction request could not be executed correctly',
+				});
+			await fetchPolar({
+				url: `/v3/users/${db_id}/physical-information-transactions/${transaction['transaction-id']}`,
+				method: 'PUT',
+				headers,
+			});
+			const { data: summary } = await fetchPolar({
+				url: `/v3/users/${db_id}/physical-information-transactions/${transaction['transaction-id']}`,
+				method: 'GET',
+				headers,
+			});
+			if (summary['physical-informations'] === undefined)
+				return res.send({
+					error: true,
+					data: 'The summary of the list of activities could not be obtained correctly.',
+				});
+			const listOfActivity = await Promise.all(
+				summary['physical-informations'].map(async (activityUrl) => {
+					const { data } = await fetchPolar.get(activityUrl);
+					return data;
+				})
+			);
+			res.send(listOfActivity);
 		} catch (error) {
 			await LogsServices.create(
 				'getPhysicalData error polar',
+				JSON.stringify(error),
+				error
+			);
+			res.send({
+				error: true,
+				data: error,
+			});
+		}
+	}
+
+	static async getStats(req, res) {
+		const { db_id } = req.query;
+		const headers = new Headers();
+		headers.append('Accept', 'application/json');
+		try {
+			const { 'available-user-data': data } =
+				await PolarServices.pullNotifications();
+			const haveUserDailyActivity = data?.some(
+				(item) => item['user-id'] == db_id
+			);
+			if (!haveUserDailyActivity) return res.send(false);
+			const userData = await RunnersServices.getById(db_id);
+			if (!userData?.access_token) {
+				await LogsServices.create(
+					'getStats error polar',
+					"Data collection by the runners' service did not work as it should have"
+				);
+				return res.send({
+					error: true,
+					data: "Data collection by the runners' service did not work as it should have",
+				});
+			}
+			headers.append('Authorization', `Bearer ${userData?.access_token}`);
+			const transaction = await PolarServices.postActivityTransactions(
+				db_id,
+				headers
+			); // { transaction-id, resource-uri }
+			if (transaction['transaction-id'] === undefined)
+				return res.send({
+					error: true,
+					data: 'The transaction request could not be executed correctly',
+				});
+			await PolarServices.putActivityTransactions(
+				db_id,
+				transaction,
+				headers
+			);
+			const summary = await PolarServices.listActivities(
+				db_id,
+				transaction,
+				headers
+			);
+			if (!summary['activity-log'])
+				return res.send({
+					error: true,
+					data: 'The summary of the list of activities could not be obtained correctly.',
+				});
+			const listOfActivity = await Promise.all(
+				summary['activity-log'].map(async (activityUrl) => {
+					const activity = await PolarServices.listOfActivities(
+						activityUrl
+					);
+					return activity;
+				})
+			);
+			res.send(listOfActivity);
+		} catch (error) {
+			await LogsServices.create(
+				'getStats error polar',
 				JSON.stringify(error),
 				error
 			);

@@ -10,29 +10,34 @@ router.get('/', (req, res) => {
 router.get('/authorize/:db_id', StravaControllers.authorize);
 router.get('/exchange_token/:db_id', StravaControllers.manageUserCode);
 router.get(
-	'/get_user/:id',
+	'/:id',
 	refreshTokenMiddleWare,
 	StravaControllers.getCompleteUser
 );
 router.get(
-	'/get_user/:id/data',
+	'/:id/data',
 	refreshTokenMiddleWare,
 	StravaControllers.getData
 );
 router.get(
-	'/get_user/:id/zones',
+	'/:id/zones',
 	refreshTokenMiddleWare,
 	StravaControllers.getZones
 );
 router.get(
-	'/get_user/:id/stats',
+	'/:id/stats',
 	refreshTokenMiddleWare,
 	StravaControllers.getStats
 );
 router.get(
-	'/get_user/:id/activities/:page',
+	'/:id/activities/:page',
 	refreshTokenMiddleWare,
 	StravaControllers.getActivities
+);
+router.get(
+	'/getStats',
+	refreshTokenMiddleWare,
+	StravaControllers.getStats
 );
 
 export default router;

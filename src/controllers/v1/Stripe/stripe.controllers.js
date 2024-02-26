@@ -78,6 +78,24 @@ class StripeControllers {
 		}
 	}
 
+	static async paymentIntent(req, res) {
+		try {
+			const paymentIntent = await stripe.paymentIntents.create({
+				amount: 1000, // Monto en centavos
+				currency: 'eur',
+				customer: 'cus_123456789', // ID del cliente
+				payment_method: 'pm_card_visa', // ID del método de pago
+				confirm: true, // Confirmar el pago automáticamente
+			});
+			res.send(paymentIntent);
+		} catch (error) {
+			res.status(500).send({
+				error: true,
+				data: error,
+			});
+		}
+	}
+
 	static async checkout(req, res) {
 		const { price_id } = req.body;
 		try {

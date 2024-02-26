@@ -84,7 +84,7 @@ class SuuntoController {
 						to,
 						userData.access_token
 					);
-					res.send(response);
+					res.send({ error: false, data: response });
 				}
 			}
 		} catch (error) {
@@ -122,7 +122,7 @@ class SuuntoController {
 						enddate,
 						userData.access_token
 					);
-					res.send(response);
+					res.send({ error: false, data: response });
 				}
 			}
 		} catch (error) {
@@ -160,12 +160,45 @@ class SuuntoController {
 						to,
 						userData.access_token
 					);
-					res.send(response);
+					res.send({ error: false, data: response });
 				}
 			}
 		} catch (error) {
 			await LogsServices.create(
 				'getSleepData suunto error',
+				JSON.stringify(error),
+				error
+			);
+			res.send({
+				error: true,
+				data: error,
+			});
+		}
+	}
+
+	static async getStats(req, res) {
+		const { start_date, end_date, db_id } = req.query;
+		try {
+			if (!start_date || !end_date || !db_id)
+				return res.send({
+					error: true,
+					data: 'Queries and parameter are required',
+				});
+			const userData = await RunnersServices.getById(db_id);
+			if (userData.error)
+				return res.send({
+					error: true,
+					data: 'An error occurred while trying to obtain user data.',
+				});
+			const response = await SuuntoServices.dailyActivity(
+				start_date,
+				end_date,
+				userData.access_token
+			);
+			res.send({ error: false, data: response });
+		} catch (error) {
+			await LogsServices.create(
+				'getStats suunto error',
 				JSON.stringify(error),
 				error
 			);
