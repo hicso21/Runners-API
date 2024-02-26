@@ -89,7 +89,7 @@ class StripeControllers {
 			const paymentIntent = await stripe.paymentIntents.create({
 				amount, // Monto en centavos
 				currency,
-				customer, // ID del cliente
+				customer: customer.id, // ID del cliente
 				payment_method, // ID del método de pago
 				confirm: true, // Confirmar el pago automáticamente
 			});
