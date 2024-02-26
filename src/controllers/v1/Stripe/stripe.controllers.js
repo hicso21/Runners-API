@@ -86,6 +86,7 @@ class StripeControllers {
 				email,
 				name,
 			});
+			console.log(customer);
 			const paymentIntent = await stripe.paymentIntents.create({
 				amount, // Monto en centavos
 				currency,
@@ -93,8 +94,10 @@ class StripeControllers {
 				payment_method, // ID del método de pago
 				confirm: true, // Confirmar el pago automáticamente
 			});
+			console.log(paymentIntent);
 			res.send(paymentIntent);
 		} catch (error) {
+			console.log(error);
 			res.status(500).send({
 				error: true,
 				data: error,
