@@ -1,6 +1,6 @@
 export default {
-	client_id: 'cc9b0101-f701-44de-8d96-1af662c36e4e',
-	client_secret: '2d4eb9d6-2de7-4582-b35f-409c15caf224',
+	client_id: process.env.polar_client_id,
+	client_secret: process.env.polar_client_secret,
 	base_url: 'https://www.polaraccesslink.com',
 	response_type: 'code',
 	oauth_endpoint: 'https://flow.polar.com',

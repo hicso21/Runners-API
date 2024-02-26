@@ -1,7 +1,7 @@
 export default {
-	client_id: '113096',
-	client_secret: '8cd7be832a8a3eb8f4ad69593d839c495867a2fb',
-	refresh_token: '0aa8064597f7831502f56d6795f397f369a3b82b',
+	client_id: process.env.strava_client_id,
+	client_secret: process.env.strava_client_secret,
+	refresh_token: process.env.strava_refresh_token,
 	grant_type: 'authorization_code',
 	base_url: 'https://www.strava.com/api/v3',
 	response_type: 'code',

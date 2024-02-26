@@ -1,6 +1,6 @@
 export default {
-	client_id: 'db519e0264864b6e8cccf609ebeaeded',
-	client_secret: 'f3a0e8d68eb54dcb84d2a2f21ef5f120',
+	client_id: process.env.coros_client_id,
+	client_secret: process.env.coros_client_secret,
 	base_url: 'https://open.coros.com',
 	test: {
 		test_account: 'JUANDELAFTRAILRUNNING@coros.com',
