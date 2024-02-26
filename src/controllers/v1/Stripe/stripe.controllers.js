@@ -91,7 +91,7 @@ class StripeControllers {
 				amount, // Monto en centavos
 				currency,
 				customer: customer.id, // ID del cliente
-				// payment_method, // ID del método de pago
+				payment_method: null, // ID del método de pago
 				confirm: true, // Confirmar el pago automáticamente
 				automatic_payment_methods: {
 					enabled: true,
