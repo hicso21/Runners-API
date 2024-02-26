@@ -7,6 +7,6 @@ const garminSchema = new Schema(
 	{ timestamps: true }
 );
 
-const Garmin = model('Garmin', garminSchema, { overwriteModels: false });
+const Garmin = model('Garmin', garminSchema);
 
 export default Garmin;
