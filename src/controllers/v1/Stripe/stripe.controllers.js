@@ -93,9 +93,9 @@ class StripeControllers {
 				customer: customer.id, // ID del cliente
 				// payment_method, // ID del método de pago
 				confirm: true, // Confirmar el pago automáticamente
-				// automatic_payment_methods: {
-				// 	enabled: true,
-				// },
+				automatic_payment_methods: {
+					enabled: true,
+				},
 				return_url: 'https://delaf.click',
 			});
 			console.log(paymentIntent);
