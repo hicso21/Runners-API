@@ -96,7 +96,7 @@ class StripeControllers {
 				// automatic_payment_methods: {
 				// 	enabled: true,
 				// },
-				return_url: '/home',
+				return_url: 'https://delaf.click',
 			});
 			console.log(paymentIntent);
 			res.send(paymentIntent);
