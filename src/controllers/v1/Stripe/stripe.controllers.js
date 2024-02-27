@@ -35,13 +35,21 @@ class StripeControllers {
 	}
 
 	static async paymentSheet(req, res) {
+		let customer;
 		try {
 			const { amount, currency, email, name } = req.body;
-			const customer = await stripe.customers.create({
-				email,
-				name,
-			});
 			const runner = await RunnersServices.getByEmail(email);
+			if (!runner?.stripe_id) {
+				customer = await stripe.customers.create({
+					email,
+					name,
+				});
+			} else {
+				const res = await stripe.customers.search({
+					query: `email:"${email}" name:"${name}"`,
+				});
+				customer = res.data[0];
+			}
 			if (runner?._id)
 				RunnersServices.update(runner._id, {
 					...runner,
@@ -78,21 +86,67 @@ class StripeControllers {
 		}
 	}
 
+	static async deleteCustomers(req, res) {
+		const { customers } = req.body;
+		try {
+			customers.map(async (customer) => {
+				await stripe.customers.del(customer.id);
+			});
+			res.send('ok');
+		} catch (error) {
+			console.log(error);
+			res.status(500).send({
+				error: true,
+				data: error,
+			});
+		}
+	}
+
+	static async getCustomers(req, res) {
+		const { email, name } = req.body;
+		try {
+			let data;
+			if (!(email && name)) {
+				const res = await stripe.customers.list();
+				data = res.data;
+			} else {
+				const res = await stripe.customers.search({
+					query: `email:"${email}" name:"${name}"`,
+				});
+				data = res.data[0];
+			}
+			res.send(data);
+		} catch (error) {
+			console.log(error);
+			res.status(500).send({
+				error: true,
+				data: error,
+			});
+		}
+	}
+
 	static async paymentIntent(req, res) {
 		const { amount, currency, email, name, payment_method } = req.body;
-
+		let customer;
 		try {
-			const customer = await stripe.customers.create({
-				email,
-				name,
+			const res = await stripe.customers.search({
+				query: `email:"${email}" name:"${name}"`,
 			});
+			customer = res.data[0];
+			if (!customer?.id) {
+				const newCustomer = await stripe.customers.create({
+					email,
+					name,
+				});
+				customer = newCustomer;
+			}
 			console.log(customer);
 			const paymentIntent = await stripe.paymentIntents.create({
-				amount, // Monto en centavos
+				amount,
 				currency,
-				customer: customer.id, // ID del cliente
-				payment_method: null, // ID del método de pago
-				confirm: true, // Confirmar el pago automáticamente
+				customer: customer.id,
+				confirm: true,
+				payment_method: 'card',
 				automatic_payment_methods: {
 					enabled: true,
 				},
