@@ -13,6 +13,7 @@ import strava from './Strava/index.js';
 import stripe from './Stripe/index.js';
 import suunto from './Suunto/index.js';
 import uploads from './Uploads/index.js';
+import activities from './Activities/index.js';
 import LoginController from './login/login.controllers.js';
 
 const router = Router();
@@ -28,6 +29,7 @@ router.use('/routines', routines);
 router.use('/exercises', exercises);
 router.use('/runners', runners);
 router.use('/upload', uploads);
+router.use('/activities', activities);
 
 router.use('/coros', coros);
 router.use('/suunto', suunto);
