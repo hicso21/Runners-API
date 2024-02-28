@@ -3,7 +3,7 @@ import ActivitiesControllers from '../../../controllers/v1/Activities/activities
 
 const router = Router();
 
-router.get('/getLastYear/:user_id', ActivitiesControllers.getAll);
+router.get('/getAll/:user_id', ActivitiesControllers.getAll);
 router.post('/create', ActivitiesControllers.postActivity);
 router.delete('/delete', ActivitiesControllers.deleteActivity);
 
