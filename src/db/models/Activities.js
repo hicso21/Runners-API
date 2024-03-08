@@ -9,9 +9,12 @@ const activitiesSchema = new Schema({
 	total_time: String,
 	average_heart_rate: String,
 	max_heart_rate: String,
+	resting_heart_rate: String,
 	average_pace: String,
 	calories: String,
+	training_load: String,
 	positive_slope: String,
+	negative_slope: String,
 	average_speed: String,
 	average_cadence: String,
 	max_cadence: String,
@@ -20,6 +23,8 @@ const activitiesSchema = new Schema({
 	estimated_liquid_loss: String,
 	average_temperature: String,
 	paces: Array,
+	triathlonData: Array,
+	description: String,
 });
 
 const Activities = model('Activitie', activitiesSchema);

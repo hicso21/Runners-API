@@ -5,6 +5,7 @@ import RunnersServices from '../../../services/v1/Runners/runners.services.js';
 import mainUrl from '../../../utils/constants/mainUrl.js';
 import { Buffer } from 'buffer';
 import fetchPolar from '../../../utils/fetches/fetchPolarAPI.js';
+import ActivitiesServices from '../../../services/v1/Activities/activities.services.js';
 
 class PolarController {
 	static async authUser(req, res) {
@@ -298,21 +299,21 @@ class PolarController {
 		}
 	}
 
-	static async getStats(req, res) {
-		const { db_id } = req.query;
+	static async setStats(req, res) {
+		const { id } = req.body;
 		const headers = new Headers();
 		headers.append('Accept', 'application/json');
 		try {
+			const userData = await RunnersServices.getById(id);
 			const { 'available-user-data': data } =
 				await PolarServices.pullNotifications();
 			const haveUserDailyActivity = data?.some(
-				(item) => item['user-id'] == db_id
+				(item) => item['user-id'] == userData?.brand_id
 			);
 			if (!haveUserDailyActivity) return res.send(false);
-			const userData = await RunnersServices.getById(db_id);
 			if (!userData?.access_token) {
 				await LogsServices.create(
-					'getStats error polar',
+					'setStats error polar',
 					"Data collection by the runners' service did not work as it should have"
 				);
 				return res.send({
@@ -321,8 +322,8 @@ class PolarController {
 				});
 			}
 			headers.append('Authorization', `Bearer ${userData?.access_token}`);
-			const transaction = await PolarServices.postActivityTransactions(
-				db_id,
+			const transaction = await PolarServices.postTrainingData(
+				userData?.brand_id,
 				headers
 			); // { transaction-id, resource-uri }
 			if (transaction['transaction-id'] === undefined)
@@ -330,33 +331,67 @@ class PolarController {
 					error: true,
 					data: 'The transaction request could not be executed correctly',
 				});
-			await PolarServices.putActivityTransactions(
-				db_id,
+			await PolarServices.putTrainingData(
+				userData?.brand_id,
 				transaction,
 				headers
 			);
-			const summary = await PolarServices.listActivities(
-				db_id,
+			const summary = await PolarServices.listExercises(
+				userData?.brand_id,
 				transaction,
 				headers
 			);
-			if (!summary['activity-log'])
+			if (!summary['exercises'])
 				return res.send({
 					error: true,
 					data: 'The summary of the list of activities could not be obtained correctly.',
 				});
-			const listOfActivity = await Promise.all(
-				summary['activity-log'].map(async (activityUrl) => {
-					const activity = await PolarServices.listOfActivities(
-						activityUrl
-					);
-					return activity;
-				})
+			const training_url = summary['exercises'].sort(
+				(a, b) => b.split('/').reverse()[0] - a.split('/').reverse()[0]
+			)[0];
+			const training = await PolarServices.getExercise(
+				training_url,
+				headers
 			);
-			res.send(listOfActivity);
+			const timestampOnSeconds = new Date(
+				training['start-time']
+			).getTime();
+			const dataToSend = {
+				user_id: _id,
+				title: training['detailed-sport-info'],
+				date: new Date(timestampOnSeconds).toLocaleString(),
+				timestamp: timestampOnSeconds,
+				distance: training['distance'],
+				total_time: parseDurationToSeconds(training['duration']),
+				average_heart_rate: training['heart-rate'].average,
+				max_heart_rate: training['heart-rate'].maximum,
+				resting_heart_rate: '',
+				average_pace: '',
+				calories: training['calories'],
+				positive_slope: '',
+				negative_slope: '',
+				average_speed: training[''],
+				average_cadence: '',
+				training_load: training['training-load'],
+				max_cadence: '',
+				min_height: '',
+				max_height: '',
+				estimated_liquid_loss: '',
+				average_temperature: '',
+				paces: '',
+				triathlonData: training[''],
+				description: '',
+			};
+			const activity = await ActivitiesServices.createActivity(
+				dataToSend
+			);
+			res.send({
+				data: activity,
+				error: false,
+			});
 		} catch (error) {
 			await LogsServices.create(
-				'getStats error polar',
+				'setStats error polar',
 				JSON.stringify(error),
 				error
 			);

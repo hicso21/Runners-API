@@ -25,19 +25,14 @@ router.get(
 	StravaControllers.getZones
 );
 router.get(
-	'/:id/stats',
-	refreshTokenMiddleWare,
-	StravaControllers.getStats
-);
-router.get(
 	'/:id/activities/:page',
 	refreshTokenMiddleWare,
 	StravaControllers.getActivities
 );
-router.get(
-	'/getStats',
+router.post(
+	'/setStats',
 	refreshTokenMiddleWare,
-	StravaControllers.getStats
+	StravaControllers.setStats
 );
 
 export default router;

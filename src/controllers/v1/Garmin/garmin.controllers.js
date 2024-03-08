@@ -170,27 +170,39 @@ class GarminController {
 	}
 
 	static async getActivities(req, res) {
-		const activityData = req.body;
+		const { id, start_time, end_time } = req.body;
+		let user;
 		try {
-			if (req.is('application/json')) {
-				// Procesar la notificación de actividad recibida
-				console.log('Notificación de actividad recibida:');
-				console.log(activityData);
+			const request_base_url =
+				'https://apis.garmin.com/wellness-api/rest/activities';
 
-				// Realizar acciones adicionales según la notificación recibida
+			const oauth = OAuth({
+				consumer: {
+					key: config.client_id,
+					secret: config.client_secret,
+				},
+				signature_method: 'HMAC-SHA1',
+				hash_function: (base_string, key) => {
+					return crypto
+						.createHmac('sha1', key)
+						.update(base_string)
+						.digest('base64');
+				},
+			});
+			if (id) user = await RunnersServices.getById(id);
+			console.log(user);
+			const requestData = {
+				url: request_base_url,
+				method: 'GET',
+				data: { oauth_token: user?.access_token },
+			};
+			const authHeader = oauth.toHeader(oauth.authorize(requestData));
 
-				// Responder con un código de estado HTTP 200
-				const garmin = await Garmin.create({
-					activities: activityData,
-				});
-				console.log('Stored data on db => ', garmin);
-				res.sendStatus(200);
-			} else {
-				// Si la solicitud no es JSON, responder con un error
-				res.status(400).send(
-					'Bad Request - Se esperaba un cuerpo JSON'
-				);
-			}
+			const { data } = axios({
+				url: request_base_url,
+				headers: authHeader,
+			});
+			res.send(data);
 		} catch (error) {
 			res.status(500).send({
 				error: true,

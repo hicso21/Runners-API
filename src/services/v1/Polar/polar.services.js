@@ -42,12 +42,12 @@ class PolarServices {
 		}
 	}
 
-	/* Daily Activity (getStats) */
+	/* Daily Activity*/
 
-	static async postActivityTransactions(db_id, headers) {
+	static async postActivityTransactions(id, headers) {
 		try {
 			const { data } = await fetchPolar({
-				url: `/v3/users/${db_id}/activity-transactions`,
+				url: `/v3/users/${id}/activity-transactions`,
 				method: 'POST',
 				headers,
 			});
@@ -60,10 +60,10 @@ class PolarServices {
 		}
 	}
 
-	static async putActivityTransactions(db_id, transaction, headers) {
+	static async putActivityTransactions(id, transaction, headers) {
 		try {
 			await fetchPolar({
-				url: `/v3/users/${db_id}/activity-transactions/${transaction['transaction-id']}`,
+				url: `/v3/users/${id}/activity-transactions/${transaction['transaction-id']}`,
 				method: 'PUT',
 				headers,
 			});
@@ -75,10 +75,10 @@ class PolarServices {
 		}
 	}
 
-	static async listActivities(db_id, transaction, headers) {
+	static async listActivities(id, transaction, headers) {
 		try {
 			const { data } = await fetchPolar({
-				url: `/v3/users/${db_id}/activity-transactions/${transaction['transaction-id']}`,
+				url: `/v3/users/${id}/activity-transactions/${transaction['transaction-id']}`,
 				method: 'GET',
 				headers,
 			});
@@ -98,6 +98,67 @@ class PolarServices {
 				`${activityUrl}/step-samples`
 			);
 			return { ...activitySummary, ...stepSamples };
+		} catch (error) {
+			return {
+				error: true,
+				data: error,
+			};
+		}
+	}
+
+	/* Training Data */
+
+	static async postTrainingData(id, headers) {
+		try {
+			const { data } = await fetchPolar({
+				url: `/v3/users/${id}/exercise-transactions`,
+				method: 'POST',
+				headers,
+			});
+			return data;
+		} catch (error) {
+			return {
+				error: true,
+				data: error,
+			};
+		}
+	}
+
+	static async putTrainingData(id, transaction, headers) {
+		try {
+			await fetchPolar({
+				url: `/v3/users/${id}/exercise-transactions/${transaction['transaction-id']}`,
+				method: 'PUT',
+				headers,
+			});
+		} catch (error) {
+			return {
+				error: true,
+				data: false,
+			};
+		}
+	}
+
+	static async listExercises(id, transaction, headers) {
+		try {
+			const { data } = await fetchPolar({
+				url: `/v3/users/${id}/exercise-transactions/${transaction['transaction-id']}`,
+				method: 'GET',
+				headers,
+			});
+			return data;
+		} catch (error) {
+			return {
+				error: true,
+				data: error,
+			};
+		}
+	}
+
+	static async getExercise(activityUrl, headers) {
+		try {
+			const { data } = await axios.get(activityUrl, headers);
+			return data;
 		} catch (error) {
 			return {
 				error: true,

@@ -120,6 +120,28 @@ class SuuntoServices {
 			return { error: true, data: error };
 		}
 	}
+
+	static async getWorkoutsList(from, to, auth) {
+		try {
+			const { data } = await fetchSuunto.get(
+				`/v2/workouts?since=${from}&until=${to}`,
+				{
+					headers: {
+						Authorization: auth,
+						'Content-Type': 'application/json',
+					},
+				}
+			);
+			return data;
+		} catch (error) {
+			await LogsServices.create(
+				'getWorkoutsList error suunto',
+				JSON.stringify(error),
+				error
+			);
+			return { error: true, data: error };
+		}
+	}
 }
 
 export default SuuntoServices;

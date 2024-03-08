@@ -3,8 +3,10 @@ import config from '../../../../config/corosData.js';
 import RunnersServices from '../../../../services/v1/Runners/runners.services.js';
 
 export default async function refreshTokenMiddleWare(req, res, next) {
+	let id;
 	try {
-		const { id } = req.params;
+		if (req.params?.id) id = req.params?.id;
+		if (req.body?.id) id = req.body?.id;
 		const runner = await RunnersServices.getById(id);
 		req.user = runner;
 		const body = {

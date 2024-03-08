@@ -1,3 +1,4 @@
+import ActivitiesServices from '../../../services/v1/Activities/activities.services.js';
 import LogsServices from '../../../services/v1/Logs/logs.services.js';
 import RunnersServices from '../../../services/v1/Runners/runners.services.js';
 import SuuntoServices from '../../../services/v1/Suunto/suunto.services.js';
@@ -176,10 +177,11 @@ class SuuntoController {
 		}
 	}
 
-	static async getStats(req, res) {
-		const { start_date, end_date, db_id } = req.query;
+	static async setStats(req, res) {
+		const { start_date, end_date } = req.query;
+		const { id } = req.body;
 		try {
-			if (!start_date || !end_date || !db_id)
+			if (!start_date || !end_date || !id)
 				return res.send({
 					error: true,
 					data: 'Queries and parameter are required',
@@ -190,15 +192,50 @@ class SuuntoController {
 					error: true,
 					data: 'An error occurred while trying to obtain user data.',
 				});
-			const response = await SuuntoServices.dailyActivity(
+			const response = await SuuntoServices.getWorkoutsList(
 				start_date,
 				end_date,
 				userData.access_token
 			);
-			res.send({ error: false, data: response });
+			if (response.error) throw new Error('Error on requesting data');
+			const timestampOnSeconds = response?.payload[0]?.startTime;
+			const dataToSend = {
+				user_id: id,
+				title: '',
+				date: new Date(timestampOnSeconds).toLocaleString(),
+				timestamp: timestampOnSeconds,
+				distance: response?.payload[0]?.totalDistance,
+				total_time: response?.payload[0]?.totalTime,
+				average_heart_rate: response?.payload[0]?.hrdata?.workoutAvgHR,
+				max_heart_rate: response?.payload[0]?.hrdata?.workoutMaxHR,
+				resting_heart_rate: '',
+				average_pace: response?.payload[0]?.avgPace,
+				calories: response?.payload[0]?.energyConsumption,
+				positive_slope: response?.payload[0]?.maxAltitude,
+				negative_slope: response?.payload[0]?.minAltitude,
+				average_speed: response?.payload[0]?.avgSpeed,
+				average_cadence: response?.payload[0]?.extensions?.avgCadence,
+				training_load: '',
+				max_cadence: response?.payload[0]?.cadence?.max,
+				min_height: response?.payload[0]?.maxAltitude,
+				max_height: response?.payload[0]?.minAltitude,
+				estimated_liquid_loss: '',
+				average_temperature:
+					response?.payload[0]?.extensions?.avgTemperature,
+				paces: '',
+				triathlonData: [],
+				description: '',
+			};
+			const activity = await ActivitiesServices.createActivity(
+				dataToSend
+			);
+			res.send({
+				data: activity,
+				error: false,
+			});
 		} catch (error) {
 			await LogsServices.create(
-				'getStats suunto error',
+				'setStats suunto error',
 				JSON.stringify(error),
 				error
 			);

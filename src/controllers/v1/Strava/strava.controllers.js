@@ -1,6 +1,8 @@
+import ActivitiesServices from '../../../services/v1/Activities/activities.services.js';
 import LogsServices from '../../../services/v1/Logs/logs.services.js';
 import RunnersServices from '../../../services/v1/Runners/runners.services.js';
 import StravaServices from '../../../services/v1/Strava/strava.services.js';
+import fromKilojouleToCalories from '../../../utils/functions/fromKilojouleToCalories.js';
 
 class StravaController {
 	static async authorize(req, res) {
@@ -150,29 +152,57 @@ class StravaController {
 		}
 	}
 
-	static async getStats(req, res) {
+	static async setStats(req, res) {
 		try {
 			const auth_header = req.bearer_token;
-			const {
-				start_date,
-				end_date,
-				page,
-				per_page,
-				db_id: id,
-			} = req.query;
-			const { brand_id } = await RunnersServices.getById(id);
-			const stats = await StravaServices.getStats(
+			const { start_date, end_date, page, per_page } = req.query;
+			const { brand_id, _id } = req.user;
+			const activitiesList = await StravaServices.listAthleteActivities(
 				auth_header,
 				start_date,
 				end_date,
 				page,
 				per_page
 			);
-			const data = stats.filter((item) => item.athlete.id == brand_id);
-			res.send({ data, error: false });
+			const data = activitiesList.filter(
+				(item) => item.athlete.id == brand_id
+			);
+			const dataToSend = {
+				user_id: _id,
+				title: data[0]?.sport_type,
+				date: new Date(data[0]?.start_date).toLocaleString(),
+				timestamp: new Date(data[0]?.start_date).getTime(),
+				distance: data[0]?.distance,
+				total_time: data[0]?.elapsed_time,
+				average_heart_rate: data[0]?.average_heartrate,
+				max_heart_rate: data[0]?.max_heartrate,
+				resting_heart_rate: '',
+				average_pace: '',
+				calories: `${fromKilojouleToCalories(data[0]?.kilojoules)}`,
+				positive_slope: data[0]?.total_elevation_gain,
+				negative_slope: '',
+				average_speed: data[0]?.average_speed,
+				average_cadence: data[0]?.average_cadence,
+				training_load: '',
+				max_cadence: '',
+				min_height: '',
+				max_height: '',
+				estimated_liquid_loss: '',
+				average_temperature: '',
+				paces: '',
+				triathlonData: [],
+				description: '',
+			};
+			const activity = await ActivitiesServices.createActivity(
+				dataToSend
+			);
+			res.send({
+				data: activity,
+				error: false,
+			});
 		} catch (error) {
 			await LogsServices.create(
-				'getStats error strava',
+				'listAthleteActivities error strava',
 				JSON.stringify(error),
 				error
 			);

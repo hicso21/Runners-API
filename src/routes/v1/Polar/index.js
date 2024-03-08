@@ -10,6 +10,6 @@ router.get('/get_user/:db_id', PolarController.getRunnerData);
 router.get('/get_daily_activity/:db_id', PolarController.getDailyActivity);
 router.get('/get_runner_data/:db_id', PolarController.getTrainingData);
 router.get('/get_physical_data/:db_id', PolarController.getPhysicalData);
-router.get('/getStats', PolarController.getStats);
+router.post('/setStats', PolarController.setStats);
 
 export default router;

@@ -69,13 +69,11 @@ class StravaServices {
 				headers: {
 					Authorization: authHeader,
 				},
-				withCredentials: true,
 			});
 			const { data: zones } = await fetchStrava.get('/zones', {
 				headers: {
 					Authorization: authHeader,
 				},
-				withCredentials: true,
 			});
 			const { data: stats } = await fetchStrava.get(
 				`/athlete/${user_id}/stats`,
@@ -83,7 +81,6 @@ class StravaServices {
 					headers: {
 						Authorization: authHeader,
 					},
-					withCredentials: true,
 				}
 			);
 			return {
@@ -105,7 +102,6 @@ class StravaServices {
 				headers: {
 					Authorization: authHeader,
 				},
-				withCredentials: true,
 			});
 			return data;
 		} catch (error) {
@@ -124,7 +120,6 @@ class StravaServices {
 					headers: {
 						Authorization: authHeader,
 					},
-					withCredentials: true,
 				}
 			);
 			return data;
@@ -142,7 +137,6 @@ class StravaServices {
 				headers: {
 					Authorization: authHeader,
 				},
-				withCredentials: true,
 			});
 			return data;
 		} catch (error) {
@@ -163,7 +157,6 @@ class StravaServices {
 					headers: {
 						Authorization: authHeader,
 					},
-					withCredentials: true,
 				}
 			);
 			return data;
@@ -175,7 +168,7 @@ class StravaServices {
 		}
 	}
 
-	static async getStats(auth_header, after, before, page, per_page) {
+	static async listAthleteActivities(auth_header, after, before, page, per_page) {
 		try {
 			const { data } = await fetchStrava.get(
 				`/athlete/activities?before=${before}&after=${after}${
@@ -185,7 +178,6 @@ class StravaServices {
 					headers: {
 						Authorization: auth_header,
 					},
-					withCredentials: true,
 				}
 			);
 			return data;

@@ -3,11 +3,13 @@ import StravaServices from '../../../../services/v1/Strava/strava.services.js';
 
 async function refreshToken(req, res, next) {
 	//code=41d6a289d2eb3fbc002dff3900b962510250b2f4
+	let id;
 	try {
-		const user_id = req.params?.id;
-		const db_id = req.query?.db_id;
-		const id = user_id ? user_id : db_id;
+		if (req.params?.id) id = req.params?.id;
+		if (req.query?.db_id) id = req.query?.db_id;
+		if (req.body?.id) id = req.body?.id;
 		const user_data = await RunnersServices.getById(id);
+		req.user = user_data;
 		const refresh_oauth_token = await StravaServices.refreshAuthorization(
 			user_data.refresh_token
 		);
