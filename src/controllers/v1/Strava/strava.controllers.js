@@ -155,12 +155,12 @@ class StravaController {
 	static async setStats(req, res) {
 		try {
 			const auth_header = req.bearer_token;
-			const { start_date, end_date, page, per_page } = req.query;
+			const { start_time, end_time, page, per_page } = req.body;
 			const { brand_id, _id } = req.user;
 			const activitiesList = await StravaServices.listAthleteActivities(
 				auth_header,
-				start_date,
-				end_date,
+				start_time,
+				end_time,
 				page,
 				per_page
 			);
@@ -170,8 +170,8 @@ class StravaController {
 			const dataToSend = {
 				user_id: _id,
 				title: data[0]?.sport_type,
-				date: new Date(data[0]?.start_date).toLocaleString(),
-				timestamp: new Date(data[0]?.start_date).getTime(),
+				date: new Date(data[0]?.start_time).toLocaleString(),
+				timestamp: new Date(data[0]?.start_time).getTime(),
 				distance: data[0]?.distance,
 				total_time: data[0]?.elapsed_time,
 				average_heart_rate: data[0]?.average_heartrate,

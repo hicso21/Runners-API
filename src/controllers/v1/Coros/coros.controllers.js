@@ -154,14 +154,14 @@ class CorosController {
 
 	static async setStats(req, res) {
 		const { brand_id, access_token, _id } = req.user;
-		const { start_date, end_date } = req.query;
+		const { start_time, end_time } = req.body;
 		const modes = [8, 9, 10, 13, 15, 16, 18, 23, 31];
 		try {
 			const workout = await CorosServices.workoutByDate(
 				access_token,
 				brand_id,
-				start_date,
-				end_date
+				start_time,
+				end_time
 			);
 			if (workout.message == 'OK') {
 				const workoutData = workout.data.filter((item) =>

@@ -5,6 +5,7 @@ import LogsServices from '../../services/v1/Logs/logs.services.js';
 import coros from './Coros/index.js';
 import exercises from './Exercises/index.js';
 import garmin from './Garmin/index.js';
+import adyen from './Adyen/index.js';
 import groups from './Groups/index.js';
 import polar from './Polar/index.js';
 import routines from './Routines/index.js';
@@ -36,6 +37,8 @@ router.use('/suunto', suunto);
 router.use('/strava', strava);
 router.use('/polar', polar);
 router.use('/garmin', garmin);
+
+router.use('/adyen', adyen);
 
 router.post('/mercadopago', (req, res) => {
 	const data = req.body

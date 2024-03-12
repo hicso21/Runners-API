@@ -7,6 +7,7 @@ import RunnersServices from '../../../services/v1/Runners/runners.services.js';
 import { environment } from '../../../utils/constants/mainUrl.js';
 import fetchGarmin from '../../../utils/fetches/fetchGarminAPI.js';
 import Garmin from '../../../db/models/Garmin.js';
+import ActivitiesServices from '../../../services/v1/Activities/activities.services.js';
 
 function generateRandomNonce() {
 	const randomBytes = crypto.randomBytes(16);
@@ -190,7 +191,6 @@ class GarminController {
 				},
 			});
 			if (id) user = await RunnersServices.getById(id);
-			console.log(user);
 			const requestData = {
 				url: request_base_url,
 				method: 'GET',
@@ -202,7 +202,42 @@ class GarminController {
 				url: request_base_url,
 				headers: authHeader,
 			});
-			res.send(data);
+			const timestampOnSeconds = parseInt(
+				`${data?.startTimeInSeconds}000`
+			);
+			const dataToSend = {
+				user_id: id,
+				title: data?.activityType,
+				date: new Date(timestampOnSeconds).toLocaleString(),
+				timestamp: timestampOnSeconds,
+				distance: data?.distanceInMeters,
+				total_time: data?.durationInSeconds,
+				average_heart_rate: data?.averageHeartRateInBeatsPerMinute,
+				max_heart_rate: '',
+				resting_heart_rate: '',
+				average_pace: data?.averagePaceInMinutesPerKilometer,
+				calories: data?.activeKilocalories,
+				positive_slope: data?.totalElevationGainInMeters,
+				negative_slope: data?.totalElevationLossInMeters,
+				average_speed: data?.averageSpeedInMetersPerSecond * 3.6,
+				average_cadence: data?.averageRunCadenceInStepsPerMinute,
+				training_load: '',
+				max_cadence: data?.maxRunCadenceInStepsPerMinute,
+				min_height: '',
+				max_height: '',
+				estimated_liquid_loss: '',
+				average_temperature: '',
+				paces: data?.steps,
+				triathlonData: [],
+				description: '',
+			};
+			const activity = await ActivitiesServices.createActivity(
+				dataToSend
+			);
+			res.send({
+				data: activity,
+				error: false,
+			});
 		} catch (error) {
 			res.status(500).send({
 				error: true,

@@ -178,10 +178,9 @@ class SuuntoController {
 	}
 
 	static async setStats(req, res) {
-		const { start_date, end_date } = req.query;
-		const { id } = req.body;
+		const { id, start_time, end_time } = req.body;
 		try {
-			if (!start_date || !end_date || !id)
+			if (!start_time || !end_time || !id)
 				return res.send({
 					error: true,
 					data: 'Queries and parameter are required',
@@ -193,8 +192,8 @@ class SuuntoController {
 					data: 'An error occurred while trying to obtain user data.',
 				});
 			const response = await SuuntoServices.getWorkoutsList(
-				start_date,
-				end_date,
+				start_time,
+				end_time,
 				userData.access_token
 			);
 			if (response.error) throw new Error('Error on requesting data');
@@ -211,14 +210,14 @@ class SuuntoController {
 				resting_heart_rate: '',
 				average_pace: response?.payload[0]?.avgPace,
 				calories: response?.payload[0]?.energyConsumption,
-				positive_slope: response?.payload[0]?.maxAltitude,
-				negative_slope: response?.payload[0]?.minAltitude,
+				positive_slope: '',
+				negative_slope: '',
 				average_speed: response?.payload[0]?.avgSpeed,
 				average_cadence: response?.payload[0]?.extensions?.avgCadence,
 				training_load: '',
 				max_cadence: response?.payload[0]?.cadence?.max,
-				min_height: response?.payload[0]?.maxAltitude,
-				max_height: response?.payload[0]?.minAltitude,
+				min_height: response?.payload[0]?.minAltitude,
+				max_height: response?.payload[0]?.maxAltitude,
 				estimated_liquid_loss: '',
 				average_temperature:
 					response?.payload[0]?.extensions?.avgTemperature,
