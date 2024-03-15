@@ -46,14 +46,25 @@ export default class RunnersControllers {
 
 	static async register(req, res) {
 		try {
-			const data = req.body;
-			const anotherRunner = await RunnersServices.getByEmail(data?.email);
+			const body = req.body;
+			const anotherRunner = await RunnersServices.getByEmail(body?.email);
 			if (anotherRunner != null)
 				return res.send({
 					error: true,
 					data: 'Another runner is registered with this email',
 				});
-			const runnerData = { ...data, password: encrypt(data.password) };
+			const { brevo_account } = await fetchBrevo.post('/v3/contacts', {
+				email: body?.email,
+				attributes: {
+					FIRSTNAME: body?.firstname,
+					LASTNAME: body?.lastname,
+				},
+			});
+			const runnerData = {
+				...body,
+				password: encrypt(body.password),
+				brevo_id: brevo_account.id,
+			};
 			const runner = await RunnersServices.create(runnerData);
 			res.status(201).send({ error: false, data: runner });
 		} catch (error) {
@@ -124,11 +135,15 @@ export default class RunnersControllers {
 				runner._id,
 				encrypt(newPassword)
 			);
-			if (updatedRunner.password == newPassword)
-				return res.status(200).send({
-					error: false,
-					data: updatedRunner,
+			if (updatedRunner.password != newPassword)
+				return res.status(400).send({
+					error: true,
+					data: "An error has ocurred, the password wasn't changed.",
 				});
+			res.status(200).send({
+				error: false,
+				data: updatedRunner,
+			});
 		} catch (error) {
 			await LogsServices.create(
 				'resetPassword error',

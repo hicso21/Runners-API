@@ -29,6 +29,7 @@ const runnerSchema = new Schema(
 		refresh_token: String,
 		stripe_id: String,
 		message_color: String,
+		brevo_id: String,
 	},
 	{ timestamps: true }
 );

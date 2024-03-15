@@ -34,9 +34,8 @@ class AdyenControllers {
 			countryCode: 'NL',
 			shopperLocale: 'nl-NL',
 			amount: { currency: 'EUR', value: 1000 },
-			channel: 'Android',
 		});
-		// res.send({ error: false, data: paymentsResponse });
+		res.send({ error: false, data: paymentsResponse });
 		// } catch (error) {
 		// 	res.send({
 		// 		error: true,
