@@ -9,6 +9,7 @@ class BrevoControllers {
 		const body = req.body;
 		const url = `/v3/smtp/templates/${config.recovery_template_id}/sendTest`;
 		const code = generateCode();
+		console.log(body)
 		try {
 			const { data, error } = await Runners.findOne({ email: body.to })
 				.then((res) => {
@@ -23,6 +24,7 @@ class BrevoControllers {
 						data: error,
 					};
 				});
+			console.log(data)
 			if (error)
 				return res.send({
 					error: true,
@@ -41,6 +43,7 @@ class BrevoControllers {
 			});
 			res.send({ error: false, data: 'Mail sended' });
 		} catch (error) {
+			console.log(error);
 			res.send({ error: true, data: error });
 		}
 	}
