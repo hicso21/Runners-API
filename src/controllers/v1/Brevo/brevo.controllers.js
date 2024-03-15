@@ -39,7 +39,7 @@ class BrevoControllers {
 					code,
 				},
 			});
-			res.send('Mail sended');
+			res.send({ error: false, data: 'Mail sended' });
 		} catch (error) {
 			res.send({ error: true, data: error });
 		}
