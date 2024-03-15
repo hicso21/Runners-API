@@ -4,6 +4,7 @@ import LogsServices from '../../services/v1/Logs/logs.services.js';
 import activities from './Activities/index.js';
 import adyen from './Adyen/index.js';
 import brevo from './Brevo/index.js';
+import calendar from './Calendar/index.js';
 import coros from './Coros/index.js';
 import exercises from './Exercises/index.js';
 import garmin from './Garmin/index.js';
@@ -42,6 +43,7 @@ router.use('/upload', uploads);
 router.use('/activities', activities);
 router.use('/brevo', brevo);
 router.use('/recovery', recovery);
+router.use('/calendar', calendar);
 
 router.use('/coros', coros);
 router.use('/suunto', suunto);

@@ -135,7 +135,13 @@ export default class RunnersControllers {
 				runner._id,
 				encrypt(newPassword)
 			);
-			if (updatedRunner.password != newPassword)
+			if (
+				decrypt(
+					updatedRunner.password.cipherText,
+					updatedRunner.password.key,
+					updatedRunner.password.iv
+				) != newPassword
+			)
 				return res.status(400).send({
 					error: true,
 					data: "An error has ocurred, the password wasn't changed.",
