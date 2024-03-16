@@ -206,6 +206,11 @@ class GarminController {
 					uploadEndTimeInSeconds: end_time,
 				},
 			});
+			if (Object.keys(data) == 0)
+				return res.send({
+					error: true,
+					data: 'There was not found any data',
+				});
 			const timestampOnSeconds = parseInt(
 				`${data?.startTimeInSeconds}000`
 			);

@@ -167,6 +167,11 @@ class CorosController {
 				const workoutData = workout.data.filter((item) =>
 					modes.includes(item.mode)
 				);
+				if (!workoutData[1] || Object.keys(workoutData[1]).length == 0)
+					return res.send({
+						error: true,
+						data: 'There was not found any data',
+					});
 				const timestampOnSeconds = parseInt(
 					`${workoutData[1].endTime}000`
 				);

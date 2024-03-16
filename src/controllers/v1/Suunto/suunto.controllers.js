@@ -197,6 +197,14 @@ class SuuntoController {
 				userData.access_token
 			);
 			if (response.error) throw new Error('Error on requesting data');
+			if (
+				response?.payload[0] ||
+				Object.keys(response?.payload[0]).length == 0
+			)
+				return res.send({
+					error: true,
+					data: 'There was not found any data',
+				});
 			const timestampOnSeconds = response?.payload[0]?.startTime;
 			const dataToSend = {
 				user_id: id,

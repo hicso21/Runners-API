@@ -167,6 +167,11 @@ class StravaController {
 			const data = activitiesList.filter(
 				(item) => item.athlete.id == brand_id
 			);
+			if (!data[0] || Object.keys(data[0]).length == 0)
+				return res.send({
+					error: true,
+					data: 'There was not found any data',
+				});
 			const dataToSend = {
 				user_id: _id,
 				title: data[0]?.sport_type,
