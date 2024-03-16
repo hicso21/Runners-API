@@ -96,13 +96,13 @@ export default class RunnersControllers {
 				runner.password.iv
 			);
 			if (passwordDecrypted !== password) {
-				return res.status(400).send({
+				return res.send({
 					error: true,
 					data: 'Incorrect Password.',
 					exist: false,
 				});
 			}
-			res.status(200).send({
+			res.send({
 				error: false,
 				data: runner,
 				exist: true,
@@ -114,7 +114,7 @@ export default class RunnersControllers {
 				error
 			);
 			console.log(error);
-			res.status(500).send({
+			res.send({
 				error: true,
 				data: error,
 			});
