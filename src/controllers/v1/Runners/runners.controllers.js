@@ -113,6 +113,7 @@ export default class RunnersControllers {
 				'Error when trying to login',
 				error
 			);
+			console.log(error);
 			res.status(500).send({
 				error: true,
 				data: error,

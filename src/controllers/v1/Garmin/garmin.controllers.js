@@ -201,6 +201,10 @@ class GarminController {
 			const { data } = axios({
 				url: request_base_url,
 				headers: authHeader,
+				data: {
+					uploadStartTimeInSeconds: start_time,
+					uploadEndTimeInSeconds: end_time,
+				},
 			});
 			const timestampOnSeconds = parseInt(
 				`${data?.startTimeInSeconds}000`
