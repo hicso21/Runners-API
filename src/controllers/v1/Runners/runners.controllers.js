@@ -44,6 +44,25 @@ export default class RunnersControllers {
 		}
 	}
 
+	static async getRunnerByEmailAndPassword(req, res) {
+		try {
+			const { email, password } = req.body;
+			const runner = await RunnersServices.getByEmail(email);
+			if (decrypt(runner.password) == password)
+				return res.send({ error: false, data: runner });
+			else
+				return res.send({
+					error: true,
+					data: "The password isn't correct",
+				});
+		} catch (error) {
+			res.status(500).send({
+				error: true,
+				data: error,
+			});
+		}
+	}
+
 	static async register(req, res) {
 		try {
 			const body = req.body;

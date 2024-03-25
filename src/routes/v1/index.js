@@ -2,7 +2,7 @@ import { Router } from 'express';
 import UserChats from '../../db/models/UserChat.js';
 import LogsServices from '../../services/v1/Logs/logs.services.js';
 import activities from './Activities/index.js';
-import adyen from './Adyen/index.js';
+import payment from './Payment/index.js';
 import brevo from './Brevo/index.js';
 import calendar from './Calendar/index.js';
 import coros from './Coros/index.js';
@@ -51,7 +51,7 @@ router.use('/strava', strava);
 router.use('/polar', polar);
 router.use('/garmin', garmin);
 
-router.use('/adyen', adyen);
+router.use('/payment', payment);
 
 router.post('/mercadopago', (req, res) => {
 	const data = req.body;
