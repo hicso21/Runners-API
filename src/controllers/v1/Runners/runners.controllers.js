@@ -48,7 +48,17 @@ export default class RunnersControllers {
 		try {
 			const { email, password } = req.body;
 			const runner = await RunnersServices.getByEmail(email);
-			if (decrypt(runner.password) == password)
+			if (runner == null)
+				return res.send({
+					error: true,
+					data: "This email doesn't exist",
+				});
+			const passwordDecrypted = decrypt(
+				runner.password.cipherText,
+				runner.password.key,
+				runner.password.iv
+			);
+			if (passwordDecrypted == password)
 				return res.send({ error: false, data: runner });
 			else
 				return res.send({

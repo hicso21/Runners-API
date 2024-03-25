@@ -84,9 +84,7 @@ export default class RunnersServices {
 	static async delete(id) {
 		try {
 			await Runners.findByIdAndDelete(id);
-			return {
-				error: false,
-			};
+			return 'User deleted successfully.';
 		} catch (error) {
 			return {
 				error: true,
