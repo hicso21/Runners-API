@@ -18,12 +18,15 @@ const calendarSchema = new Schema(
 				commentary: String,
 			},
 		],
+		routine_id: String,
+		type: String, // race || routine
+		resource: Object,
 		pdf: String,
 		start: Date,
 		end: Date,
 		isDraggable: Boolean,
 		completed: Boolean,
-		createdAt: { type: Date, expires: 1209600 },
+		createdAt: { type: Date, expires: 2764800 },
 	},
 	{ timestamps: true }
 );
