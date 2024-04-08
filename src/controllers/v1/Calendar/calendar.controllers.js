@@ -1,7 +1,7 @@
 import Calendar from '../../../db/models/Calendar.js';
 
 export default class CalendarControllers {
-	static async createEvent(req, res) {
+	static async createUserEvents(req, res) {
 		const body = req.body;
 		try {
 			const data = await Calendar.create(body);
@@ -17,7 +17,7 @@ export default class CalendarControllers {
 		}
 	}
 
-	static async getEvent(req, res) {
+	static async getUserEvent(req, res) {
 		const { id } = req.params;
 		try {
 			const data = await Calendar.findById(id);
