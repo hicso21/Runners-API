@@ -4,7 +4,8 @@ import CalendarControllers from '../../../controllers/v1/Calendar/calendar.contr
 const router = Router();
 
 router.post('/createEvent', CalendarControllers.createEvent);
-router.get('/getEvent', CalendarControllers.getEvent);
-router.get('/getUserEvents', CalendarControllers.getUserEvents);
+router.get('/getEvent/:id', CalendarControllers.getEvent);
+router.get('/getUserEvents/:id', CalendarControllers.getUserEvents);
+router.delete('/deleteUserEvents', CalendarControllers.deleteUserEvents);
 
 export default router;

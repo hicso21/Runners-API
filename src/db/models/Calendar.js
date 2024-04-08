@@ -3,7 +3,7 @@ import { Schema, model } from 'mongoose';
 const calendarSchema = new Schema(
 	{
 		user_id: String,
-		name: String,
+		title: String,
 		exercises: [
 			{
 				name: String,
@@ -25,6 +25,7 @@ const calendarSchema = new Schema(
 		start: Date,
 		end: Date,
 		isDraggable: Boolean,
+		allDay: Boolean,
 		completed: Boolean,
 		createdAt: { type: Date, expires: 2764800 },
 	},
