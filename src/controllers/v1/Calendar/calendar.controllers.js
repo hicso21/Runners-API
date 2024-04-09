@@ -2,9 +2,9 @@ import Calendar from '../../../db/models/Calendar.js';
 
 export default class CalendarControllers {
 	static async createUserEvents(req, res) {
-		const body = req.body;
+		const { events } = req.body;
 		try {
-			const data = await Calendar.create(body);
+			const data = await Calendar.create(events);
 			res.send({
 				error: false,
 				data,
