@@ -1,7 +1,7 @@
 import axios from "axios";
-import config from "../../config/adyen.config.js" ;
+import config from "../../config/payment.js" ;
 
-const fetchAdyen = axios.create({
+const fetchPayment = axios.create({
   baseURL: config.base_url,
   headers: {
     "Content-Type": 'application/json',
@@ -9,4 +9,4 @@ const fetchAdyen = axios.create({
   }
 })
 
-export default fetchAdyen
+export default fetchPayment

@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import AdyenControllers from '../../../controllers/v1/Adyen/adyen.controllers.js';
+import PaymentControllers from '../../../controllers/v1/Payment/payment.controllers.js';
 
 const router = Router();
 
-router.post('/makePayment', AdyenControllers.makePayment);
-router.post('/getPending', AdyenControllers.webhook);
+router.post('/getToken', PaymentControllers.getToken);
+router.post('/checkout', PaymentControllers.checkout);
 
 export default router;
