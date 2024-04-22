@@ -3,7 +3,9 @@ import PaymentControllers from '../../../controllers/v1/Payment/payment.controll
 
 const router = Router();
 
-router.post('/getToken', PaymentControllers.getToken);
-router.post('/checkout', PaymentControllers.checkout);
+router.get('/getPublishableKey', PaymentControllers.getPublishableKey)
+router.get('/getTestPublishableKey', PaymentControllers.getTestPublishableKey)
+// router.post('/getToken', PaymentControllers.getToken);
+// router.post('/checkout', PaymentControllers.checkout);
 
 export default router;
