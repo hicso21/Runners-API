@@ -1,4 +1,4 @@
-import Paids from '../../../db/models/Paid';
+import Paids from '../../../db/models/Paid.js';
 
 export default class PaidControllers {
     static async getAll(req, res) {
