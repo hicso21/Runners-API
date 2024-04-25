@@ -29,7 +29,7 @@ export default class PaidControllers {
     static async getByUserId(req, res) {
         const { user_id } = req.params;
         try {
-            const paid = await Paids.find({ user_id: user_id });
+            const paid = await Paids.findOne({ user_id: user_id });
             res.send({ error: false, data: paid });
         } catch (error) {
             res.send({
