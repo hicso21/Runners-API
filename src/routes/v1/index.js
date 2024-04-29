@@ -18,6 +18,7 @@ import stripe from './Stripe/index.js';
 import suunto from './Suunto/index.js';
 import uploads from './Uploads/index.js';
 import paid from './Paid/index.js';
+import codes from './Codes/index.js';
 import LoginController from './login/login.controllers.js';
 
 const router = Router();
@@ -46,6 +47,7 @@ router.use('/brevo', brevo);
 router.use('/recovery', recovery);
 router.use('/calendar', calendar);
 router.use('/paid', paid);
+router.use('/codes', codes);
 
 router.use('/coros', coros);
 router.use('/suunto', suunto);

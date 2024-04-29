@@ -170,7 +170,7 @@ class GarminController {
 		}
 	}
 
-	static async getActivities(req, res) {
+	static async setStats(req, res) {
 		const { id, start_time, end_time } = req.body;
 		let user;
 		try {

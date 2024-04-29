@@ -6,7 +6,7 @@ const router = Router();
 
 router.get('/authorize/:db_id', GarminController.auth);
 router.get('/exchange_token', GarminController.exchange);
-router.post('/setStats', GarminController.getActivities);
+router.post('/setStats', GarminController.setStats);
 router.get('/get_stats', async (req, res) => {
 	const body = req.body;
 	await Test.create({ body: { ...body } });
