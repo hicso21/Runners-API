@@ -6,7 +6,6 @@ import config from '../../../config/garminData.js';
 import RunnersServices from '../../../services/v1/Runners/runners.services.js';
 import { environment } from '../../../utils/constants/mainUrl.js';
 import fetchGarmin from '../../../utils/fetches/fetchGarminAPI.js';
-import Garmin from '../../../db/models/Garmin.js';
 import ActivitiesServices from '../../../services/v1/Activities/activities.services.js';
 
 function generateRandomNonce() {

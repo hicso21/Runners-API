@@ -197,16 +197,52 @@ export default class RunnersControllers {
         }
     }
 
-    static async updateRunner(req, res) {
+    static async updateRunnerGroup(req, res) {
+        const { id } = req.params;
+        const { group } = req.body;
         try {
-            const { id } = req.params;
-            const { group } = req.body;
             const runner = await RunnersServices.getById(id);
             const oldGroupId = runner?.group;
             await GroupsServices.deleteUserFromGroup(oldGroupId, id);
             await GroupsServices.addUserFromGroup(group, id);
-            const updatedRunner = await RunnersServices.update(id, { group });
+            const updatedRunner = await RunnersServices.updateGroup(id, {
+                group,
+            });
             res.status(200).send({ error: false, data: updatedRunner });
+        } catch (error) {
+            await LogsServices.create(
+                'updateRunnerGroup error',
+                'Error when trying to update user data',
+                error
+            );
+            res.status(500).send({
+                error: true,
+                data: error,
+            });
+        }
+    }
+
+    static async updateRunner(req, res) {
+        const { id } = req.params;
+        const body = req.body;
+        try {
+            const updatedRunner = await RunnersServices.update(id, body);
+            res.send({ error: false, data: updatedRunner });
+        } catch (error) {
+            await LogsServices.create(
+                'updateRunner error',
+                'Error when trying to update user data',
+                error
+            );
+            res.status(500).send({
+                error: true,
+                data: error,
+            });
+        }
+    }
+
+    static async update(req, res) {
+        try {
         } catch (error) {
             await LogsServices.create(
                 'updateRunner error',

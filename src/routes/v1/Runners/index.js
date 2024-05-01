@@ -8,13 +8,14 @@ router.get('/getAll', RunnersControllers.getAll);
 router.get('/getById/:id', RunnersControllers.getById);
 router.get('/getByEmail/:email', RunnersControllers.getByEmail);
 router.post(
-	'/getRunnerByEmailAndPassword',
-	RunnersControllers.getRunnerByEmailAndPassword
+    '/getRunnerByEmailAndPassword',
+    RunnersControllers.getRunnerByEmailAndPassword
 );
 router.post('/register', RunnersControllers.register);
 router.post('/login', RunnersControllers.login);
 router.post('/resetPassword', RunnersControllers.resetPassword);
-router.post('/update/:id', RunnersControllers.updateRunner);
+router.put('/update/:id', RunnersControllers.updateRunnerGroup);
+router.put('/updateRunner/:id', RunnersControllers.updateRunner);
 router.delete('/delete/:id', RunnersControllers.deleteRunner);
 router.put('/updateRoutine/:id', RunnersControllers.updateRoutine);
 router.put('/updateCalendar/:id', RunnersControllers.updateCalendar);
