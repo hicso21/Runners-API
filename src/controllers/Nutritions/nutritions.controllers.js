@@ -18,6 +18,24 @@ export default class NutritionControllers {
         }
     }
 
+    static async update(req, res) {
+        const body = req.body;
+        const { id } = req.params;
+        try {
+            const nutrition = await Nutritions.findByIdAndUpdate(id, body);
+
+            res.send({
+                error: false,
+                data: nutrition,
+            });
+        } catch (error) {
+            res.send({
+                error: true,
+                data: error,
+            });
+        }
+    }
+
     static async getById(req, res) {
         const { id } = req.params;
         try {
