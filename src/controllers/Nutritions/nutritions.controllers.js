@@ -37,7 +37,7 @@ export default class NutritionControllers {
 
     static async getNutritions(req, res) {
         try {
-            const nutritions = await Nutritions.findAll({});
+            const nutritions = await Nutritions.find({});
 
             res.send({
                 error: false,
