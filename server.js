@@ -49,7 +49,6 @@ app.use(
 			'https://delaf.vercel.app',
 			'https://delaf.host',
 			'https://desktop.delaf.host',
-			'exp://hg-cet.hicso.8081.exp.direct',
 		],
 		methods: ['OPTIONS', 'GET', 'PATCH', 'DELETE', 'POST', 'UPDATE', 'PUT'],
 	})

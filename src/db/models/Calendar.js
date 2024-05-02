@@ -22,7 +22,7 @@ const calendarSchema = new Schema(
         // 	},
         // ]
         routine_id: String,
-        type: String, // race || routine
+        type: String, // race || routine || nutrition
         resource: Object,
         pdf: String,
         start: Date,
@@ -31,7 +31,6 @@ const calendarSchema = new Schema(
         allDay: Boolean,
         completed: Boolean,
         createdAt: { type: Date, default: Date.now, expires: 0 },
-        //{ type: Date, expires: 2764800 },
     },
     { timestamps: true }
 );

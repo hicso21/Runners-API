@@ -48,6 +48,21 @@ export default class CalendarControllers {
         }
     }
 
+    static async getNutrition(req, res) {
+        try {
+            const data = await Calendar.find({ type: 'nutrition' });
+            res.send({
+                error: false,
+                data,
+            });
+        } catch (error) {
+            return res.send({
+                error: true,
+                data: error,
+            });
+        }
+    }
+
     static async getUserEvents(req, res) {
         const { id } = req.params;
         try {
