@@ -1,4 +1,4 @@
-import Nutritions from '../../db/models/Nutrition';
+import Nutritions from '../../db/models/Nutrition.js';
 
 export default class NutritionControllers {
     static async create(req, res) {

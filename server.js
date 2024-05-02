@@ -25,7 +25,6 @@ const io = new Server(server, {
 	cors: {
 		origin: [
 			'http://localhost:5173',
-			'https://runners-desktop.vercel.app',
 			'https://delaf.vercel.app',
 			'https://delaf.host',
 			'https://desktop.delaf.host',
@@ -45,7 +44,6 @@ app.use(
 	cors({
 		origin: [
 			'http://localhost:5173',
-			'https://runners-desktop.vercel.app',
 			'https://delaf.vercel.app',
 			'https://delaf.host',
 			'https://desktop.delaf.host',
