@@ -197,7 +197,7 @@ class CorosController {
 					max_height: '',
 					estimated_liquid_loss: '',
 					average_temperature: '',
-					paces: '',
+					paces: [],
 					triathlonData: workoutData[1].triathlonItemList,
 					description: '',
 				};

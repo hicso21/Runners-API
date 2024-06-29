@@ -378,7 +378,7 @@ class PolarController {
 				max_height: '',
 				estimated_liquid_loss: '',
 				average_temperature: '',
-				paces: '',
+				paces: [],
 				triathlonData: training[''],
 				description: '',
 			};

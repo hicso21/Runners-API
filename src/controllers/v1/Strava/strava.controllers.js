@@ -194,7 +194,7 @@ class StravaController {
 				max_height: '',
 				estimated_liquid_loss: '',
 				average_temperature: '',
-				paces: '',
+				paces: [],
 				triathlonData: [],
 				description: '',
 			};

@@ -229,7 +229,7 @@ class SuuntoController {
 				estimated_liquid_loss: '',
 				average_temperature:
 					response?.payload[0]?.extensions?.avgTemperature,
-				paces: '',
+				paces: [],
 				triathlonData: [],
 				description: '',
 			};
