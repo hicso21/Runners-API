@@ -7,6 +7,7 @@ import RunnersServices from '../../../services/v1/Runners/runners.services.js';
 import { environment } from '../../../utils/constants/mainUrl.js';
 import fetchGarmin from '../../../utils/fetches/fetchGarminAPI.js';
 import ActivitiesServices from '../../../services/v1/Activities/activities.services.js';
+import oauthSignature from 'oauth-signature';
 
 function generateRandomNonce() {
     const randomBytes = crypto.randomBytes(16);
@@ -156,6 +157,25 @@ class GarminController {
 
                         console.log('authHeader => ', authHeader);
 
+                        const parameters = {
+                            oauth_consumer_key: config.client_id,
+                            oauth_token: accessToken,
+                            oauth_nonce,
+                            oauth_timestamp,
+                            oauth_signature_method: 'HMAC-SHA1',
+                            oauth_version: '1.0',
+                            // file: 'vacation.jpg',
+                            // size: 'original',
+                        };
+                        const signature = oauthSignature.generate(
+                            'GET',
+                            requestBaseUrl,
+                            parameters,
+                            config.client_secret,
+                            request_token_secret,
+                            { encodeSignature: false }
+                        );
+
                         const { data, error } = await axios({
                             url: requestBaseUrl,
                             method: 'GET',
@@ -166,6 +186,9 @@ class GarminController {
                             })
                             .catch((error) => {
                                 return { error: true, data: error };
+                            })
+                            .finally(() => {
+                                console.log('signature => ', signature);
                             });
 
                         console.log('Data of userId GET', data);
