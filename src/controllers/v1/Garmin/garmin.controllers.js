@@ -154,7 +154,9 @@ class GarminController {
                         const { data, error } = await axios({
                             url: requestBaseUrl,
                             method: 'GET',
-                            headers: auth,
+                            headers: {
+                                Authorization: auth,
+                            },
                         })
                             .then((res) => {
                                 return { error: false, data: res.data };
