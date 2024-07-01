@@ -48,7 +48,9 @@ class GarminController {
             const request_token = tokens[0].split('=')[1];
             const request_token_secret = tokens[1].split('=')[1];
             const url = environment(req.href);
-            const oauth_callback = `${url}/api/v1/garmin/exchange_token?request_token_secret=${request_token_secret}`;
+            const oauth_callback = `${url}/api/v1/garmin/exchange_token?request_token_secret=${request_token_secret}&userData=${
+                request_token + '||' + db_id
+            }`;
             const redirect_url = `https://connect.garmin.com/oauthConfirm?oauth_token=${request_token}&userData=${
                 request_token + '||' + db_id
             }&oauth_callback=${oauth_callback}`;
