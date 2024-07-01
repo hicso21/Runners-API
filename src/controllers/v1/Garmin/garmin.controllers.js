@@ -187,17 +187,16 @@ class GarminController {
                             .catch((error) => {
                                 return { error: true, data: error };
                             })
-                            .finally(() => {
-                                console.log('signature => ', signature);
-                            });
+                            .finally(() => {});
 
-                        console.log('Data of userId GET', data);
-                        if (error)
+                        // console.log('Data of userId GET', data);
+                        if (error) {
+                            console.log('signature => ', signature);
                             res.send({
                                 error,
                                 data: 'An error has ocurred getting garmin id.',
                             });
-                        else {
+                        } else {
                             const runner = await RunnersServices.getById(db_id);
                             const updatedRunner = {
                                 ...runner,
