@@ -48,12 +48,12 @@ class GarminController {
             const request_token = tokens[0]?.split('=')[1];
             const request_token_secret = tokens[1]?.split('=')[1];
             const url = environment(req.href);
-            const oauth_callback = `${url}/api/v1/garmin/exchange_token?request_token_secret=${request_token_secret}&db_id=${db_id}`;
-            console.log('\n \n');
+            const oauth_callback = `${url}/api/v1/garmin/exchange_token?db_id=${db_id}&request_token_secret=${request_token_secret}`;
+            console.log('\n\n');
             console.log(
                 `This is oauth_callback: \n${oauth_callback}\n on auth`
             );
-            const redirect_url = `https://connect.garmin.com/oauthConfirm?oauth_token=${request_token}&db_id=${db_id}&oauth_callback=${oauth_callback}`;
+            const redirect_url = `https://connect.garmin.com/oauthConfirm?db_id=${db_id}&oauth_token=${request_token}&oauth_callback=${oauth_callback}`;
             res.redirect(redirect_url);
         } catch (error) {
             res.status(500).send({
@@ -140,6 +140,7 @@ class GarminController {
                                 return { error: true, data: error };
                             });
 
+                        console.log('Data of userId GET', data);
                         if (error) res.send(error);
                         else {
                             const runner = await RunnersServices.getById(db_id);
