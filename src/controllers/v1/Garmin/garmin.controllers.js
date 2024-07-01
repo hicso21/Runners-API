@@ -102,42 +102,64 @@ class GarminController {
                         const requestBaseUrl =
                             'https://apis.garmin.com/wellness-api/rest/user/id';
 
-                        const baseSignature = (
-                            'GET&' +
-                            encodeURIComponent(requestBaseUrl) +
-                            '&' +
-                            encodeURIComponent(
-                                `oauth_verifier=${oauth_verifier}&oauth_consumer_key=${config.client_id}&oauth_nonce=${oauth_nonce}&oauth_signature_method=HMAC-SHA1&oauth_timestamp=${oauth_timestamp}&oauth_token=${accessToken}&oauth_version=1.0`
-                            )
-                        ).replace('%22', '');
+                        // const baseSignature = (
+                        //     'GET&' +
+                        //     encodeURIComponent(requestBaseUrl) +
+                        //     '&' +
+                        //     encodeURIComponent(
+                        //         `oauth_verifier=${oauth_verifier}&oauth_consumer_key=${config.client_id}&oauth_nonce=${oauth_nonce}&oauth_signature_method=HMAC-SHA1&oauth_timestamp=${oauth_timestamp}&oauth_token=${accessToken}&oauth_version=1.0`
+                        //     )
+                        // ).replace('%22', '');
 
-                        const signingKey =
-                            encodeURIComponent(config.client_secret) +
-                            '&' +
-                            encodeURIComponent(tokenSecret);
-                        const oauth_signature = crypto
-                            .createHmac('sha1', signingKey)
-                            .update(baseSignature)
-                            .digest('base64');
+                        // const signingKey =
+                        //     encodeURIComponent(config.client_secret) +
+                        //     '&' +
+                        //     encodeURIComponent(tokenSecret);
+                        // const oauth_signature = crypto
+                        //     .createHmac('sha1', signingKey)
+                        //     .update(baseSignature)
+                        //     .digest('base64');
 
-                        const auth = `OAuth oauth_verifier="${encodeURIComponent(
-                            oauth_verifier
-                        )}", oauth_consumer_key="${encodeURIComponent(
-                            config.client_id
-                        )}", oauth_nonce="${encodeURIComponent(
-                            oauth_nonce
-                        )}", oauth_signature="${encodeURIComponent(
-                            oauth_signature
-                        )}", oauth_signature_method="HMAC-SHA1", oauth_timestamp="${oauth_timestamp}", oauth_token="${encodeURIComponent(
-                            accessToken
-                        )}", oauth_version="1.0"`;
+                        // const auth = `OAuth oauth_verifier="${encodeURIComponent(
+                        //     oauth_verifier
+                        // )}", oauth_consumer_key="${encodeURIComponent(
+                        //     config.client_id
+                        // )}", oauth_nonce="${encodeURIComponent(
+                        //     oauth_nonce
+                        // )}", oauth_signature="${encodeURIComponent(
+                        //     oauth_signature
+                        // )}", oauth_signature_method="HMAC-SHA1", oauth_timestamp="${oauth_timestamp}", oauth_token="${encodeURIComponent(
+                        //     accessToken
+                        // )}", oauth_version="1.0"`;
+
+                        const oauth = OAuth({
+                            consumer: {
+                                key: config.client_id,
+                                secret: config.client_secret,
+                            },
+                            signature_method: 'HMAC-SHA1',
+                            hash_function: (base_string, key) => {
+                                return crypto
+                                    .createHmac('sha1', key)
+                                    .update(base_string)
+                                    .digest('base64');
+                            },
+                        });
+                        const requestData = {
+                            url: requestBaseUrl,
+                            method: 'GET',
+                            data: { oauth_nonce: db_id },
+                        };
+                        const authHeader = oauth.toHeader(
+                            oauth.authorize(requestData)
+                        );
+
+						console.log('authHeader => ', authHeader)
 
                         const { data, error } = await axios({
                             url: requestBaseUrl,
                             method: 'GET',
-                            headers: {
-                                Authorization: auth,
-                            },
+                            headers: authHeader,
                         })
                             .then((res) => {
                                 return { error: false, data: res.data };
