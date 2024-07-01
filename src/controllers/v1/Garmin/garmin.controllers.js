@@ -166,6 +166,7 @@ class GarminController {
                         console.log('Data of userId GET', data);
                         if (error) {
                             console.log('signature => ', signature);
+                            console.log('auth => ', auth);
                             res.send({
                                 error,
                                 data: 'An error has ocurred getting garmin id.',
