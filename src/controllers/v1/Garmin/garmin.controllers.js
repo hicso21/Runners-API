@@ -48,12 +48,12 @@ class GarminController {
             const request_token = tokens[0]?.split('=')[1];
             const request_token_secret = tokens[1]?.split('=')[1];
             const url = environment(req.href);
-            const oauth_callback = `${url}/api/v1/garmin/exchange_token?db_id=${db_id}&request_token_secret=${request_token_secret}`;
-            console.log('\n\n');
+            const oauth_callback = `${url}/api/v1/garmin/exchange_token?data=${db_id}||${request_token_secret}&request_token_secret=${request_token_secret}`;
+            console.log('----------------------------');
             console.log(
                 `This is oauth_callback: \n${oauth_callback}\n on auth`
             );
-            const redirect_url = `https://connect.garmin.com/oauthConfirm?db_id=${db_id}&oauth_token=${request_token}&oauth_callback=${oauth_callback}`;
+            const redirect_url = `https://connect.garmin.com/oauthConfirm?data=${db_id}||${request_token_secret}&oauth_token=${request_token}&oauth_callback=${oauth_callback}`;
             res.redirect(redirect_url);
         } catch (error) {
             res.status(500).send({
@@ -66,10 +66,12 @@ class GarminController {
 
     static async exchange(req, res) {
         try {
-            const { request_token_secret, db_id, oauth_verifier, oauth_token } =
-                req.query;
+            const { data, oauth_verifier, oauth_token } = req.query;
 
             console.log('This is the url: ', req?.originalUrl);
+
+            const db_id = data.split('||')[0];
+            const request_token_secret = data.split('||')[1];
 
             const oauth = new Oauth.OAuth(
                 'https://connectapi.garmin.com/oauth-service/oauth/request_token',
