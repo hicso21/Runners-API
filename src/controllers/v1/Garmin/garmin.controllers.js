@@ -148,7 +148,7 @@ class GarminController {
                         const requestData = {
                             url: requestBaseUrl,
                             method: 'GET',
-                            data: { oauth_token },
+                            data: { oauth_token: accessToken },
                         };
                         const authHeader = oauth.toHeader(
                             oauth.authorize(requestData)
