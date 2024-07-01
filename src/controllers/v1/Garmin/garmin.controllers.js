@@ -49,7 +49,9 @@ class GarminController {
             const request_token_secret = tokens[1]?.split('=')[1];
             const url = environment(req.href);
             const oauth_callback = `${url}/api/v1/garmin/exchange_token?data=${db_id}||${request_token_secret}&request_token_secret=${request_token_secret}`;
-            console.log('----------------------------');
+            console.log(
+                '------------------------------------------------------------------------------------------------------------------------------------------------------------------------'
+            );
             console.log(
                 `This is oauth_callback: \n${oauth_callback}\n on auth`
             );
@@ -118,7 +120,9 @@ class GarminController {
                             .update(baseSignature)
                             .digest('base64');
 
-                        const auth = `OAuth oauth_consumer_key="${encodeURIComponent(
+                        const auth = `OAuth oauth_verifier="${encodeURIComponent(
+                            oauth_verifier
+                        )}", oauth_consumer_key="${encodeURIComponent(
                             config.client_id
                         )}", oauth_nonce="${encodeURIComponent(
                             oauth_nonce
@@ -143,7 +147,11 @@ class GarminController {
                             });
 
                         console.log('Data of userId GET', data);
-                        if (error) res.send(error);
+                        if (error)
+                            res.send({
+                                error,
+                                data: 'An error has ocurred getting garmin id.',
+                            });
                         else {
                             const runner = await RunnersServices.getById(db_id);
                             const updatedRunner = {
