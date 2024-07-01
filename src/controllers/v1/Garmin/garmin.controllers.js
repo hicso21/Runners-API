@@ -150,9 +150,10 @@ class GarminController {
                                 refresh_token: tokenSecret,
                                 brand_id: data.userId,
                             };
-                            const response = await RunnersServices.update(
-                                db_id,
-                                updatedRunner
+                            await RunnersServices.update(db_id, updatedRunner);
+                            console.log(
+                                'This is the db_id of who are sync with garmin ' +
+                                    db_id
                             );
 
                             res.send(
@@ -163,6 +164,7 @@ class GarminController {
                 }
             );
         } catch (error) {
+            console.log('Error on Garmin sync: ', error);
             res.status(500).send({
                 error: true,
                 msg: 'An error has ocurred',
