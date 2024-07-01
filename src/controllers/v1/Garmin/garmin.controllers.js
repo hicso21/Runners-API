@@ -148,13 +148,13 @@ class GarminController {
                         const requestData = {
                             url: requestBaseUrl,
                             method: 'GET',
-                            data: { oauth_nonce: db_id },
+                            data: { oauth_token },
                         };
                         const authHeader = oauth.toHeader(
                             oauth.authorize(requestData)
                         );
 
-						console.log('authHeader => ', authHeader)
+                        console.log('authHeader => ', authHeader);
 
                         const { data, error } = await axios({
                             url: requestBaseUrl,
