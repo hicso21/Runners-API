@@ -164,8 +164,6 @@ class GarminController {
                             oauth_timestamp,
                             oauth_signature_method: 'HMAC-SHA1',
                             oauth_version: '1.0',
-                            // file: 'vacation.jpg',
-                            // size: 'original',
                         };
                         const signature = oauthSignature.generate(
                             'GET',
@@ -179,17 +177,18 @@ class GarminController {
                         const { data, error } = await axios({
                             url: requestBaseUrl,
                             method: 'GET',
-                            headers: authHeader,
+                            headers: {
+								Authorization: signature
+							},
                         })
                             .then((res) => {
                                 return { error: false, data: res.data };
                             })
                             .catch((error) => {
                                 return { error: true, data: error };
-                            })
-                            .finally(() => {});
+                            });
 
-                        // console.log('Data of userId GET', data);
+                        console.log('Data of userId GET', data);
                         if (error) {
                             console.log('signature => ', signature);
                             res.send({
