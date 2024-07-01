@@ -103,53 +103,77 @@ class GarminController {
                         const requestBaseUrl =
                             'https://apis.garmin.com/wellness-api/rest/user/id';
 
-                        const parameters = {
-                            oauth_consumer_key: config.client_id,
-                            oauth_token: accessToken,
-                            oauth_nonce,
-                            oauth_timestamp,
-                            oauth_signature_method: 'HMAC-SHA1',
-                            oauth_version: '1.0',
+                        // const parameters = {
+                        //     oauth_consumer_key: config.client_id,
+                        //     oauth_token: accessToken,
+                        //     oauth_nonce,
+                        //     oauth_timestamp,
+                        //     oauth_signature_method: 'HMAC-SHA1',
+                        //     oauth_version: '1.0',
+                        // };
+                        // const signature = oauthSignature.generate(
+                        //     'GET',
+                        //     requestBaseUrl,
+                        //     parameters,
+                        //     config.client_secret,
+                        //     request_token_secret,
+                        //     { encodeSignature: false }
+                        // );
+
+                        // const baseSignature = (
+                        //     'GET&' +
+                        //     encodeURIComponent(requestBaseUrl) +
+                        //     '&' +
+                        //     encodeURIComponent(
+                        //         `oauth_verifier=${oauth_verifier}&oauth_signature=${signature}&oauth_consumer_key=${config.client_id}&oauth_nonce=${oauth_nonce}&oauth_signature_method=HMAC-SHA1&oauth_timestamp=${oauth_timestamp}&oauth_token=${accessToken}&oauth_version=1.0`
+                        //     )
+                        // ).replace('%22', '');
+
+                        // const signingKey =
+                        //     encodeURIComponent(config.client_secret) +
+                        //     '&' +
+                        //     encodeURIComponent(tokenSecret);
+
+                        // const oauth_signature = crypto
+                        //     .createHmac('sha1', signingKey)
+                        //     .update(baseSignature)
+                        //     .digest('base64');
+
+                        // const auth = `OAuth oauth_verifier="${encodeURIComponent(
+                        //     oauth_verifier
+                        // )}", oauth_version="1.0", oauth_consumer_key="${encodeURIComponent(
+                        //     config.client_id
+                        // )}", oauth_token="${encodeURIComponent(
+                        //     accessToken
+                        // )}", oauth_timestamp="${oauth_timestamp}", oauth_nonce="${encodeURIComponent(
+                        //     oauth_nonce
+                        // )}", oauth_signature_method="HMAC-SHA1", oauth_signature="${encodeURIComponent(
+                        //     oauth_signature
+                        // )}"`;
+                        const oauth = OAuth({
+                            consumer: {
+                                key: config.client_id,
+                                secret: config.client_secret,
+                            },
+                            signature_method: 'HMAC-SHA1',
+                            hash_function: (base_string, key) => {
+                                return crypto
+                                    .createHmac('sha1', key)
+                                    .update(base_string)
+                                    .digest('base64');
+                            },
+                        });
+                        const requestData = {
+                            url: requestBaseUrl,
+                            method: 'POST',
+                            data: {
+                                oauth_nonce: db_id,
+                                oauth_token: accessToken,
+                            },
                         };
-                        const signature = oauthSignature.generate(
-                            'GET',
-                            requestBaseUrl,
-                            parameters,
-                            config.client_secret,
-                            request_token_secret,
-                            { encodeSignature: false }
+                        const authHeader = oauth.toHeader(
+                            oauth.authorize(requestData)
                         );
-
-                        const baseSignature = (
-                            'GET&' +
-                            encodeURIComponent(requestBaseUrl) +
-                            '&' +
-                            encodeURIComponent(
-                                `oauth_verifier=${oauth_verifier}&oauth_signature=${signature}&oauth_consumer_key=${config.client_id}&oauth_nonce=${oauth_nonce}&oauth_signature_method=HMAC-SHA1&oauth_timestamp=${oauth_timestamp}&oauth_token=${accessToken}&oauth_version=1.0`
-                            )
-                        ).replace('%22', '');
-
-                        const signingKey =
-                            encodeURIComponent(config.client_secret) +
-                            '&' +
-                            encodeURIComponent(tokenSecret);
-
-                        const oauth_signature = crypto
-                            .createHmac('sha1', signingKey)
-                            .update(baseSignature)
-                            .digest('base64');
-
-                        const auth = `OAuth oauth_verifier="${encodeURIComponent(
-                            oauth_verifier
-                        )}", oauth_consumer_key="${encodeURIComponent(
-                            config.client_id
-                        )}", oauth_nonce="${encodeURIComponent(
-                            oauth_nonce
-                        )}", oauth_signature="${encodeURIComponent(
-                            oauth_signature
-                        )}", oauth_signature_method="HMAC-SHA1", oauth_timestamp="${oauth_timestamp}", oauth_token="${encodeURIComponent(
-                            accessToken
-                        )}", oauth_version="1.0"`;
 
                         const { data, error } = await axios({
                             url: requestBaseUrl,
