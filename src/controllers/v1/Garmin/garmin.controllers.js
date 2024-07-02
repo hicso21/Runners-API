@@ -177,7 +177,7 @@ class GarminController {
                         if (error) {
                             console.log(
                                 "authHeader['Authorization'] => ",
-                                authHeader['Authorization']
+                                authHeader['Authorization'].replace('%2', '')
                             );
                             res.send({
                                 error,
