@@ -7,7 +7,6 @@ import RunnersServices from '../../../services/v1/Runners/runners.services.js';
 import { environment } from '../../../utils/constants/mainUrl.js';
 import fetchGarmin from '../../../utils/fetches/fetchGarminAPI.js';
 import ActivitiesServices from '../../../services/v1/Activities/activities.services.js';
-import oauthSignature from 'oauth-signature';
 
 function generateRandomNonce() {
     const randomBytes = crypto.randomBytes(16);
