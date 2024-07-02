@@ -72,6 +72,7 @@ class GarminController {
             const { data, oauth_verifier, oauth_token } = req.query;
 
             console.log('This is the url: ', req?.originalUrl);
+            const oauth_timestamp = Math.floor(Date.now() / 1000);
 
             const db_id = data.split('||')[0];
             const request_token_secret = data.split('||')[1];
@@ -98,87 +99,47 @@ class GarminController {
                         );
                     } else {
                         const oauth_nonce = generateRandomNonce();
-                        const oauth_timestamp = Math.floor(Date.now() / 1000);
 
                         const requestBaseUrl =
                             'https://apis.garmin.com/wellness-api/rest/user/id';
 
-                        // const parameters = {
-                        //     oauth_consumer_key: config.client_id,
-                        //     oauth_token: accessToken,
-                        //     oauth_nonce,
-                        //     oauth_timestamp,
-                        //     oauth_signature_method: 'HMAC-SHA1',
-                        //     oauth_version: '1.0',
-                        // };
-                        // const signature = oauthSignature.generate(
-                        //     'GET',
-                        //     requestBaseUrl,
-                        //     parameters,
-                        //     config.client_secret,
-                        //     request_token_secret,
-                        //     { encodeSignature: false }
-                        // );
+                        const baseSignature = (
+                            'GET&' +
+                            encodeURIComponent(requestBaseUrl) +
+                            '&' +
+                            encodeURIComponent(
+                                `oauth_verifier=${oauth_verifier}&oauth_consumer_key=${config.client_id}&oauth_nonce=${oauth_nonce}&oauth_signature_method=HMAC-SHA1&oauth_timestamp=${oauth_timestamp}&oauth_token=${accessToken}&oauth_version=1.0`
+                            )
+                        ).replace('%22', '');
 
-                        // const baseSignature = (
-                        //     'GET&' +
-                        //     encodeURIComponent(requestBaseUrl) +
-                        //     '&' +
-                        //     encodeURIComponent(
-                        //         `oauth_verifier=${oauth_verifier}&oauth_signature=${signature}&oauth_consumer_key=${config.client_id}&oauth_nonce=${oauth_nonce}&oauth_signature_method=HMAC-SHA1&oauth_timestamp=${oauth_timestamp}&oauth_token=${accessToken}&oauth_version=1.0`
-                        //     )
-                        // ).replace('%22', '');
+                        const signingKey =
+                            encodeURIComponent(config.client_secret) +
+                            '&' +
+                            encodeURIComponent(tokenSecret);
 
-                        // const signingKey =
-                        //     encodeURIComponent(config.client_secret) +
-                        //     '&' +
-                        //     encodeURIComponent(tokenSecret);
+                        const oauth_signature = crypto
+                            .createHmac('sha1', signingKey)
+                            .update(baseSignature)
+                            .digest('base64');
 
-                        // const oauth_signature = crypto
-                        //     .createHmac('sha1', signingKey)
-                        //     .update(baseSignature)
-                        //     .digest('base64');
-
-                        // const auth = `OAuth oauth_verifier="${encodeURIComponent(
-                        //     oauth_verifier
-                        // )}", oauth_version="1.0", oauth_consumer_key="${encodeURIComponent(
-                        //     config.client_id
-                        // )}", oauth_token="${encodeURIComponent(
-                        //     accessToken
-                        // )}", oauth_timestamp="${oauth_timestamp}", oauth_nonce="${encodeURIComponent(
-                        //     oauth_nonce
-                        // )}", oauth_signature_method="HMAC-SHA1", oauth_signature="${encodeURIComponent(
-                        //     oauth_signature
-                        // )}"`;
-                        const oauth = OAuth({
-                            consumer: {
-                                key: config.client_id,
-                                secret: config.client_secret,
-                            },
-                            signature_method: 'HMAC-SHA1',
-                            hash_function: (base_string, key) => {
-                                return crypto
-                                    .createHmac('sha1', key)
-                                    .update(base_string)
-                                    .digest('base64');
-                            },
-                        });
-                        const requestData = {
-                            url: requestBaseUrl,
-                            method: 'POST',
-                            data: {
-                                oauth_nonce: db_id,
-                                oauth_token: accessToken,
-                            },
-                        };
-                        const authHeader = oauth.toHeader(
-                            oauth.authorize(requestData)
-                        );
+                        const auth = `OAuth oauth_verifier="${encodeURIComponent(
+                            oauth_verifier
+                        )}", oauth_version="1.0", oauth_consumer_key="${encodeURIComponent(
+                            config.client_id
+                        )}", oauth_token="${encodeURIComponent(
+                            accessToken
+                        )}", oauth_timestamp="${oauth_timestamp}", oauth_nonce="${encodeURIComponent(
+                            oauth_nonce
+                        )}", oauth_signature_method="HMAC-SHA1", oauth_signature="${encodeURIComponent(
+                            oauth_signature
+                        )}"`;
 
                         const { data, error } = await axios({
                             url: requestBaseUrl,
                             method: 'GET',
-                            headers: authHeader,
+                            headers: {
+                                Authorization: auth,
+                            },
                         })
                             .then((res) => {
                                 return { error: false, data: res.data };
@@ -189,7 +150,6 @@ class GarminController {
 
                         console.log('Data of userId GET', data);
                         if (error) {
-                            console.log('signature => ', signature);
                             console.log('auth => ', auth);
                             res.send({
                                 error,
