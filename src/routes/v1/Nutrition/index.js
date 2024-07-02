@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import NutritionControllers from '../../../controllers/Nutritions/nutritions.controllers.js';
+import NutritionControllers from '../../../controllers/v1/Nutritions/nutritions.controllers.js';
 
 const router = Router();
 

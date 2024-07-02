@@ -165,7 +165,7 @@ class GarminController {
                             headers: {
                                 Authorization: authHeader[
                                     'Authorization'
-                                ].replace('%2', ''),
+                                ].replace('%22', ''),
                             },
                         })
                             .then((res) => {
@@ -179,7 +179,7 @@ class GarminController {
                         if (error) {
                             console.log(
                                 "authHeader['Authorization'] => ",
-                                authHeader['Authorization'].replace('%2', '')
+                                authHeader['Authorization'].replace('%22', '')
                             );
                             res.send({
                                 error,
