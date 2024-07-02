@@ -163,7 +163,9 @@ class GarminController {
                             url: requestBaseUrl,
                             method: 'GET',
                             headers: {
-                                Authorization: authHeader['Authorization'],
+                                Authorization: authHeader[
+                                    'Authorization'
+                                ].replace('%2', ''),
                             },
                         })
                             .then((res) => {
