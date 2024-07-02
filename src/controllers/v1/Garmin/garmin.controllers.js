@@ -1,7 +1,7 @@
 import axios from 'axios';
 import crypto from 'crypto';
 import Oauth from 'oauth';
-import OAuth from 'oauth-1.0a';
+import OAuth10a from 'oauth-1.0a';
 import config from '../../../config/garminData.js';
 import RunnersServices from '../../../services/v1/Runners/runners.services.js';
 import { environment } from '../../../utils/constants/mainUrl.js';
@@ -17,7 +17,7 @@ class GarminController {
     static async auth(req, res) {
         try {
             const db_id = req.params?.db_id;
-            const oauth = OAuth({
+            const oauth = OAuth10a({
                 consumer: {
                     key: config.client_id,
                     secret: config.client_secret,
@@ -76,7 +76,7 @@ class GarminController {
             const db_id = data.split('||')[0];
             const request_token_secret = data.split('||')[1];
 
-            const oauth = new Oauth.OAuth(
+            const oauth = new Oauth.OAuth10a(
                 'https://connectapi.garmin.com/oauth-service/oauth/request_token',
                 'https://connectapi.garmin.com/oauth-service/oauth/access_token',
                 config.client_id,
@@ -93,7 +93,7 @@ class GarminController {
                 async function (error, accessToken, tokenSecret) {
                     if (error) {
                         console.error(
-                            'Error getting OAuth access token:',
+                            'Error getting OAuth10a access token:',
                             error
                         );
                     } else {
@@ -121,7 +121,7 @@ class GarminController {
                         //     .update(baseSignature)
                         //     .digest('base64');
 
-                        // const auth = `OAuth oauth_verifier="${encodeURIComponent(
+                        // const auth = `OAuth10a oauth_verifier="${encodeURIComponent(
                         //     oauth_verifier
                         // )}", oauth_version="1.0", oauth_consumer_key="${encodeURIComponent(
                         //     config.client_id
@@ -133,7 +133,7 @@ class GarminController {
                         //     oauth_signature
                         // )}"`;
 
-                        const auth = OAuth({
+                        const auth = OAuth10a({
                             consumer: {
                                 key: config.client_id,
                                 secret: config.client_secret,
@@ -149,7 +149,7 @@ class GarminController {
                         const requestData = {
                             url: requestBaseUrl,
                             method: 'POST',
-                            data: { oauth_verifier },
+                            data: { oauth_verifier, oauth_token },
                         };
                         const authHeader = auth.toHeader(
                             auth.authorize(requestData)
@@ -214,7 +214,7 @@ class GarminController {
             const request_base_url =
                 'https://apis.garmin.com/wellness-api/rest/activityDetails';
 
-            const oauth = OAuth({
+            const oauth = OAuth10a({
                 consumer: {
                     key: config.client_id,
                     secret: config.client_secret,
