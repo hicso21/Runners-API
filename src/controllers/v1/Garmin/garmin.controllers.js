@@ -175,7 +175,10 @@ class GarminController {
 
                         console.log('Data of userId GET', data);
                         if (error) {
-                            console.log('auth => ', auth);
+                            console.log(
+                                "authHeader['Authorization'] => ",
+                                authHeader['Authorization']
+                            );
                             res.send({
                                 error,
                                 data: 'An error has ocurred getting garmin id.',
