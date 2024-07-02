@@ -139,7 +139,7 @@ class GarminController {
                                 secret: config.client_secret,
                             },
                             signature_method: 'HMAC-SHA1',
-                            hash_function: (base_string, key) => {
+                            hash_function(base_string, key) {
                                 return crypto
                                     .createHmac('sha1', key)
                                     .update(base_string)
@@ -148,7 +148,7 @@ class GarminController {
                         });
                         const requestData = {
                             url: requestBaseUrl,
-                            method: 'POST',
+                            method: 'GET',
                             data: {
                                 oauth_verifier,
                                 oauth_token: accessToken,
@@ -156,7 +156,7 @@ class GarminController {
                             },
                         };
                         const authHeader = auth.toHeader(
-                            auth.authorize(requestData)
+                            auth.authorize(requestData, oauth_token)
                         );
 
                         const { data, error } = await axios({
