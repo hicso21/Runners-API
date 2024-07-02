@@ -76,7 +76,7 @@ class GarminController {
             const db_id = data.split('||')[0];
             const request_token_secret = data.split('||')[1];
 
-            const oauth = new Oauth.OAuth10a(
+            const oauth = new Oauth.OAuth(
                 'https://connectapi.garmin.com/oauth-service/oauth/request_token',
                 'https://connectapi.garmin.com/oauth-service/oauth/access_token',
                 config.client_id,
