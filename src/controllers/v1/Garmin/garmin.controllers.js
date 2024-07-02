@@ -110,7 +110,7 @@ class GarminController {
                             encodeURIComponent(
                                 `oauth_verifier=${oauth_verifier}&oauth_consumer_key=${config.client_id}&oauth_nonce=${oauth_nonce}&oauth_signature_method=HMAC-SHA1&oauth_timestamp=${oauth_timestamp}&oauth_token=${accessToken}&oauth_version=1.0`
                             )
-                        ).replace('%22', '');
+                        );
 
                         const signingKey =
                             encodeURIComponent(config.client_secret) +
