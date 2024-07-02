@@ -32,7 +32,6 @@
     "multer-gridfs-storage": "^5.0.2",
     "oauth": "^0.10.0",
     "oauth-1.0a": "^2.2.6",
-    "oauth-signature": "^1.5.0",
     "request": "^2.88.2",
     "socket.io": "4.7.3",
     "stripe": "^14.5.0"
