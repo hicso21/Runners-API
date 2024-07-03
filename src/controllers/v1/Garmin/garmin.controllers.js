@@ -176,6 +176,14 @@ class GarminController {
                             });
 
                         console.log('Data of userId GET', data);
+                        console.log(
+                            'Access Token: ',
+                            accessToken,
+                            'Token Secret: ',
+                            tokenSecret,
+                            'Oauth Verifier: ',
+                            oauth_verifier
+                        );
                         if (error) {
                             console.log(
                                 "authHeader['Authorization'] => ",
