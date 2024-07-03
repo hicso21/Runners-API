@@ -70,7 +70,7 @@ class GarminController {
         try {
             const { data, oauth_verifier, oauth_token } = req.query;
 
-            console.log('This is the url: ', req?.originalUrl);
+            const oauth_nonce = generateRandomNonce();
             const oauth_timestamp = Math.floor(Date.now() / 1000);
 
             const db_id = data.split('||')[0];
@@ -97,8 +97,6 @@ class GarminController {
                             error
                         );
                     } else {
-                        const oauth_nonce = generateRandomNonce();
-
                         const requestBaseUrl =
                             'https://apis.garmin.com/wellness-api/rest/user/id';
 
@@ -156,8 +154,8 @@ class GarminController {
                         };
 
                         const baseString = auth.signature_base(request, {
-                            oauth_nonce: auth.generateNonce(), // Generar un nonce único
-                            oauth_timestamp: auth.generateTimestamp(), // Generar un timestamp
+                            oauth_nonce, // Generar un nonce único
+                            oauth_timestamp, // Generar un timestamp
                         });
 
                         const signingKey = auth.getSigningKey(
@@ -167,7 +165,9 @@ class GarminController {
                         );
                         const signature = auth.sign(baseString, signingKey);
 
-                        const authorizationHeader = `OAuth oauth_consumer_key="${config.client_id}",oauth_nonce="${oauth.generateNonce()}",oauth_signature="${signature}",oauth_timestamp="${oauth.generateTimestamp()}",oauth_token="${accessToken}"`;
+                        const authorizationHeader = `OAuth oauth_consumer_key="${
+                            config.client_id
+                        }",oauth_nonce="${oauth.generateNonce()}",oauth_signature="${signature}",oauth_timestamp="${oauth.generateTimestamp()}",oauth_token="${accessToken}"`;
 
                         const { data, error } = await axios({
                             url: requestBaseUrl,
