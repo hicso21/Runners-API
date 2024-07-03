@@ -167,7 +167,7 @@ class GarminController {
                         );
                         const signature = auth.sign(baseString, signingKey);
 
-                        const authorizationHeader = `OAuth oauth_consumer_key="${consumerKey}",oauth_nonce="${oauth.generateNonce()}",oauth_signature="${signature}",oauth_timestamp="${oauth.generateTimestamp()}",oauth_token="${accessToken}"`;
+                        const authorizationHeader = `OAuth oauth_consumer_key="${config.client_id}",oauth_nonce="${oauth.generateNonce()}",oauth_signature="${signature}",oauth_timestamp="${oauth.generateTimestamp()}",oauth_token="${accessToken}"`;
 
                         const { data, error } = await axios({
                             url: requestBaseUrl,
