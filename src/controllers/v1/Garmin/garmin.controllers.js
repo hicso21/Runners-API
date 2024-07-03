@@ -118,7 +118,7 @@ class GarminController {
 
                         const auth = `OAuth oauth_consumer_key="${
                             config.client_id
-                        }",oauth_token="${oauth_token}",oauth_signature_method="HMAC-SHA1",oauth_timestamp="${oauth_timestamp}",oauth_nonce="${oauth_nonce}",oauth_version="1.0",oauth_verifier="${oauth_verifier}",oauth_signature="${encodeURIComponent(
+                        }",oauth_token="${accessToken}",oauth_signature_method="HMAC-SHA1",oauth_timestamp="${oauth_timestamp}",oauth_nonce="${oauth_nonce}",oauth_version="1.0",oauth_verifier="${oauth_verifier}",oauth_signature="${encodeURIComponent(
                             oauth_signature
                         )}"`;
 
@@ -135,6 +135,7 @@ class GarminController {
                             .catch((error) => {
                                 return { error: true, data: error };
                             });
+
                         console.log('data => ', data);
 
                         if (error) {
