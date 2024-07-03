@@ -146,26 +146,34 @@ class GarminController {
                                     .digest('base64');
                             },
                         });
-                        const requestData = {
-                            url: requestBaseUrl,
+                        const request = {
                             method: 'GET',
+                            url: requestBaseUrl,
                             data: {
                                 oauth_verifier,
                                 oauth_token: accessToken,
-                                oauth_timestamp,
                             },
                         };
-                        const authHeader = auth.toHeader(
-                            auth.authorize(requestData, oauth_token)
+
+                        const baseString = auth.signature_base(request, {
+                            oauth_nonce: auth.generateNonce(), // Generar un nonce único
+                            oauth_timestamp: auth.generateTimestamp(), // Generar un timestamp
+                        });
+
+                        const signingKey = auth.getSigningKey(
+                            config.client_secret,
+                            tokenSecret,
+                            request.method
                         );
+                        const signature = auth.sign(baseString, signingKey);
+
+                        const authorizationHeader = `OAuth oauth_consumer_key="${consumerKey}",oauth_nonce="${oauth.generateNonce()}",oauth_signature="${signature}",oauth_timestamp="${oauth.generateTimestamp()}",oauth_token="${accessToken}"`;
 
                         const { data, error } = await axios({
                             url: requestBaseUrl,
                             method: 'GET',
                             headers: {
-                                Authorization: authHeader[
-                                    'Authorization'
-                                ].replace('%22', ''),
+                                Authorization: authorizationHeader,
                             },
                         })
                             .then((res) => {
@@ -176,18 +184,10 @@ class GarminController {
                             });
 
                         console.log('Data of userId GET', data);
-                        console.log(
-                            'Access Token: ',
-                            accessToken,
-                            'Token Secret: ',
-                            tokenSecret,
-                            'Oauth Verifier: ',
-                            oauth_verifier
-                        );
                         if (error) {
                             console.log(
-                                "authHeader['Authorization'] => ",
-                                authHeader['Authorization'].replace('%22', '')
+                                'authorizationHeader => ',
+                                authorizationHeader
                             );
                             res.send({
                                 error,
