@@ -135,6 +135,7 @@ class GarminController {
                             .catch((error) => {
                                 return { error: true, data: error };
                             });
+                        console.log('data => ', data);
 
                         if (error) {
                             res.send({
