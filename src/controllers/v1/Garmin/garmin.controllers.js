@@ -131,8 +131,8 @@ class GarminController {
                             });
 
                         console.log('data => ', data);
-                        console.log('auth => ', auth);
-                        console.log('oauth_signature => ', oauth_signature);
+                        console.log('authorizationHeader => ', authorizationHeader);
+                        console.log('signature => ', signature);
 
                         if (error) {
                             res.send({
