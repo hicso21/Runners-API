@@ -113,8 +113,9 @@ class GarminController {
                             .createHmac('sha1', signingKey)
                             .update(baseString)
                             .digest('base64');
+                        const oauth_signature = encodeURIComponent(signature);
 
-                        const authorizationHeader = `OAuth oauth_consumer_key="${consumerKey}", oauth_token="${accessToken}", oauth_nonce="${oauth_nonce}", oauth_timestamp="${oauth_timestamp}", oauth_signature_method="HMAC_SHA1", oauth_signature="${signature}", oauth_version="1.0", oauth_verifier="${oauth_verifier}"`;
+                        const authorizationHeader = `OAuth oauth_consumer_key="${consumerKey}", oauth_token="${accessToken}", oauth_nonce="${oauth_nonce}", oauth_timestamp="${oauth_timestamp}", oauth_signature_method="HMAC_SHA1", oauth_signature="${oauth_signature}", oauth_version="1.0", oauth_verifier="${oauth_verifier}"`;
 
                         const { data, error } = await axios({
                             url: requestBaseUrl,
@@ -131,8 +132,11 @@ class GarminController {
                             });
 
                         console.log('data => ', data);
-                        console.log('authorizationHeader => ', authorizationHeader);
-                        console.log('signature => ', signature);
+                        console.log(
+                            'authorizationHeader => ',
+                            authorizationHeader
+                        );
+                        console.log('oauth_signature => ', oauth_signature);
 
                         if (error) {
                             res.send({
