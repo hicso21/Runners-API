@@ -7,6 +7,7 @@ import RunnersServices from '../../../services/v1/Runners/runners.services.js';
 import { environment } from '../../../utils/constants/mainUrl.js';
 import fetchGarmin from '../../../utils/fetches/fetchGarminAPI.js';
 import ActivitiesServices from '../../../services/v1/Activities/activities.services.js';
+import { v1 } from 'uuid';
 
 function generateRandomNonce() {
     const randomBytes = crypto.randomBytes(16);
@@ -96,32 +97,79 @@ class GarminController {
                             error
                         );
                     } else {
-                        // const oauth_nonce = crypto
-                        //     .randomBytes(16)
-                        //     .toString('hex');
-                        const method = 'GET';
-                        const consumerKey = config.client_id;
-                        const consumerSecret = config.client_secret;
-                        const oauth_nonce = generateRandomNonce();
+                        // const method = 'GET';
+                        // const consumerKey = config.client_id;
+                        // const consumerSecret = config.client_secret;
+                        // const oauth_nonce = v1();
+                        // const oauth_timestamp = Math.floor(Date.now() / 1000);
+                        // const base_url =
+                        //     'https://apis.garmin.com/wellness-api/rest/user/id';
+
+                        // const baseString = `${method}&${base_url}&${oauth_timestamp}&${oauth_nonce}`;
+                        // const signingKey = `${consumerSecret}&${tokenSecret}`;
+                        // const signature = crypto
+                        //     .createHmac('sha1', signingKey)
+                        //     .update(baseString)
+                        //     .digest()
+                        //     .toString('base64');
+                        // const oauth_signature = encodeURIComponent(signature);
+
+                        // const authorizationHeader = `OAuth oauth_consumer_key="${consumerKey}", oauth_token="${accessToken}", oauth_nonce="${oauth_nonce}", oauth_timestamp="${oauth_timestamp}", oauth_signature_method="HMAC_SHA1", oauth_signature="${oauth_signature}", oauth_version="1.0"`;
+
                         const oauth_timestamp = Math.floor(Date.now() / 1000);
-                        const requestBaseUrl =
+                        const oauth_nonce = v1();
+                        const parameters = {
+                            oauth_consumer_key:
+                                '8ea9745c-56a3-4f5f-961f-9731a83a172b',
+                            oauth_signature_method: 'HMAC-SHA1',
+                            oauth_timestamp: oauth_timestamp,
+                            oauth_nonce: oauth_nonce,
+                            oauth_version: '1.0',
+                        };
+                        let ordered = {};
+                        Object.keys(parameters)
+                            .sort()
+                            .forEach(function (key) {
+                                ordered[key] = parameters[key];
+                            });
+                        let encodedParameters = '';
+                        for (let key in ordered) {
+                            const encodedValue = escape(ordered[key]);
+                            const encodedKey = encodeURIComponent(key);
+                            if (encodedParameters === '') {
+                                encodedParameters += encodeURIComponent(
+                                    `${encodedKey}=${encodedValue}`
+                                );
+                            } else {
+                                encodedParameters += encodeURIComponent(
+                                    `&${encodedKey}=${encodedValue}`
+                                );
+                            }
+                        }
+                        const method = 'GET';
+                        const base_url =
                             'https://apis.garmin.com/wellness-api/rest/user/id';
+                        const encodedUrl = encodeURIComponent(base_url);
+                        encodedParameters =
+                            encodeURIComponent(encodedParameters); // encodedParameters which we generated in last step.
+                        const signature_base_string = `${method}&${encodedUrl}&${encodedParameters}`;
+                        const secret_key = config.client_secret;
+                        const signing_key = `${secret_key}&${tokenSecret}`;
+                        const oauth_signature = crypto
+                            .createHmac('sha1', signing_key)
+                            .update(signature_base_string)
+                            .digest()
+                            .toString('base64');
+                        const encoded_oauth_signature =
+                            encodeURIComponent(oauth_signature);
 
-                        const baseString = `${method} & ${requestBaseUrl} & ${oauth_timestamp} & ${oauth_nonce}`;
-                        const signingKey = `${consumerSecret}&${tokenSecret}`;
-                        const signature = crypto
-                            .createHmac('sha1', signingKey)
-                            .update(baseString)
-                            .digest('base64');
-                        const oauth_signature = encodeURIComponent(signature);
-
-                        const authorizationHeader = `OAuth oauth_consumer_key="${consumerKey}", oauth_token="${accessToken}", oauth_nonce="${oauth_nonce}", oauth_timestamp="${oauth_timestamp}", oauth_signature_method="HMAC_SHA1", oauth_signature="${oauth_signature}", oauth_version="1.0"`;
+                        const auth = `OAuth oauth_consumer_key="${parameters.oauth_consumer_key}",oauth_signature_method="${parameters.oauth_signature_method}",oauth_timestamp="${oauth_timestamp}",oauth_nonce="${oauth_nonce}", oauth_version="${parameters.oauth_version}", oauth_signature="${encoded_oauth_signature}", oauth_verifier="${oauth_verifier}"`;
 
                         const { data, error } = await axios({
-                            url: requestBaseUrl,
+                            url: base_url,
                             method,
                             headers: {
-                                Authorization: authorizationHeader,
+                                Authorization: auth,
                             },
                         })
                             .then((res) => {
@@ -132,10 +180,7 @@ class GarminController {
                             });
 
                         console.log('data => ', data);
-                        console.log(
-                            'authorizationHeader => ',
-                            authorizationHeader
-                        );
+                        console.log('auth => ', auth);
                         console.log('oauth_signature => ', oauth_signature);
 
                         if (error) {
