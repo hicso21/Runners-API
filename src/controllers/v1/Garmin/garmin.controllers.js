@@ -125,6 +125,8 @@ class GarminController {
                             oauth_timestamp: oauth_timestamp,
                             oauth_nonce: oauth_nonce,
                             oauth_version: '1.0',
+                            oauth_token: accessToken,
+                            oauth_verifier,
                         };
                         let ordered = {};
                         Object.keys(parameters)
@@ -153,8 +155,7 @@ class GarminController {
                         encodedParameters =
                             encodeURIComponent(encodedParameters); // encodedParameters which we generated in last step.
                         const signature_base_string = `${method}&${encodedUrl}&${encodedParameters}`;
-                        const secret_key = config.client_secret;
-                        const signing_key = `${secret_key}&${tokenSecret}`;
+                        const signing_key = `${config.client_secret}&${tokenSecret}`;
                         const oauth_signature = crypto
                             .createHmac('sha1', signing_key)
                             .update(signature_base_string)
@@ -163,7 +164,7 @@ class GarminController {
                         const encoded_oauth_signature =
                             encodeURIComponent(oauth_signature);
 
-                        const auth = `OAuth oauth_consumer_key="${parameters.oauth_consumer_key}",oauth_signature_method="${parameters.oauth_signature_method}",oauth_timestamp="${oauth_timestamp}",oauth_nonce="${oauth_nonce}", oauth_version="${parameters.oauth_version}", oauth_signature="${encoded_oauth_signature}", oauth_verifier="${oauth_verifier}"`;
+                        const auth = `OAuth oauth_consumer_key="${parameters.oauth_consumer_key}",oauth_signature_method="${parameters.oauth_signature_method}",oauth_timestamp="${oauth_timestamp}",oauth_nonce="${oauth_nonce}", oauth_token="${parameters.oauth_token}", oauth_version="${parameters.oauth_version}", oauth_signature="${encoded_oauth_signature}", oauth_verifier="${parameters.oauth_verifier}"`;
 
                         const { data, error } = await axios({
                             url: base_url,
