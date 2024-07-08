@@ -8,6 +8,7 @@ import { environment } from '../../../utils/constants/mainUrl.js';
 import fetchGarmin from '../../../utils/fetches/fetchGarminAPI.js';
 import ActivitiesServices from '../../../services/v1/Activities/activities.services.js';
 import { v1 } from 'uuid';
+import oauthSignature from 'oauth-signature';
 
 function generateRandomNonce() {
     const randomBytes = crypto.randomBytes(16);
@@ -164,6 +165,14 @@ class GarminController {
                         const encoded_oauth_signature =
                             encodeURIComponent(oauth_signature);
 
+                        const sign = oauthSignature.generate(
+                            method,
+                            base_url,
+                            parameters,
+                            config.client_secret,
+                            tokenSecret
+                        );
+
                         const auth = `OAuth oauth_consumer_key="${parameters.oauth_consumer_key}",oauth_signature_method="${parameters.oauth_signature_method}",oauth_timestamp="${oauth_timestamp}",oauth_nonce="${oauth_nonce}", oauth_token="${parameters.oauth_token}", oauth_version="${parameters.oauth_version}", oauth_signature="${encoded_oauth_signature}", oauth_verifier="${parameters.oauth_verifier}"`;
 
                         const { data, error } = await axios({
@@ -183,6 +192,7 @@ class GarminController {
                         console.log('data => ', data);
                         console.log('auth => ', auth);
                         console.log('oauth_signature => ', oauth_signature);
+                        console.log('sign => ', sign);
 
                         if (error) {
                             res.send({
