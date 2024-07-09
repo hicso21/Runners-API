@@ -74,8 +74,8 @@ class GarminController {
 
             console.log('This is the url: ', req?.originalUrl);
 
-            const db_id = data.split('||')[0];
-            const request_token_secret = data.split('||')[1];
+            const db_id = data?.split('||')[0];
+            const request_token_secret = data?.split('||')[1];
 
             const oauth = new Oauth.OAuth(
                 'https://connectapi.garmin.com/oauth-service/oauth/request_token',
@@ -98,25 +98,6 @@ class GarminController {
                             error
                         );
                     } else {
-                        // const method = 'GET';
-                        // const consumerKey = config.client_id;
-                        // const consumerSecret = config.client_secret;
-                        // const oauth_nonce = v1();
-                        // const oauth_timestamp = Math.floor(Date.now() / 1000);
-                        // const base_url =
-                        //     'https://apis.garmin.com/wellness-api/rest/user/id';
-
-                        // const baseString = `${method}&${base_url}&${oauth_timestamp}&${oauth_nonce}`;
-                        // const signingKey = `${consumerSecret}&${tokenSecret}`;
-                        // const signature = crypto
-                        //     .createHmac('sha1', signingKey)
-                        //     .update(baseString)
-                        //     .digest()
-                        //     .toString('base64');
-                        // const oauth_signature = encodeURIComponent(signature);
-
-                        // const authorizationHeader = `OAuth oauth_consumer_key="${consumerKey}", oauth_token="${accessToken}", oauth_nonce="${oauth_nonce}", oauth_timestamp="${oauth_timestamp}", oauth_signature_method="HMAC_SHA1", oauth_signature="${oauth_signature}", oauth_version="1.0"`;
-
                         const oauth_timestamp = Math.floor(Date.now() / 1000);
                         const oauth_nonce = v1();
                         const parameters = {
@@ -129,41 +110,10 @@ class GarminController {
                             oauth_token: accessToken,
                             oauth_verifier,
                         };
-                        let ordered = {};
-                        Object.keys(parameters)
-                            .sort()
-                            .forEach(function (key) {
-                                ordered[key] = parameters[key];
-                            });
-                        let encodedParameters = '';
-                        for (let key in ordered) {
-                            const encodedValue = escape(ordered[key]);
-                            const encodedKey = encodeURIComponent(key);
-                            if (encodedParameters === '') {
-                                encodedParameters += encodeURIComponent(
-                                    `${encodedKey}=${encodedValue}`
-                                );
-                            } else {
-                                encodedParameters += encodeURIComponent(
-                                    `&${encodedKey}=${encodedValue}`
-                                );
-                            }
-                        }
                         const method = 'GET';
                         const base_url =
                             'https://apis.garmin.com/wellness-api/rest/user/id';
-                        const encodedUrl = encodeURIComponent(base_url);
-                        encodedParameters =
-                            encodeURIComponent(encodedParameters); // encodedParameters which we generated in last step.
-                        const signature_base_string = `${method}&${encodedUrl}&${encodedParameters}`;
-                        const signing_key = `${config.client_secret}&${tokenSecret}`;
-                        const oauth_signature = crypto
-                            .createHmac('sha1', signing_key)
-                            .update(signature_base_string)
-                            .digest()
-                            .toString('base64');
-                        const encoded_oauth_signature =
-                            encodeURIComponent(oauth_signature);
+
                         const sign = oauthSignature.generate(
                             method,
                             base_url,
@@ -189,9 +139,6 @@ class GarminController {
                             });
 
                         console.log('data => ', data);
-                        console.log('auth => ', auth);
-                        console.log('oauth_signature => ', oauth_signature);
-                        console.log('sign => ', sign);
 
                         if (error) {
                             res.send({
@@ -206,14 +153,15 @@ class GarminController {
                                 refresh_token: tokenSecret,
                                 brand_id: data.userId,
                             };
-                            await RunnersServices.update(db_id, updatedRunner);
-                            console.log(
-                                'This is the db_id of who are sync with garmin ' +
-                                    db_id
+                            console.log('updatedRunner => ', updatedRunner);
+                            const updateResponse = await RunnersServices.update(
+                                db_id,
+                                updatedRunner
                             );
+                            console.log('updateResponse', updateResponse);
 
                             res.send(
-                                'Conexión exitosa! Puedes volver a la app.'
+                                '<h2>Conexión exitosa! Puedes volver a la app.</h2>'
                             );
                         }
                     }
