@@ -68,9 +68,7 @@ export default class RunnersServices {
 
     static async update(id, body) {
         try {
-            const runner = await Runners.findByIdAndUpdate(id, {
-                $set: body,
-            });
+            const runner = await Runners.findByIdAndUpdate(id, body);
             return runner;
         } catch (error) {
             return {
