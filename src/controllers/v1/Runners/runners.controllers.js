@@ -96,6 +96,9 @@ export default class RunnersControllers {
                 ...body,
                 password: encrypt(body.password),
                 brevo_id: `${data.id}`,
+                brand_id: '',
+                refresh_token: '',
+                access_token: '',
             };
             const runner = await RunnersServices.create(runnerData);
             console.log(runner);

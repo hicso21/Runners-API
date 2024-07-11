@@ -146,17 +146,18 @@ class GarminController {
                                 data: 'An error has ocurred getting garmin id.',
                             });
                         } else {
-                            const runner = await RunnersServices.getById(db_id);
-                            const updatedRunner = {
-                                ...runner,
+                            const updatedRunnerData = {
                                 access_token: accessToken,
                                 refresh_token: tokenSecret,
                                 brand_id: data.userId,
                             };
-                            console.log('updatedRunner => ', updatedRunner);
+                            console.log(
+                                'updatedRunnerData => ',
+                                updatedRunnerData
+                            );
                             const updateResponse = await RunnersServices.update(
                                 db_id,
-                                updatedRunner
+                                updatedRunnerData
                             );
                             console.log('updateResponse', updateResponse);
 
