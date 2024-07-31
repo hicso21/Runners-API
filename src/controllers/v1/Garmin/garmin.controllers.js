@@ -101,8 +101,7 @@ class GarminController {
                         const oauth_timestamp = Math.floor(Date.now() / 1000);
                         const oauth_nonce = v1();
                         const parameters = {
-                            oauth_consumer_key:
-                                '8ea9745c-56a3-4f5f-961f-9731a83a172b',
+                            oauth_consumer_key: process.env.garmin_client_id,
                             oauth_signature_method: 'HMAC-SHA1',
                             oauth_timestamp: oauth_timestamp,
                             oauth_nonce: oauth_nonce,
@@ -182,38 +181,50 @@ class GarminController {
         const { id, start_time, end_time } = req.body;
         let user;
         try {
-            const request_base_url =
+            if (id) user = await RunnersServices.getById(id);
+            else
+                return res.send({
+                    data: 'You must send the ID of the user',
+                    error: true,
+                });
+
+            const oauth_timestamp = Math.floor(Date.now() / 1000);
+            const oauth_nonce = v1();
+            const parameters = {
+                oauth_consumer_key: process.env.garmin_client_id,
+                oauth_signature_method: 'HMAC-SHA1',
+                oauth_timestamp: oauth_timestamp,
+                oauth_nonce: oauth_nonce,
+                oauth_version: '1.0',
+                oauth_token: user?.access_token,
+                oauth_verifier,
+            };
+            const method = 'GET';
+            const base_url =
                 'https://apis.garmin.com/wellness-api/rest/activityDetails';
 
-            const oauth = OAuth10a({
-                consumer: {
-                    key: config.client_id,
-                    secret: config.client_secret,
-                },
-                signature_method: 'HMAC-SHA1',
-                hash_function: (base_string, key) => {
-                    return crypto
-                        .createHmac('sha1', key)
-                        .update(base_string)
-                        .digest('base64');
-                },
-            });
-            if (id) user = await RunnersServices.getById(id);
-            const requestData = {
-                url: request_base_url,
-                method: 'GET',
-                data: { oauth_token: user?.access_token },
-            };
-            const authHeader = oauth.toHeader(oauth.authorize(requestData));
+            const sign = oauthSignature.generate(
+                method,
+                base_url,
+                parameters,
+                config.client_secret,
+                tokenSecret
+            );
 
-            const { data } = axios({
-                url: request_base_url,
-                headers: authHeader,
+            const auth = `OAuth oauth_consumer_key="${parameters.oauth_consumer_key}",oauth_signature_method="${parameters.oauth_signature_method}",oauth_timestamp="${oauth_timestamp}",oauth_nonce="${oauth_nonce}", oauth_token="${parameters.oauth_token}", oauth_version="${parameters.oauth_version}", oauth_signature="${sign}", oauth_verifier="${parameters.oauth_verifier}"`;
+
+            const { data } = await axios({
+                url: base_url,
+                method,
+                headers: {
+                    Authorization: auth,
+                },
                 data: {
                     uploadStartTimeInSeconds: start_time,
                     uploadEndTimeInSeconds: end_time,
                 },
             });
+            console.log('setStats response => ', data);
             if (Object.keys(data) == 0)
                 return res.send({
                     error: true,
@@ -256,6 +267,20 @@ class GarminController {
                 data: activity,
                 error: false,
             });
+        } catch (error) {
+            res.status(500).send({
+                error: true,
+                msg: 'An error has ocurred',
+                data: error,
+            });
+        }
+    }
+
+    static async activitiesWebhook(req, res) {
+        const body = req.body;
+        try {
+            const activity_id = body['activityId'];
+            const athlete_id = body['athleteId'];
         } catch (error) {
             res.status(500).send({
                 error: true,
