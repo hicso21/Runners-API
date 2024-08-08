@@ -37,6 +37,18 @@ export default class RunnersServices {
         }
     }
 
+    static async getByBrandId(brand_id) {
+        try {
+            const runner = await Runners.findOne({ brand_id });
+            return runner;
+        } catch (error) {
+            return {
+                error: true,
+                data: error,
+            };
+        }
+    }
+
     static async changePassword(id, newPassword) {
         try {
             const updatedRunner = await Runners.findByIdAndUpdate(

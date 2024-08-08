@@ -1,10 +1,11 @@
 import Calendar from '../../../db/models/Calendar.js';
+import CalendarServices from '../../../services/v1/Calendar/calendar.services.js';
 
 export default class CalendarControllers {
     static async createUserEvents(req, res) {
         const { events } = req.body;
         try {
-            const data = await Calendar.create(events);
+            const data = await CalendarServices.create(events);
             res.send({
                 error: false,
                 data,

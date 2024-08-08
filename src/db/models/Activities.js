@@ -4,6 +4,7 @@ const activitiesSchema = new Schema({
 	user_id: String,
 	title: String,
 	date: String,
+	activity_type: String,
 	timestamp: String,
 	distance: String,
 	total_time: String,

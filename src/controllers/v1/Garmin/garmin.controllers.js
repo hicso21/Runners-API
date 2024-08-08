@@ -9,6 +9,7 @@ import fetchGarmin from '../../../utils/fetches/fetchGarminAPI.js';
 import ActivitiesServices from '../../../services/v1/Activities/activities.services.js';
 import { v1 } from 'uuid';
 import oauthSignature from 'oauth-signature';
+import activityTypes from '../../../utils/constants/activityTypes.js';
 
 function generateRandomNonce() {
     const randomBytes = crypto.randomBytes(16);
@@ -279,8 +280,48 @@ class GarminController {
     static async activitiesWebhook(req, res) {
         const body = req.body;
         try {
-            const activity_id = body['activityId'];
-            const athlete_id = body['athleteId'];
+            console.log('This is the POST of get_stats_activities', body);
+            const activity = req.body.activities[0];
+            const userBrandId = activity.userId;
+            const runner = await RunnersServices.getByBrandId(userBrandId);
+            const dataToSend = {
+                user_id: runner._id,
+                brand_id: activity?.userId,
+                activity_id: activity?.activityId,
+                activity_type:
+                    activityTypes.garmin[activity?.activityType] ||
+                    activity?.activityType,
+                title: '',
+                timestamp: activity?.startTimeInSeconds * 1000,
+                date: new Date(
+                    activity?.startTimeInSeconds * 1000
+                ).toLocaleString(),
+                distance: activity?.distanceInMeters,
+                total_time: activity?.durationInSeconds,
+                average_heart_rate: activity?.averageHeartRateInBeatsPerMinute,
+                max_heart_rate: activity?.maxHeartRateInBeatsPerMinute,
+                average_pace: activity?.averagePaceInMinutesPerKilometer,
+                max_pace: activity?.maxPaceInMinutesPerKilometer,
+                calories: activity?.activeKilocalories,
+                positive_slope: activity?.totalElevationGainInMeters,
+                negative_slope: activity?.totalElevationLossInMeters,
+                average_speed: activity?.averageSpeedInMetersPerSecond,
+                max_speed: activity?.maxSpeedInMetersPerSecond,
+                average_cadence: activity?.averageRunCadenceInStepsPerMinute,
+                steps: activity?.steps,
+                max_cadence: activity?.maxRunCadenceInStepsPerMinute,
+                training_load: '',
+                resting_heart_rate: '',
+                min_height: '',
+                max_height: '',
+                estimated_liquid_loss: '',
+                average_temperature: '',
+                paces: [],
+                triathlonData: [],
+                description: '',
+            };
+            ActivitiesServices.createActivity(dataToSend);
+            res.end();
         } catch (error) {
             res.status(500).send({
                 error: true,
