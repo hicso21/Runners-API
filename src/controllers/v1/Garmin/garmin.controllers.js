@@ -320,7 +320,7 @@ class GarminController {
                 triathlonData: [],
                 description: '',
             };
-            ActivitiesServices.createActivity(dataToSend);
+            await ActivitiesServices.createActivity(dataToSend);
             res.end();
         } catch (error) {
             res.status(500).send({
