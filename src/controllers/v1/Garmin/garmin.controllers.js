@@ -10,6 +10,7 @@ import ActivitiesServices from '../../../services/v1/Activities/activities.servi
 import { v1 } from 'uuid';
 import oauthSignature from 'oauth-signature';
 import activityTypes from '../../../utils/constants/activityTypes.js';
+import Test from '../../../db/models/TestModel.js';
 
 function generateRandomNonce() {
     const randomBytes = crypto.randomBytes(16);
@@ -321,6 +322,9 @@ class GarminController {
                 description: '',
             };
             await ActivitiesServices.createActivity(dataToSend);
+            await Test.create({
+                body: { ...body, webhook: 'activity_details' },
+            });
             res.end();
         } catch (error) {
             res.status(500).send({
