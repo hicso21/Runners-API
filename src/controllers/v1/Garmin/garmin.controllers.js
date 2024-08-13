@@ -325,7 +325,7 @@ class GarminController {
             await Test.create({
                 body: { ...body, webhook: 'activity_details' },
             });
-            res.end();
+            res.status(200).send('EVENT_RECEIVED');
         } catch (error) {
             res.status(500).send({
                 error: true,
