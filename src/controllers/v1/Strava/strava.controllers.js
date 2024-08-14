@@ -220,9 +220,9 @@ class StravaController {
     }
 
     static async webhookVerify(req, res) {
+        console.log(req.query)
         try {
             // Your verify token. Should be a random string.
-            console.log(req.query)
             const VERIFY_TOKEN = 'delaf2023';
             // Parses the query params
             let mode = req.query['hub.mode'];
