@@ -1,11 +1,13 @@
 const activityTypes = {
     garmin: {
+        RUNNING: 'running',
         INDOOR_RUNNING: 'running',
         STREET_RUNNING: 'running',
         TRACK_RUNNING: 'running',
         TRAIL_RUNNING: 'running',
         ULTRA_RUN: 'running',
         INDOOR_CYCLING: 'running',
+        CYCLING: 'bike',
         MOUNTAIN_BIKING: 'bike',
         ROAD_BIKING: 'bike',
         TRACK_CYCLING: 'bike',
