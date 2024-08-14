@@ -220,7 +220,7 @@ class StravaController {
     }
 
     static async webhookVerify(req, res) {
-        console.log(req.query)
+        console.log(req.query);
         try {
             // Your verify token. Should be a random string.
             const VERIFY_TOKEN = 'delaf2023';
@@ -239,7 +239,7 @@ class StravaController {
                     // Responds with '403 Forbidden' if verify tokens do not match
                     res.sendStatus(403);
                 }
-            }
+            } else res.sendStatus(500);
         } catch (error) {
             await LogsServices.create(
                 'webhookVerify error strava',
