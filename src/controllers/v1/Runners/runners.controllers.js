@@ -91,6 +91,7 @@ export default class RunnersControllers {
     static async register(req, res) {
         try {
             const body = req.body;
+            console.log(body)
             const anotherRunner = await RunnersServices.getByEmail(body?.email);
             if (anotherRunner != null)
                 return res.send({
