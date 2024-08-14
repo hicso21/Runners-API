@@ -7,6 +7,7 @@ const router = Router();
 router.get('/', (req, res) => {
     res.send('<h3>In this path, we have all the Strava requests</h3>');
 });
+router.get('/webhook', StravaControllers.webhookVerify);
 router.get('/authorize/:db_id', StravaControllers.authorize);
 router.get('/exchange_token/:db_id', StravaControllers.manageUserCode);
 router.get('/:id', refreshTokenMiddleWare, StravaControllers.getCompleteUser);
@@ -18,9 +19,6 @@ router.get(
     StravaControllers.getActivities
 );
 router.post('/setStats', refreshTokenMiddleWare, StravaControllers.setStats);
-
-router.get('/webhook', StravaControllers.webhookVerify);
-
 router.post('/webhook', StravaControllers.webhookData);
 
 export default router;
