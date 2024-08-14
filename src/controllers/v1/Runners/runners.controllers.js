@@ -117,6 +117,7 @@ export default class RunnersControllers {
             console.log(runner);
             res.status(201).send({ error: false, data: runner });
         } catch (error) {
+            console.log(error);
             await LogsServices.create(
                 'newRunner error',
                 'Error when trying to create user',
