@@ -91,7 +91,7 @@ export default class RunnersControllers {
     static async register(req, res) {
         try {
             const body = req.body;
-            console.log(body)
+            console.log(body);
             const anotherRunner = await RunnersServices.getByEmail(body?.email);
             if (anotherRunner != null)
                 return res.send({
@@ -99,13 +99,16 @@ export default class RunnersControllers {
                     data: 'Another runner is registered with this email',
                 });
             const { firstname, lastname } = divideName(body.name);
-            const { data } = await fetchBrevo.post('/v3/contacts', {
-                email: body?.email,
-                attributes: {
-                    FIRSTNAME: firstname,
-                    LASTNAME: lastname,
-                },
-            });
+            const { data } = await fetchBrevo.post(
+                '/v3/contacts',
+                JSON.stringify({
+                    email: body?.email,
+                    attributes: {
+                        FIRSTNAME: firstname,
+                        LASTNAME: lastname,
+                    },
+                })
+            );
             const runnerData = {
                 ...body,
                 password: encrypt(body.password),
