@@ -6,6 +6,8 @@ import decrypt from '../../../utils/functions/decrypt.js';
 import GroupsServices from '../../../services/v1/Groups/groups.services.js';
 import fetchBrevo from '../../../utils/fetches/fetchBrevo.js';
 import divideName from '../../../utils/functions/divideName.js';
+import axios from 'axios';
+import brevoConfig from '../../../config/brevo.config.js';
 
 export default class RunnersControllers {
     static async getAll(req, res) {
@@ -99,16 +101,34 @@ export default class RunnersControllers {
                     data: 'Another runner is registered with this email',
                 });
             const { firstname, lastname } = divideName(body.name);
-            const { data } = await fetchBrevo.post(
-                '/v3/contacts',
-                JSON.stringify({
+            // const { data } = await fetchBrevo.post(
+            //     '/v3/contacts',
+            //     JSON.stringify({
+            //         email: body?.email,
+            //         attributes: {
+            //             FIRSTNAME: firstname,
+            //             LASTNAME: lastname,
+            //         },
+            //     })
+            // );
+
+            const options = {
+                method: 'POST',
+                url: 'https://api.brevo.com/v3/contacts',
+                headers: {
+                    accept: 'application/json',
+                    'content-type': 'application/json',
+                    'api-key': process.env.brevo_api_key,
+                },
+                data: {
                     email: body?.email,
                     attributes: {
                         FIRSTNAME: firstname,
                         LASTNAME: lastname,
                     },
-                })
-            );
+                },
+            };
+            const { data } = await axios.request(options);
             const runnerData = {
                 ...body,
                 password: encrypt(body.password),
