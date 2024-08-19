@@ -270,6 +270,24 @@ class SuuntoController {
             });
         }
     }
+
+    static async getWebhook(req, res) {
+        try {
+            const body = req.body;
+            console.log(body);
+            res.status(200).send('Suunto Webhook');
+        } catch (error) {
+            await LogsServices.create(
+                'getWebhook suunto error',
+                JSON.stringify(error),
+                error
+            );
+            res.send({
+                error: true,
+                data: error,
+            });
+        }
+    }
 }
 
 export default SuuntoController;

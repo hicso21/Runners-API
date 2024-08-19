@@ -90,8 +90,14 @@ app.get('/', async (req, res) => {
 		We are using version ${currentVersion} at this moment ${new Date()}`);
 });
 
-app.get('/hostname', async (req, res) => {
-    res.send(`Hostname: ${req.hostname}`);
+app.get('/status', async (req, res) => {
+    res.send(
+        `
+            <div style="position:absolute;top:0;left:0;height:100dvh;width:100dvw;display:flex;justify-content:center;align-items:center">
+                <h1>The server is working correctly</h1>
+            </div>
+        `
+    );
 });
 
 server.listen(PORT, () => {
