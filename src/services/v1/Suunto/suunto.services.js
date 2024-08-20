@@ -11,7 +11,7 @@ class SuuntoServices {
 				'https://cloudapi-oauth.suunto.com/oauth/authorize?' +
 				`response_type=${config.response_type}` +
 				'&' +
-				`client_id=${config.client_id}` +
+				`client_id=${process.env.suunto_client_id}` +
 				'&' +
 				`redirect_uri=${redirect_uri}`;
 			return uri;
@@ -26,7 +26,7 @@ class SuuntoServices {
 	}
 
 	static async token(redirect_uri, code) {
-		const data = `${config.client_id}:${config.client_secret}`;
+		const data = `${process.env.suunto_client_id}:${process.env.suunto_client_secret}`;
 		// const authHeader = btoa(data);
 		const buffer = Buffer.from(data, 'utf8');
 		const encodedString = buffer.toString('base64');

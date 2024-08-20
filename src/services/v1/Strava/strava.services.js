@@ -10,7 +10,7 @@ class StravaServices {
 			const scope =
 				'read_all,profile:read_all,profile:write,activity:read_all,activity:write';
 			const url =
-				'https://www.strava.com/oauth/mobile/authorize?' +
+				'https://www.strava.com/oauth/authorize?' +
 				`redirect_uri=${redirect_uri}` +
 				'&' +
 				'response_type=code' +
