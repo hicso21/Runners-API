@@ -423,7 +423,7 @@ class PolarController {
     static async createWebhook(req, res) {
         try {
             const { events, url } = req.body;
-            console.log(events, url)
+            console.log(req.body)
             if (events && url) {
                 const body = {
                     events: body.events,
