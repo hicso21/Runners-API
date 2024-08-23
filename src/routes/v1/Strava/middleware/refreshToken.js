@@ -13,9 +13,6 @@ async function refreshToken(req, res, next) {
 		const refresh_oauth_token = await StravaServices.refreshAuthorization(
 			user_data.refresh_token
 		);
-		await RunnersServices.update(user_id, {
-			refresh_token: refresh_oauth_token.refresh_token,
-		});
 		req.bearer_token = `${refresh_oauth_token.token_type} ${refresh_oauth_token.access_token}`;
 		next();
 	} catch (error) {

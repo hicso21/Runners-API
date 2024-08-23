@@ -11,5 +11,5 @@ export default {
 		test_url: 'http://opentest.coros.com',
 	},
 	grant_type: 'authorization_code',
-	redirect_uri: 'https://runners-api.onrender.com',
+	redirect_uri: 'https://delaf.click',
 };
