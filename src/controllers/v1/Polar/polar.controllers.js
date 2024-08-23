@@ -419,40 +419,6 @@ class PolarController {
             });
         }
     }
-
-    static async createWebhook(req, res) {
-        try {
-            const { events, url } = req.body;
-            console.log(req.body)
-            if (events && url) {
-                const body = {
-                    events: body.events,
-                    url: body.url,
-                };
-                const { data } = await fetchPolar.post('/v3/webhooks', body, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Accept: 'application/json',
-                    },
-                });
-                console.log(data);
-                res.send(data);
-            } else
-                res.status(400).send(
-                    'Remember to send in the body, the events and the url'
-                );
-        } catch (error) {
-            await LogsServices.create(
-                'createWebhook error polar',
-                JSON.stringify(error),
-                error
-            );
-            res.send({
-                error: true,
-                data: error,
-            });
-        }
-    }
 }
 
 export default PolarController;
