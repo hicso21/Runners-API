@@ -257,7 +257,7 @@ class SuuntoController {
         try {
             const body = req.body;
             console.log(body);
-            res.send('Suunto Webhook');
+            res.status(200).send('Suunto Webhook');
         } catch (error) {
             await LogsServices.create(
                 'webhook suunto error',
