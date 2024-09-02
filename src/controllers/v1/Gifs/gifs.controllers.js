@@ -16,13 +16,9 @@ class GifsControllers {
     }
 
     static async getAllGif(req, res) {
-        const { without } = req.query;
-        let gifs;
         try {
-            if (without === 'gif')
-                gifs = await GifsServices.getAllGifWithoutGif();
-            if (!without) gifs = await GifsServices.allGif();
-            res.send(gifs);
+            const gifs = await GifsServices.allGif();
+            res.send({ error: false, data: gifs });
         } catch (error) {
             res.send({
                 error: true,
@@ -90,10 +86,15 @@ class GifsControllers {
     static async bulkPostGif(req, res) {
         const body = req.body;
         try {
-			if (Array.isArray(body)) {
-				const newGifs = await Gifs.create(body);
-				console.log(newGifs)
-			}
+            if (Array.isArray(body)) {
+                const newGifs = await Gifs.create(body);
+                console.log(newGifs);
+                res.send({
+                    error: false,
+                    msg: 'Files uploaded and saved to MongoDB',
+                    data: newGifs,
+                });
+            }
         } catch (error) {
             res.send({
                 error: true,
