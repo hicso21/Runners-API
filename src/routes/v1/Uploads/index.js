@@ -9,35 +9,35 @@ import mongoose from 'mongoose';
 import MultimediaController from '../../../controllers/v1/Multimedia/multimedia.controllers.js';
 
 const mongoURI =
-	'mongodb+srv://hicso:thomas2110@runnersdb.kso8gvp.mongodb.net/?retryWrites=true&w=majority';
+    'mongodb+srv://hicso:thomas2110@runnersdb.kso8gvp.mongodb.net/?retryWrites=true&w=majority';
 
 const conn = mongoose.createConnection(mongoURI);
 
 let gfs;
 
 conn.once('open', () => {
-	gfs = Grid(conn.db, mongoose.mongo);
-	gfs.collection('uploads');
+    gfs = Grid(conn.db, mongoose.mongo);
+    gfs.collection('uploads');
 });
 
 const storage = new GridFsStorage({
-	url: mongoURI,
-	file: (req, file) => {
-		return new Promise((resolve, reject) => {
-			crypto.randomBytes(16, (err, buf) => {
-				if (err) {
-					return reject(err);
-				}
-				console.log(file);
-				const filename = file.originalname;
-				const fileInfo = {
-					filename: filename,
-					bucketName: 'uploads',
-				};
-				resolve(fileInfo);
-			});
-		});
-	},
+    url: mongoURI,
+    file: (req, file) => {
+        return new Promise((resolve, reject) => {
+            crypto.randomBytes(16, (err, buf) => {
+                if (err) {
+                    return reject(err);
+                }
+                console.log(file);
+                const filename = file.originalname;
+                const fileInfo = {
+                    filename: filename,
+                    bucketName: 'uploads',
+                };
+                resolve(fileInfo);
+            });
+        });
+    },
 });
 const upload = multer({ storage });
 
@@ -49,6 +49,7 @@ router.get('/gif/just_names', GifsControllers.justNameGif);
 router.get('/gif/:name', GifsControllers.getByName);
 router.post('/gif/id_list', GifsControllers.byIdList);
 router.post('/gif', GifsControllers.postGif);
+router.post('/gif/bulk', GifsControllers.bulkPostGif);
 router.delete('/gif/:_id', GifsControllers.deleteGifById);
 
 /* IMAGE */

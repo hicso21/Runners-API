@@ -45,20 +45,19 @@ class GifsControllers {
     }
 
     static async postGif(req, res) {
-        const body = req.body;
-		console.log(body)
+        const { name, gifData } = req.body;
         try {
-            if (
-                Array.isArray(body) &&
-                body.every((item) => item.name && item.gif)
-            ) {
-                // const alreadyExistGif = await Gifs.find({ name: name });
-                // if (alreadyExistGif.length)
-                //     return res.send({
-                //         error: true,
-                //         msg: 'Another gif with this name exist',
-                //     });
-                const newGif = new Gifs(body);
+            if (name && gifData) {
+                const alreadyExistGif = await Gifs.find({ name: name });
+                if (alreadyExistGif.length)
+                    return res.send({
+                        error: true,
+                        msg: 'Another gif with this name exist',
+                    });
+                const newGif = new Gifs({
+                    name,
+                    gif: gifData,
+                });
                 newGif
                     .save()
                     .then((gif) => {
@@ -80,6 +79,21 @@ class GifsControllers {
                 // Invalid request
                 res.status(400).send({ error: true, msg: 'Invalid request' });
             }
+        } catch (error) {
+            res.send({
+                error: true,
+                data: error,
+            });
+        }
+    }
+
+    static async bulkPostGif(req, res) {
+        const body = req.body;
+        try {
+			if (Array.isArray(body)) {
+				const newGifs = await Gifs.create(body);
+				console.log(newGifs)
+			}
         } catch (error) {
             res.send({
                 error: true,
