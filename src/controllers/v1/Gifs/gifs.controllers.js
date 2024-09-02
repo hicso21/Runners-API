@@ -50,14 +50,14 @@ class GifsControllers {
         try {
             if (
                 Array.isArray(body) &&
-                body.every((item) => item.name && item.gifData)
+                body.every((item) => item.name && item.gif)
             ) {
-                const alreadyExistGif = await Gifs.find({ name: name });
-                if (alreadyExistGif.length)
-                    return res.send({
-                        error: true,
-                        msg: 'Another gif with this name exist',
-                    });
+                // const alreadyExistGif = await Gifs.find({ name: name });
+                // if (alreadyExistGif.length)
+                //     return res.send({
+                //         error: true,
+                //         msg: 'Another gif with this name exist',
+                //     });
                 const newGif = new Gifs(body);
                 newGif
                     .save()
