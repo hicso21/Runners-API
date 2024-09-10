@@ -46,6 +46,7 @@ class PolarController {
                 `${config.client_id}:${config.client_secret}`
             ).toString('base64')}`
         );
+        console.log('headers', headers);
         try {
             const response = await PolarServices.token(body, {
                 headers,
