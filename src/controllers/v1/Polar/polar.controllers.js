@@ -50,7 +50,13 @@ class PolarController {
             const response = await PolarServices.token(body, {
                 headers,
             });
+            console.log('Polar Response', response);
             if (response?.access_token != undefined) {
+                console.log('Polar update data', {
+                    access_token: response.access_token,
+                    token_type: response.token_type,
+                    x_user_id: response.x_user_id,
+                });
                 RunnersServices.update(state, {
                     access_token: response.access_token,
                     token_type: response.token_type,
