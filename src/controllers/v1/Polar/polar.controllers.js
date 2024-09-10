@@ -29,6 +29,7 @@ class PolarController {
 
     static async getExchangeToken(req, res) {
         const { code, state } = req.params;
+        console.log('params', { code, state });
         const body = {
             grant_type: 'authorization_code',
             code,
