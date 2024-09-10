@@ -8,5 +8,5 @@ export default {
 	response_type: 'code',
 	oauth_endpoint: 'https://flow.polar.com',
 	redirect_uri:
-		'https://runners-api.onrender.com/api/v1/polar/exchange_token',
+		'https://delaf.click/api/v1/polar/exchange_token',
 };
