@@ -45,10 +45,12 @@ class PolarController {
             ).toString('base64')}`
         );
         console.log('headers', headers);
+        console.log('body', body);
         try {
             const response = await PolarServices.token(body, {
                 headers,
             });
+            console.log('Polar response', response);
             if (response?.access_token != undefined) {
                 console.log('Polar update data', {
                     access_token: response.access_token,
