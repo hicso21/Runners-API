@@ -35,21 +35,18 @@ class PolarController {
             code,
             redirect_uri: config.redirect_uri,
         };
-        const headers = new Headers();
-        headers.append('Content-Type', 'application/x-www-form-urlencoded');
-        headers.append('Accept', 'application/json;charset=UTF-8');
-        headers.append(
-            'Authorization',
-            `Basic ${Buffer.from(
+        const headers = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: `Basic ${Buffer.from(
                 `${config.client_id}:${config.client_secret}`
-            ).toString('base64')}`
-        );
+            ).toString('base64')}`,
+            Accept: 'application/json;charset=UTF-8',
+        };
+
         console.log('headers', headers);
         console.log('body', body);
         try {
-            const response = await PolarServices.token(body, {
-                headers,
-            });
+            const response = await PolarServices.token(body, headers);
             console.log('Polar response', response);
             if (response?.access_token != undefined) {
                 console.log('Polar update data', {
