@@ -40,6 +40,7 @@ class SuuntoController {
                 access_token,
                 token_type,
                 refresh_token,
+                brand_id: '-',
             });
             if (response.error)
                 res.send(
