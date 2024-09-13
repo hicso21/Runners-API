@@ -30,10 +30,11 @@ class SuuntoController {
 
     static async getToken(req, res) {
         const { code, db_id } = req.query;
-        const redirect_uri = `${req.protocol}//${req.hostname}${req.path}?db_id${db_id}`;
+        const redirect_uri = `https://${req.hostname}/api/v1/suunto${req.path}?db_id${db_id}`;
         console.log(redirect_uri);
         try {
             const tokens = await SuuntoServices.token(redirect_uri, code);
+            console.log('Polar tokens:', tokens);
             const { access_token, token_type, refresh_token } = tokens;
             const response = await RunnersServices.update(db_id, {
                 access_token,
