@@ -29,13 +29,13 @@ class SuuntoController {
     }
 
     static async getToken(req, res) {
-        const id = req.params.db_id;
         const redirect_uri = req.href.split('?')[0];
-        const { code } = req.query;
+        const { code, db_id } = req.query;
+        console.log(db_id);
         try {
             const tokens = await SuuntoServices.token(redirect_uri, code);
             const { access_token, token_type, refresh_token } = tokens;
-            const response = await RunnersServices.update(id, {
+            const response = await RunnersServices.update(db_id, {
                 access_token,
                 token_type,
                 refresh_token,
@@ -47,7 +47,7 @@ class SuuntoController {
             else {
                 await LogsServices.create(
                     `auth suunto`,
-                    `authorization completed by the id user: ${id}`
+                    `authorization completed by the id user: ${db_id}`
                 );
                 res.send('<h2>Vuelve a la app</h2>');
             }

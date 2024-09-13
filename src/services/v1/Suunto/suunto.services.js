@@ -7,7 +7,7 @@ class SuuntoServices {
     static async getAuthorizeUrl(id) {
         try {
             console.log('id => ', id);
-            const redirect_uri = `${mainUrl}/api/v1/suunto/exchange_token/${id}`;
+            const redirect_uri = `${mainUrl}/api/v1/suunto/exchange_token?db_id=${id}`;
             const uri =
                 'https://cloudapi-oauth.suunto.com/oauth/authorize?' +
                 `response_type=${config.response_type}` +
