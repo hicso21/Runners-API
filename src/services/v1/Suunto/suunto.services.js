@@ -26,12 +26,14 @@ class SuuntoServices {
     }
 
     static async token(redirect_uri, code) {
-		console.log('redirect_uri',redirect_uri)
-		console.log('code',code)
+        console.log('redirect_uri', redirect_uri);
+        console.log('code', code);
         const data = `${process.env.suunto_client_id}:${process.env.suunto_client_secret}`;
         // const authHeader = btoa(data);
         const buffer = Buffer.from(data, 'utf8');
         const encodedString = buffer.toString('base64');
+        console.log('encodedString => ', data);
+        console.log('encodedString => ', encodedString);
         try {
             const res = await fetchSuunto.post(
                 '/oauth/token',
