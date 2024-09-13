@@ -18,6 +18,7 @@ class SuuntoController {
         try {
             const id = req.params?.db_id;
             const uri = SuuntoServices.getAuthorizeUrl(id);
+            console.log('uri: ', uri);
             res.redirect(uri);
         } catch (error) {
             res.send({
