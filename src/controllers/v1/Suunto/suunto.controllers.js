@@ -17,7 +17,7 @@ class SuuntoController {
     static async auth(req, res) {
         try {
             const id = req.params?.db_id;
-            const uri = SuuntoServices.getAuthorizeUrl(id);
+            const uri = await SuuntoServices.getAuthorizeUrl(id);
             console.log('uri: ', uri);
             res.redirect(uri);
         } catch (error) {
