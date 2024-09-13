@@ -35,6 +35,10 @@ class PolarController {
             code,
             redirect_uri: config.redirect_uri,
         };
+        const params = new URLSearchParams();
+        params.append('grant_type', 'authorization_code');
+        params.append('code', code);
+        params.append('redirect_uri', config.redirect_uri);
         const headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
             Authorization: `Basic ${Buffer.from(
@@ -42,6 +46,7 @@ class PolarController {
             ).toString('base64')}`,
             Accept: 'application/json;charset=UTF-8',
         };
+
         try {
             const response = await PolarServices.token(body, headers);
             console.log('Polar response', response);
