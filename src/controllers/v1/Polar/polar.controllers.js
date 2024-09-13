@@ -42,7 +42,7 @@ class PolarController {
         const headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
             Authorization: `Basic ${Buffer.from(
-                `${config.client_id}:${config.client_secret}`
+                `${process.env.client_id}:${process.env.client_secret}`
             ).toString('base64')}`,
             Accept: 'application/json;charset=UTF-8',
         };
