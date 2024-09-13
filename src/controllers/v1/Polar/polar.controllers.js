@@ -42,9 +42,6 @@ class PolarController {
             ).toString('base64')}`,
             Accept: 'application/json;charset=UTF-8',
         };
-
-        console.log('headers', headers);
-        console.log('body', body);
         try {
             const response = await PolarServices.token(body, headers);
             console.log('Polar response', response);
