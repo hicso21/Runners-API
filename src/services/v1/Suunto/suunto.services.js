@@ -6,7 +6,6 @@ import LogsServices from '../Logs/logs.services.js';
 class SuuntoServices {
     static async getAuthorizeUrl(id) {
         try {
-            console.log('id => ', id);
             const redirect_uri = `${mainUrl}/api/v1/suunto/exchange_token?db_id=${id}`;
             const uri =
                 'https://cloudapi-oauth.suunto.com/oauth/authorize?' +
@@ -27,6 +26,8 @@ class SuuntoServices {
     }
 
     static async token(redirect_uri, code) {
+		console.log('redirect_uri',redirect_uri)
+		console.log('code',code)
         const data = `${process.env.suunto_client_id}:${process.env.suunto_client_secret}`;
         // const authHeader = btoa(data);
         const buffer = Buffer.from(data, 'utf8');

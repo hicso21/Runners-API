@@ -29,9 +29,9 @@ class SuuntoController {
     }
 
     static async getToken(req, res) {
-        const redirect_uri = req.href.split('?')[0];
         const { code, db_id } = req.query;
-        console.log(db_id);
+        const redirect_uri = `${req.protocol}//${req.hostname}${req.path}?db_id${db_id}`;
+        console.log(redirect_uri);
         try {
             const tokens = await SuuntoServices.token(redirect_uri, code);
             const { access_token, token_type, refresh_token } = tokens;
