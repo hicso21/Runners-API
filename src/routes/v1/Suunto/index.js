@@ -8,7 +8,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/authorize/:db_id', SuuntoController.auth);
-router.get('/exchange_token/:db_id', SuuntoController.getToken);
+router.get('/exchange_token', SuuntoController.getToken);
 router.get('/webhook', SuuntoController.getWebhook)
 router.get('/daily_activity/:db_id', SuuntoController.getActivitySamples);
 router.get('/daily_statistics/:db_id', SuuntoController.getActivityStatistics);
