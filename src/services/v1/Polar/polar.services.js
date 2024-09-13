@@ -2,14 +2,14 @@ import axios from 'axios';
 import fetchPolar from '../../../utils/fetches/fetchPolarAPI.js';
 
 class PolarServices {
-    static async token(body, config) {
+    static async token(body, headers) {
         try {
-            console.log('config', config);
+            console.log('headers', headers);
             console.log('body', body);
             const { data } = await axios.post(
                 'https://polarremote.com/v2/oauth2/token',
                 body,
-                config
+                { headers }
             );
             return data;
         } catch (error) {
