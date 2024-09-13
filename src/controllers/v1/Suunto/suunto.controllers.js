@@ -35,6 +35,7 @@ class SuuntoController {
         try {
             const tokens = await SuuntoServices.token(redirect_uri, code);
             console.log('Polar tokens:', tokens);
+            console.log('Polar tokens response data:', tokens?.response?.data);
             const { access_token, token_type, refresh_token } = tokens;
             const response = await RunnersServices.update(db_id, {
                 access_token,
