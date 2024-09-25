@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import GarminController from '../../../controllers/v1/Garmin/garmin.controllers.js';
-import Test from '../../../db/models/TestModel.js'
+import Test from '../../../db/models/TestModel.js';
 
 const router = Router();
 
@@ -33,8 +33,13 @@ router.post('/get_stats_move_iq', async (req, res) => {
 
 router.post('/get_stats_manually_updated_activities', async (req, res) => {
     const body = req.body;
-    console.log('This is the POST of get_stats_manually_updated_activities', body);
-    await Test.create({ body: { ...body, webhook: 'manually_updated_activities' } });
+    console.log(
+        'This is the POST of get_stats_manually_updated_activities',
+        body
+    );
+    await Test.create({
+        body: { ...body, webhook: 'manually_updated_activities' },
+    });
     res.end();
 });
 
