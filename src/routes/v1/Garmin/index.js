@@ -13,6 +13,9 @@ router.post('/get_stats_activities', GarminController.activitiesWebhook);
 router.post('/get_stats_activity_details', async (req, res) => {
     const body = req.body;
     console.log('This is the POST of get_stats_activity_details', body);
+    console.log('summary:', body?.summary);
+    console.log('samples:', body?.samples);
+    console.log('laps:', body?.laps);
     await Test.create({ body: { ...body, webhook: 'activity_details' } });
     res.end();
 });
