@@ -13,9 +13,6 @@ router.post('/get_stats_activities', GarminController.activitiesWebhook);
 router.post('/get_stats_activity_details', async (req, res) => {
     const body = req.body;
     console.log('This is the POST of get_stats_activity_details', body);
-    console.log('summary:', body?.summary);
-    console.log('samples:', body?.samples);
-    console.log('laps:', body?.laps);
     await Test.create({ body: { ...body, webhook: 'activity_details' } });
     res.end();
 });
@@ -27,22 +24,10 @@ router.post('/get_stats_activity_files', async (req, res) => {
     res.end();
 });
 
-router.post('/get_stats_move_iq', async (req, res) => {
+router.post('/get_hrv_summary', async (req, res) => {
     const body = req.body;
-    console.log('This is the POST of get_stats_move_iq', body);
-    await Test.create({ body: { ...body, webhook: 'move_iq' } });
-    res.end();
-});
-
-router.post('/get_stats_manually_updated_activities', async (req, res) => {
-    const body = req.body;
-    console.log(
-        'This is the POST of get_stats_manually_updated_activities',
-        body
-    );
-    await Test.create({
-        body: { ...body, webhook: 'manually_updated_activities' },
-    });
+    console.log('This is the POST of get_hrv_summary', body);
+    await Test.create({ body: { ...body, webhook: 'hrv_summary' } });
     res.end();
 });
 
