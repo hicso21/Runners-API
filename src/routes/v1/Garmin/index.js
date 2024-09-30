@@ -24,10 +24,10 @@ router.post('/get_stats_activity_files', async (req, res) => {
     res.end();
 });
 
-router.post('/get_hrv_summary', async (req, res) => {
+router.post('/get_user_metrics', async (req, res) => {
     const body = req.body;
-    console.log('This is the POST of get_hrv_summary', body);
-    await Test.create({ body: { ...body, webhook: 'hrv_summary' } });
+    console.log('This is the POST of get_user_metrics', body);
+    await Test.create({ body: { ...body, webhook: 'user_metrics' } });
     res.end();
 });
 
