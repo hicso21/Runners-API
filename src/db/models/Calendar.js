@@ -5,6 +5,7 @@ const calendarSchema = new Schema(
         user_id: String,
         title: String,
         exercises: Array,
+        activityType: String,
         // [
         // 	{
         // 		// name: String,
