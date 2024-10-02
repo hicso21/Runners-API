@@ -6,22 +6,6 @@ const calendarSchema = new Schema(
         title: String,
         exercises: Array,
         activityType: String,
-        // [
-        // 	{
-        // 		// name: String,
-        // 		// type: String,
-        // 		// category: String,
-        // 		// measure: String,
-        // 		// duration: Number,
-        // 		// measurement_unit: String,
-        // 		// second_measure: String,
-        // 		// second_duration: Number,
-        // 		// second_measurement_unit: String,
-        // 		// commentary: String,
-        // 		// repeat: Number,
-        // 		// gif_id: String,
-        // 	},
-        // ]
         routine_id: String,
         type: String, // race || routine || nutrition
         resource: Object,
@@ -43,16 +27,16 @@ calendarSchema.pre('remove', async function (next) {
     const sixDaysInMilliseconds = 6 * 24 * 60 * 60 * 1000;
 
     if (calendar.type === 'race' && calendar.end < Date.now()) {
-        // Race event past its end date, delete it
+        console.log('Race event past its end date, delete it')
         next();
     } else if (
         calendar.type === 'routine' &&
         calendar.createdAt.getTime() + sixDaysInMilliseconds < Date.now()
     ) {
-        // Routine past expiration time (2764800 seconds), delete it
+        console.log('Routine past expiration time (2764800 seconds), delete it')
         next();
     } else {
-        // Not a race past its end or a routine past expiration, prevent deletion
+        console.log('Not a race past its end or a routine past expiration, prevent deletion')
         console.warn(
             `Calendar with type "${calendar.type}" and ${
                 calendar.end ? 'end date' : 'createdAt'

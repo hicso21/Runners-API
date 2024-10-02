@@ -109,6 +109,8 @@ export default class CalendarControllers {
                 data: 'The body must be an array of _id',
             });
         try {
+            const { error, data } = await CalendarServices.deleteEvents(events);
+            if (error) throw new Error(data);
             await Calendar.deleteMany({ _id: { $in: events } });
             res.send({
                 error: false,

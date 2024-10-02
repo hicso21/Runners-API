@@ -13,6 +13,7 @@ import sockets from './sockets.js';
 import './src/db/mongoDB.js';
 import router from './src/routes/v1/index.js';
 import currentVersion from './src/utils/constants/currentVersion.js';
+import CalendarServices from './src/services/v1/Calendar/calendar.services.js';
 config();
 
 const PORT = process.env.PORT || 8080;
@@ -82,7 +83,10 @@ app.get('/api/version', (req, res) =>
     res.send('Version in use: ' + currentVersion)
 );
 
-app.get('/test', (req, res) => res.end());
+app.get('/test', async (req, res) => {
+    const data = await CalendarServices.getLastByActivityType('elliptical','65d147e028cd38c669f95e41')
+    res.send(data);
+});
 
 app.get('/', async (req, res) => {
     res.send(`

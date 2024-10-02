@@ -285,13 +285,13 @@ class GarminController {
             const activity = req.body.activities[0];
             const userBrandId = activity.userId;
             const runner = await RunnersServices.getByBrandId(userBrandId);
+            const typeOfActivity = activityTypes.garmin[activity?.activityType];
+            // (runner._id, typeOfActivity)
             const dataToSend = {
                 user_id: runner._id,
                 brand_id: activity?.userId,
                 activity_id: activity?.activityId,
-                activity_type:
-                    activityTypes.garmin[activity?.activityType] ||
-                    activity?.activityType,
+                activity_type: typeOfActivity || activity?.activityType,
                 title: '',
                 timestamp: activity?.startTimeInSeconds * 1000,
                 date: new Date(
@@ -322,9 +322,6 @@ class GarminController {
                 description: '',
             };
             await ActivitiesServices.createActivity(dataToSend);
-            await Test.create({
-                body: { ...body, webhook: 'activity_details' },
-            });
             res.status(200).send('EVENT_RECEIVED');
         } catch (error) {
             res.status(500).send({
