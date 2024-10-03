@@ -31,7 +31,7 @@ calendarSchema.pre('remove', async function (next) {
         next();
     } else if (
         calendar.type === 'routine' &&
-        calendar.createdAt.getTime() + sixDaysInMilliseconds < Date.now()
+        calendar.start.getTime() + sixDaysInMilliseconds < Date.now()
     ) {
         console.log('Routine past expiration time (2764800 seconds), delete it')
         next();
