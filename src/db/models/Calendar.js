@@ -23,7 +23,10 @@ calendarSchema.pre('remove', async function (next) {
     const calendar = this;
     const sixDaysInMilliseconds = 6 * 24 * 60 * 60 * 1000;
 
-    if (calendar.type === 'race' && calendar.start < Date.now()) {
+    if (
+        calendar.type === 'race' &&
+        new Date(calendar.start).getTime() < Date.now()
+    ) {
         console.log('Race event past its end date, delete it');
         next();
     } else if (
