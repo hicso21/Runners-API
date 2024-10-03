@@ -15,7 +15,6 @@ const calendarSchema = new Schema(
         isDraggable: Boolean,
         allDay: Boolean,
         completed: Boolean,
-        createdAt: { type: Date, default: Date.now, expires: 0 },
     },
     { timestamps: true }
 );
