@@ -15,43 +15,38 @@ const calendarSchema = new Schema(
         isDraggable: Boolean,
         allDay: Boolean,
         completed: Boolean,
+        expirationDate: { type: Date, index: { expires: '0s' } },
     },
     { timestamps: true }
 );
 
-calendarSchema.pre('remove', async function (next) {
-    const calendar = this;
-    const sixDaysInMilliseconds = 6 * 24 * 60 * 60 * 1000;
+calendarSchema.pre('save', function (next) {
+    const now = new Date();
+    const sixDaysAgo = new Date(now.getTime() - 6 * 24 * 60 * 60 * 1000);
 
-    if (
-        calendar.type === 'race' &&
-        new Date(calendar.start).getTime() < Date.now()
-    ) {
-        console.log('Race event past its end date, delete it');
-        next();
-    } else if (
-        calendar.type === 'routine' &&
-        new Date(calendar.start).getTime() + sixDaysInMilliseconds < Date.now()
-    ) {
-        console.log(
-            'Routine past expiration time (2764800 seconds), delete it'
-        );
-        next();
+    if (this.type === 'race') {
+        if (this.start < now) {
+            // Si es una carrera pasada, establecemos expirationDate a ahora
+            this.expirationDate = now;
+        } else {
+            // Si es una carrera futura, establecemos expirationDate a la fecha de inicio
+            this.expirationDate = this.start;
+        }
+    } else if (this.type === 'routine') {
+        if (this.start < sixDaysAgo) {
+            // Si es una rutina con más de 6 días de antigüedad, establecemos expirationDate a ahora
+            this.expirationDate = now;
+        } else {
+            // Si es una rutina más reciente, establecemos expirationDate a 6 días después de su inicio
+            this.expirationDate = new Date(
+                this.start.getTime() + 6 * 24 * 60 * 60 * 1000
+            );
+        }
     } else {
-        console.log(
-            'Not a race past its end or a routine past expiration, prevent deletion'
-        );
-        console.warn(
-            `Calendar with type "${calendar.type}" and ${
-                calendar.start ? 'start date' : 'createdAt'
-            } not yet expired (6 days), preventing deletion.`
-        );
-        next(
-            new Error(
-                'Calendar deletion prevented due to type and date constraints'
-            )
-        );
+        // Para otros tipos, no establecemos expirationDate
+        this.expirationDate = undefined;
     }
+    next();
 });
 
 const Calendar = model('Calendar', calendarSchema);
