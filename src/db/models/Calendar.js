@@ -20,26 +20,28 @@ const calendarSchema = new Schema(
     { timestamps: true }
 );
 
-calendarSchema.index({ end: 1 }, { expireAfterSeconds: 0 });
-
 calendarSchema.pre('remove', async function (next) {
     const calendar = this;
     const sixDaysInMilliseconds = 6 * 24 * 60 * 60 * 1000;
 
-    if (calendar.type === 'race' && calendar.end < Date.now()) {
-        console.log('Race event past its end date, delete it')
+    if (calendar.type === 'race' && calendar.start < Date.now()) {
+        console.log('Race event past its end date, delete it');
         next();
     } else if (
         calendar.type === 'routine' &&
-        calendar.start.getTime() + sixDaysInMilliseconds < Date.now()
+        new Date(calendar.start).getTime() + sixDaysInMilliseconds < Date.now()
     ) {
-        console.log('Routine past expiration time (2764800 seconds), delete it')
+        console.log(
+            'Routine past expiration time (2764800 seconds), delete it'
+        );
         next();
     } else {
-        console.log('Not a race past its end or a routine past expiration, prevent deletion')
+        console.log(
+            'Not a race past its end or a routine past expiration, prevent deletion'
+        );
         console.warn(
             `Calendar with type "${calendar.type}" and ${
-                calendar.end ? 'end date' : 'createdAt'
+                calendar.start ? 'start date' : 'createdAt'
             } not yet expired (6 days), preventing deletion.`
         );
         next(
