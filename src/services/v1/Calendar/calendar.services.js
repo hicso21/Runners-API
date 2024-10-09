@@ -53,6 +53,7 @@ class CalendarServices {
                 start: {
                     $lt: tomorrow,
                 },
+                completed: false,
             })
                 .sort({ createdAt: -1 })
                 .lean()
@@ -60,6 +61,25 @@ class CalendarServices {
             return {
                 error: false,
                 data: lastItem,
+            };
+        } catch (error) {
+            return {
+                error: true,
+                data: error,
+            };
+        }
+    }
+
+    static async completeActivity(activity_id) {
+        try {
+            const updatedActivity = await Calendar.findByIdAndUpdate(
+                activity_id,
+                { $set: { completed: true } },
+                { new: true }
+            );
+            return {
+                error: false,
+                data: updatedActivity,
             };
         } catch (error) {
             return {

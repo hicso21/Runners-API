@@ -11,6 +11,7 @@ import { v1 } from 'uuid';
 import oauthSignature from 'oauth-signature';
 import activityTypes from '../../../utils/constants/activityTypes.js';
 import Test from '../../../db/models/TestModel.js';
+import CalendarServices from '../../../services/v1/Calendar/calendar.services.js';
 
 function generateRandomNonce() {
     const randomBytes = crypto.randomBytes(16);
@@ -286,7 +287,14 @@ class GarminController {
             const userBrandId = activity.userId;
             const runner = await RunnersServices.getByBrandId(userBrandId);
             const typeOfActivity = activityTypes.garmin[activity?.activityType];
-            // (runner._id, typeOfActivity)
+            const { error, data } =
+                await CalendarServices.getLastByActivityType(
+                    typeOfActivity,
+                    runner._id
+                );
+            if (!error && data[0]?._id)
+                await CalendarServices.completeActivity(data[0]?._id);
+
             const dataToSend = {
                 user_id: runner._id,
                 brand_id: activity?.userId,

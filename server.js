@@ -84,7 +84,10 @@ app.get('/api/version', (req, res) =>
 );
 
 app.get('/test', async (req, res) => {
-    const data = await CalendarServices.getLastByActivityType('elliptical','65d147e028cd38c669f95e41')
+    const data = await CalendarServices.getLastByActivityType(
+        'elliptical',
+        '65d147e028cd38c669f95e41'
+    );
     res.send(data);
 });
 

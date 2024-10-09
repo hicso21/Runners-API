@@ -8,6 +8,7 @@ import fetchBrevo from '../../../utils/fetches/fetchBrevo.js';
 import divideName from '../../../utils/functions/divideName.js';
 import axios from 'axios';
 import brevoConfig from '../../../config/brevo.config.js';
+import toStringWithSpecialChars from '../../../utils/functions/toStringWithSpecialChars.js';
 
 export default class RunnersControllers {
     static async getAll(req, res) {
@@ -101,17 +102,6 @@ export default class RunnersControllers {
                     data: 'Another runner is registered with this email',
                 });
             const { firstname, lastname } = divideName(body.name);
-            // const { data } = await fetchBrevo.post(
-            //     '/v3/contacts',
-            //     JSON.stringify({
-            //         email: body?.email,
-            //         attributes: {
-            //             FIRSTNAME: firstname,
-            //             LASTNAME: lastname,
-            //         },
-            //     })
-            // );
-
             const options = {
                 method: 'POST',
                 url: 'https://api.brevo.com/v3/contacts',
@@ -123,8 +113,8 @@ export default class RunnersControllers {
                 data: {
                     email: body?.email,
                     attributes: {
-                        FIRSTNAME: firstname,
-                        LASTNAME: lastname,
+                        FIRSTNAME: toStringWithSpecialChars(firstname),
+                        LASTNAME: toStringWithSpecialChars(lastname),
                     },
                 },
             };
