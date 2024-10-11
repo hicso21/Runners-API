@@ -47,7 +47,7 @@ class CalendarServices {
             const today = new Date().setHours(0, 0, 0, 0);
             const tomorrow = new Date(today);
             tomorrow.setDate(tomorrow.getDate() + 1);
-            const lastItem = await Calendar.find({
+            const lastItems = await Calendar.find({
                 activityType,
                 user_id,
                 start: {
@@ -55,12 +55,11 @@ class CalendarServices {
                 },
                 completed: false,
             })
-                .sort({ createdAt: -1 })
                 .lean()
                 .exec();
             return {
                 error: false,
-                data: lastItem,
+                data: lastItems.sort((a, b) => b.start - a.start),
             };
         } catch (error) {
             return {

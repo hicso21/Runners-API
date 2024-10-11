@@ -5,6 +5,7 @@ const activityTypes = {
         STREET_RUNNING: 'running',
         TRACK_RUNNING: 'running',
         TRAIL_RUNNING: 'running',
+        TREADMILL_RUNNING: 'running',
         ULTRA_RUN: 'running',
         INDOOR_CYCLING: 'running',
         CYCLING: 'bike',

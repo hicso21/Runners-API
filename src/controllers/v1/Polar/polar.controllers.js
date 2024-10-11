@@ -11,7 +11,7 @@ class PolarController {
     static async authUser(req, res) {
         try {
             const db_id = req.params?.db_id;
-            const redirect_uri = `${mainUrl}/api/v1/polar/exchange_token`;
+            const redirect_uri = config.redirect_uri;
             const uri =
                 `${config.oauth_endpoint}/oauth2/authorization?` +
                 `response_type=code&` +

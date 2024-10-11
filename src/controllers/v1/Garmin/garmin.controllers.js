@@ -283,53 +283,58 @@ class GarminController {
         const body = req.body;
         try {
             console.log('This is the POST of get_stats_activities', body);
-            const activity = req.body.activities[0];
-            const userBrandId = activity.userId;
-            const runner = await RunnersServices.getByBrandId(userBrandId);
-            const typeOfActivity = activityTypes.garmin[activity?.activityType];
-            const { error, data } =
-                await CalendarServices.getLastByActivityType(
-                    typeOfActivity,
-                    runner._id
-                );
-            if (!error && data[0]?._id)
-                await CalendarServices.completeActivity(data[0]?._id);
+            const activities = req?.body?.activities;
+            activities?.map(async (activity) => {
+                const userBrandId = activity.userId;
+                const runner = await RunnersServices.getByBrandId(userBrandId);
+                const typeOfActivity =
+                    activityTypes.garmin[activity?.activityType];
+                const { error, data } =
+                    await CalendarServices.getLastByActivityType(
+                        typeOfActivity,
+                        runner._id
+                    );
+                if (!error && data[0]?._id)
+                    await CalendarServices.completeActivity(data[0]?._id);
 
-            const dataToSend = {
-                user_id: runner._id,
-                brand_id: activity?.userId,
-                activity_id: activity?.activityId,
-                activity_type: typeOfActivity || activity?.activityType,
-                title: '',
-                timestamp: activity?.startTimeInSeconds * 1000,
-                date: new Date(
-                    activity?.startTimeInSeconds * 1000
-                ).toLocaleString(),
-                distance: activity?.distanceInMeters,
-                total_time: activity?.durationInSeconds,
-                average_heart_rate: activity?.averageHeartRateInBeatsPerMinute,
-                max_heart_rate: activity?.maxHeartRateInBeatsPerMinute,
-                average_pace: activity?.averagePaceInMinutesPerKilometer,
-                max_pace: activity?.maxPaceInMinutesPerKilometer,
-                calories: activity?.activeKilocalories,
-                positive_slope: activity?.totalElevationGainInMeters,
-                negative_slope: activity?.totalElevationLossInMeters,
-                average_speed: activity?.averageSpeedInMetersPerSecond,
-                max_speed: activity?.maxSpeedInMetersPerSecond,
-                average_cadence: activity?.averageRunCadenceInStepsPerMinute,
-                steps: activity?.steps,
-                max_cadence: activity?.maxRunCadenceInStepsPerMinute,
-                training_load: '',
-                resting_heart_rate: '',
-                min_height: '',
-                max_height: '',
-                estimated_liquid_loss: '',
-                average_temperature: '',
-                paces: [],
-                triathlonData: [],
-                description: '',
-            };
-            await ActivitiesServices.createActivity(dataToSend);
+                const dataToSend = {
+                    user_id: runner._id,
+                    brand_id: activity?.userId,
+                    activity_id: activity?.activityId,
+                    activity_type: typeOfActivity || activity?.activityType,
+                    title: '',
+                    timestamp: activity?.startTimeInSeconds * 1000,
+                    date: new Date(
+                        activity?.startTimeInSeconds * 1000
+                    ).toLocaleString(),
+                    distance: activity?.distanceInMeters,
+                    total_time: activity?.durationInSeconds,
+                    average_heart_rate:
+                        activity?.averageHeartRateInBeatsPerMinute,
+                    max_heart_rate: activity?.maxHeartRateInBeatsPerMinute,
+                    average_pace: activity?.averagePaceInMinutesPerKilometer,
+                    max_pace: activity?.maxPaceInMinutesPerKilometer,
+                    calories: activity?.activeKilocalories,
+                    positive_slope: activity?.totalElevationGainInMeters,
+                    negative_slope: activity?.totalElevationLossInMeters,
+                    average_speed: activity?.averageSpeedInMetersPerSecond,
+                    max_speed: activity?.maxSpeedInMetersPerSecond,
+                    average_cadence:
+                        activity?.averageRunCadenceInStepsPerMinute,
+                    steps: activity?.steps,
+                    max_cadence: activity?.maxRunCadenceInStepsPerMinute,
+                    training_load: '',
+                    resting_heart_rate: '',
+                    min_height: '',
+                    max_height: '',
+                    estimated_liquid_loss: '',
+                    average_temperature: '',
+                    paces: [],
+                    triathlonData: [],
+                    description: '',
+                };
+                await ActivitiesServices.createActivity(dataToSend);
+            });
             res.status(200).send('EVENT_RECEIVED');
         } catch (error) {
             res.status(500).send({
