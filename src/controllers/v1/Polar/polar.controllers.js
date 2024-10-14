@@ -6,6 +6,7 @@ import mainUrl from '../../../utils/constants/mainUrl.js';
 import { Buffer } from 'buffer';
 import fetchPolar from '../../../utils/fetches/fetchPolarAPI.js';
 import ActivitiesServices from '../../../services/v1/Activities/activities.services.js';
+import qs from 'qs';
 
 class PolarController {
     static async authUser(req, res) {
@@ -30,25 +31,22 @@ class PolarController {
     static async getExchangeToken(req, res) {
         const { code, state } = req.query;
         console.log('params', { code, state });
-        const body = {
+        const body = qs.stringify({
             grant_type: 'authorization_code',
             code,
             redirect_uri: config.redirect_uri,
-        };
-        const params = new URLSearchParams();
-        params.append('grant_type', 'authorization_code');
-        params.append('code', code);
-        params.append('redirect_uri', config.redirect_uri);
+        });
         const headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
             Authorization: `Basic ${Buffer.from(
-                `${process.env.client_id}:${process.env.client_secret}`
+                `${process.env.polar_client_id}:${process.env.polar_client_secret}`
             ).toString('base64')}`,
             Accept: 'application/json;charset=UTF-8',
         };
         try {
             const response = await PolarServices.token(body, headers);
             console.log('Polar response', response);
+            console.log(response?.data?.response);
             if (response?.access_token != undefined) {
                 console.log('Polar update data', {
                     access_token: response.access_token,
