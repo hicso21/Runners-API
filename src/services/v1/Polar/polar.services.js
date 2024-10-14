@@ -9,7 +9,7 @@ class PolarServices {
             const { data } = await axios.post(
                 'https://polarremote.com/v2/oauth2/token',
                 body,
-                headers
+                { headers }
             );
             return data;
         } catch (error) {
