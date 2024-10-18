@@ -14,6 +14,9 @@ import './src/db/mongoDB.js';
 import router from './src/routes/v1/index.js';
 import currentVersion from './src/utils/constants/currentVersion.js';
 import CalendarServices from './src/services/v1/Calendar/calendar.services.js';
+import fetchSuunto from './src/utils/fetches/fetchSuuntoAPI.js';
+import RunnersServices from './src/services/v1/Runners/runners.services.js';
+import axios from 'axios';
 config();
 
 const PORT = process.env.PORT || 8080;
@@ -84,11 +87,19 @@ app.get('/api/version', (req, res) =>
 );
 
 app.get('/test', async (req, res) => {
-    const data = await CalendarServices.getLastByActivityType(
-        'elliptical',
-        '65d147e028cd38c669f95e41'
+    const runner = await RunnersServices.getByBrandId('martinurquiza');
+    const { data } = await axios.get(
+        `https://cloudapi.suunto.com/v3/workouts/6711919055a9220c7471d6c2`,
+        {
+            headers: {
+                Authorization: runner.refresh_token,
+                'Cache-Control': 'no-cache',
+                'Ocp-Apim-Subscription-Key': process.env.suunto_primary_key,
+            },
+        }
     );
-    res.send(data);
+    console.log(data);
+    res.end();
 });
 
 app.get('/', async (req, res) => {
@@ -113,5 +124,5 @@ server.listen(PORT, () => {
         '#######################################################################################'
     );
     console.log(`Server running on port ${PORT}`);
-    console.log(new Date())
+    console.log(new Date());
 });

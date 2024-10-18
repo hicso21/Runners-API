@@ -46,7 +46,6 @@ class PolarController {
         try {
             const response = await PolarServices.token(body, headers);
             console.log('Polar response', response);
-            console.log(response?.data?.response);
             if (response?.access_token != undefined) {
                 console.log('Polar update data', {
                     access_token: response.access_token,
@@ -407,7 +406,7 @@ class PolarController {
     static async webhook(req, res) {
         try {
             const { body } = req;
-            console.log(body);
+            console.log('Polar webook', body);
             res.send('Polar webhook');
         } catch (error) {
             await LogsServices.create(

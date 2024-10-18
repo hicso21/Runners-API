@@ -1,7 +1,11 @@
+import axios from 'axios';
 import ActivitiesServices from '../../../services/v1/Activities/activities.services.js';
 import LogsServices from '../../../services/v1/Logs/logs.services.js';
 import RunnersServices from '../../../services/v1/Runners/runners.services.js';
 import SuuntoServices from '../../../services/v1/Suunto/suunto.services.js';
+import activityTypes from '../../../utils/constants/activityTypes.js';
+import CalendarServices from '../../../services/v1/Calendar/calendar.services.js';
+import SuuntoActivitiesId from '../../../utils/constants/SuuntoActivitiesId.js';
 
 class SuuntoController {
     static async getUser(req, res) {
@@ -259,29 +263,83 @@ class SuuntoController {
     static async webhook(req, res) {
         try {
             const body = req.body;
-            console.log(body);
+            console.log('Suunto Webhook', body);
+            const brand_id = body.username;
+            const workoutid = body.workoutid;
+            const runner = await RunnersServices.getByBrandId(brand_id);
+            const { data } = await axios.get(
+                `https://cloudapi.suunto.com/v3/workouts/${workoutid}`,
+                {
+                    headers: {
+                        Authorization: runner.refresh_token,
+                        'Cache-Control': 'no-cache',
+                        'Ocp-Apim-Subscription-Key':
+                            process.env.suunto_primary_key,
+                    },
+                }
+            );
+            const workoutData = data.payload;
+            if (data.error) {
+                console.log(data.error);
+                return await LogsServices.create(
+                    'GET workout suunto webhook error',
+                    JSON.stringify(data.error),
+                    data.error
+                );
+            }
+
+            const suuntoActivityType =
+                SuuntoActivitiesId[workoutData?.activityId];
+
+            const typeOfActivity = activityTypes.suunto[suuntoActivityType];
+            const { error, data: calendarActivities } =
+                await CalendarServices.getLastByActivityType(
+                    typeOfActivity,
+                    runner._id
+                );
+            if (!error && calendarActivities[0]?._id)
+                await CalendarServices.completeActivity(
+                    calendarActivities[0]?._id
+                );
+
+            const dataToSend = {
+                user_id: runner._id,
+                brand_id,
+                activity_id: workoutData?.workoutId,
+                activity_type: typeOfActivity || suuntoActivityType,
+                title: suuntoActivityType,
+                timestamp: workoutData?.startTime,
+                date: new Date(workoutData?.startTime).toLocaleString(),
+                distance: workoutData?.totalDistance,
+                total_time: workoutData?.totalTime,
+                average_heart_rate: workoutData?.hrdata?.workoutAvgHR,
+                max_heart_rate: workoutData?.hrdata?.workoutMaxHR,
+                average_pace: workoutData?.avgPace,
+                max_pace: '',
+                calories: workoutData?.energyConsumption,
+                positive_slope: workoutData?.totalAscent,
+                negative_slope: workoutData?.totalDescent,
+                average_speed: workoutData?.avgSpeed,
+                max_speed: workoutData?.maxSpeed,
+                average_cadence: workoutData?.cadence?.avg,
+                steps: workoutData?.stepCount,
+                max_cadence: workoutData?.cadence?.max,
+                training_load: '',
+                resting_heart_rate: '',
+                min_height: workoutData?.minAltitude,
+                max_height: workoutData?.maxAltitude,
+                estimated_liquid_loss: '',
+                average_temperature: '',
+                paces: [],
+                triathlonData: [],
+                description: '',
+            };
+            await ActivitiesServices.createActivity(dataToSend);
+
             res.status(200).send('Suunto Webhook');
         } catch (error) {
             await LogsServices.create(
                 'webhook suunto error',
-                JSON.stringify(error),
-                error
-            );
-            res.send({
-                error: true,
-                data: error,
-            });
-        }
-    }
-
-    static async getWebhook(req, res) {
-        try {
-            const body = req.body;
-            console.log(body);
-            res.status(200).send('Suunto Webhook');
-        } catch (error) {
-            await LogsServices.create(
-                'getWebhook suunto error',
                 JSON.stringify(error),
                 error
             );
