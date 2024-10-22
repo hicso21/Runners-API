@@ -405,9 +405,9 @@ class PolarController {
 
     static async webhook(req, res) {
         try {
-            const { body } = req;
+            const body = req.body;
             console.log('Polar webook', body);
-            res.send('Polar webhook');
+            res.sendStatus(200);
         } catch (error) {
             await LogsServices.create(
                 'webhook error polar',

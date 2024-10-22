@@ -279,6 +279,7 @@ class SuuntoController {
                 }
             );
             const workoutData = data.payload;
+            console.log('Suunto workoutData ', workoutData);
             if (data.error) {
                 console.log(data.error);
                 return await LogsServices.create(
@@ -334,7 +335,9 @@ class SuuntoController {
                 triathlonData: [],
                 description: '',
             };
-            await ActivitiesServices.createActivity(dataToSend);
+            await ActivitiesServices.createActivity(dataToSend).then((res) =>
+                console.log('New Activity response', res)
+            );
 
             res.status(200).send('Suunto Webhook');
         } catch (error) {
