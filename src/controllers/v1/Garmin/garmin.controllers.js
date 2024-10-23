@@ -280,7 +280,6 @@ class GarminController {
     }
 
     static async activitiesWebhook(req, res) {
-        const body = req.body;
         try {
             const activities = req?.body?.activities;
             activities?.map(async (activity) => {
@@ -336,7 +335,7 @@ class GarminController {
             });
             res.status(200).send('EVENT_RECEIVED');
         } catch (error) {
-            console.log('Error on POST of get_stats_activities')
+            console.log('Error on POST of get_stats_activities');
             res.status(500).send({
                 error: true,
                 msg: 'An error has ocurred',

@@ -7,6 +7,10 @@ import { Buffer } from 'buffer';
 import fetchPolar from '../../../utils/fetches/fetchPolarAPI.js';
 import ActivitiesServices from '../../../services/v1/Activities/activities.services.js';
 import qs from 'qs';
+import axios from 'axios';
+import activityTypes from '../../../utils/constants/activityTypes.js';
+import polarTitleParser from '../../../utils/functions/polarTitleParser.js';
+import polarDurationParse from '../../../utils/functions/polarDurationParse.js';
 
 class PolarController {
     static async authUser(req, res) {
@@ -406,7 +410,68 @@ class PolarController {
     static async webhook(req, res) {
         try {
             const body = req.body;
-            console.log('Polar webook', body);
+            console.log('Polar webhook', body);
+            const brand_id = body?.user_id;
+            const exercise_url = body?.url;
+            const event = body?.event;
+            if (event != 'EXERCISE') return res.end();
+
+            const runner = await RunnersServices.getByBrandId(brand_id);
+
+            const activity = await axios.get(exercise_url, {
+                Accept: 'application/json',
+                auth: `Bearer ${runner.access_token}`,
+            });
+
+            console.log('Polar activity webhook: ', activity);
+
+            if (!activity?.id) return res.sendStatus();
+
+            const typeOfActivity =
+                activityTypes.polar[activity?.detailed_sport_info];
+            const { error, data: calendarActivities } =
+                await CalendarServices.getLastByActivityType(
+                    typeOfActivity,
+                    runner._id
+                );
+
+            if (!error && calendarActivities[0]?._id)
+                await CalendarServices.completeActivity(calendarActivities[0]?._id);
+
+            const dataToSend = {
+                user_id: runner._id,
+                brand_id,
+                activity_id: activity?.id,
+                activity_type: typeOfActivity,
+                title: polarTitleParser(activity?.detailed_sport_info),
+                timestamp: new Date(activity?.start_time).getTime(),
+                date: new Date(activity?.start_time).toLocaleString(),
+                distance: activity?.distance,
+                total_time: polarDurationParse(activity?.duration),
+                average_heart_rate: activity?.heart_rate?.average,
+                max_heart_rate: activity?.heart_rate?.maximum,
+                average_pace: '',
+                max_pace: '',
+                calories: activity?.calories,
+                positive_slope: '',
+                negative_slope: '',
+                average_speed: '',
+                max_speed: '',
+                average_cadence: '',
+                steps: '',
+                max_cadence: '',
+                training_load: activity?.training_load,
+                resting_heart_rate: '',
+                min_height: '',
+                max_height: '',
+                estimated_liquid_loss: '',
+                average_temperature: '',
+                paces: [],
+                triathlonData: [],
+                description: '',
+            };
+            await ActivitiesServices.createActivity(dataToSend);
+
             res.sendStatus(200);
         } catch (error) {
             await LogsServices.create(
