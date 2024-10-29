@@ -407,6 +407,26 @@ class PolarController {
         }
     }
 
+    static async getWebhook(req, res) {
+        try {
+            const body = req.body
+            console.log('Polar getWebhook', body);
+            const params = req.params
+            console.log('Polar params', params);
+            res.sendStatus(200);
+        } catch (error) {
+            await LogsServices.create(
+                'getWebhook error polar',
+                JSON.stringify(error),
+                error
+            );
+            res.send({
+                error: true,
+                data: error,
+            });
+        }
+    }
+
     static async webhook(req, res) {
         try {
             const body = req.body;
@@ -436,7 +456,9 @@ class PolarController {
                 );
 
             if (!error && calendarActivities[0]?._id)
-                await CalendarServices.completeActivity(calendarActivities[0]?._id);
+                await CalendarServices.completeActivity(
+                    calendarActivities[0]?._id
+                );
 
             const dataToSend = {
                 user_id: runner._id,
