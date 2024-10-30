@@ -274,7 +274,7 @@ class CorosController {
         try {
             const body = req.body;
             console.log(body);
-            res.send('Coros Webhook');
+            res.status(200).send('Coros Webhook');
         } catch (error) {
             LogsServices.create(
                 'webhook error coros',
