@@ -292,8 +292,6 @@ class GarminController {
                         typeOfActivity,
                         runner._id
                     );
-                if (!error && data[0]?._id)
-                    await CalendarServices.completeActivity(data[0]?._id);
 
                 const dataToSend = {
                     user_id: runner._id,
@@ -331,7 +329,14 @@ class GarminController {
                     triathlonData: [],
                     description: '',
                 };
-                await ActivitiesServices.createActivity(dataToSend);
+                const activityResponse =
+                    await ActivitiesServices.createActivity(dataToSend);
+
+                if (!error && data[0]?._id)
+                    await CalendarServices.completeActivity(
+                        data[0]?._id,
+                        activityResponse?._id
+                    );
             });
             res.status(200).send('EVENT_RECEIVED');
         } catch (error) {

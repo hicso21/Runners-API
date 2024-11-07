@@ -14,6 +14,7 @@ const calendarSchema = new Schema(
         end: Date,
         isDraggable: Boolean,
         allDay: Boolean,
+        activityId: String,
         completed: Boolean,
         expirationDate: { type: Date, index: { expires: '0s' } },
     },

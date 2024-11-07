@@ -409,9 +409,9 @@ class PolarController {
 
     static async getWebhook(req, res) {
         try {
-            const body = req.body
+            const body = req.body;
             console.log('Polar getWebhook', body);
-            const params = req.params
+            const params = req.params;
             console.log('Polar params', params);
             res.sendStatus(200);
         } catch (error) {
@@ -434,7 +434,8 @@ class PolarController {
             const brand_id = body?.user_id;
             const exercise_url = body?.url;
             const event = body?.event;
-            if (event != 'EXERCISE') return res.end();
+            const signature_secret_key = process.env.polar_signature_secret_key;
+            if (event != 'EXERCISE') return res.status(200).end();
 
             const runner = await RunnersServices.getByBrandId(brand_id);
 
@@ -453,11 +454,6 @@ class PolarController {
                 await CalendarServices.getLastByActivityType(
                     typeOfActivity,
                     runner._id
-                );
-
-            if (!error && calendarActivities[0]?._id)
-                await CalendarServices.completeActivity(
-                    calendarActivities[0]?._id
                 );
 
             const dataToSend = {
@@ -492,7 +488,16 @@ class PolarController {
                 triathlonData: [],
                 description: '',
             };
-            await ActivitiesServices.createActivity(dataToSend);
+
+            const activityResponse = await ActivitiesServices.createActivity(
+                dataToSend
+            );
+
+            if (!error && calendarActivities[0]?._id)
+                await CalendarServices.completeActivity(
+                    calendarActivities[0]?._id,
+                    activityResponse?._id
+                );
 
             res.sendStatus(200);
         } catch (error) {

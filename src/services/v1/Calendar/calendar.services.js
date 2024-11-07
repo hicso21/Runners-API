@@ -69,11 +69,12 @@ class CalendarServices {
         }
     }
 
-    static async completeActivity(activity_id) {
+    static async completeActivity(routine_id, activity_id) {
+        const activityId = activity_id || ''
         try {
             const updatedActivity = await Calendar.findByIdAndUpdate(
-                activity_id,
-                { $set: { completed: true } },
+                routine_id,
+                { $set: { completed: true, activityId } },
                 { new: true }
             );
             return {

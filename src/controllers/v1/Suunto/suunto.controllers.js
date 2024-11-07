@@ -298,10 +298,6 @@ class SuuntoController {
                     typeOfActivity,
                     runner._id
                 );
-            if (!error && calendarActivities[0]?._id)
-                await CalendarServices.completeActivity(
-                    calendarActivities[0]?._id
-                );
 
             const dataToSend = {
                 user_id: runner._id,
@@ -335,9 +331,15 @@ class SuuntoController {
                 triathlonData: [],
                 description: '',
             };
-            await ActivitiesServices.createActivity(dataToSend).then((res) =>
-                console.log('New Activity response', res)
-            );
+            const activityResponse = await ActivitiesServices.createActivity(
+                dataToSend
+            ).then((res) => console.log('New Activity response', res));
+
+            if (!error && calendarActivities[0]?._id)
+                await CalendarServices.completeActivity(
+                    calendarActivities[0]?._id,
+                    activityResponse?._id
+                );
 
             res.status(200).send('Suunto Webhook');
         } catch (error) {
