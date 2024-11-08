@@ -104,8 +104,18 @@ app.get('/test', async (req, res) => {
 
 app.get('/', async (req, res) => {
     res.send(`
-		Welcome to Runners API <br/>
-		We are using version ${currentVersion} at this moment ${new Date()}`);
+        <div style="position:absolute;top:0;left:0;height:100dvh;width:100dvw;display:flex;flex-direction:column;justify-content:center;align-items:center">
+                <h1>
+                    DELAF API
+                </h1>
+                <h2 style="text-align:center;display:flex">
+		            Version: ${currentVersion}
+                    <br/>
+                    ${new Date()}
+                </h2>
+            </div>
+		
+    `);
 });
 
 app.get('/status', async (req, res) => {
