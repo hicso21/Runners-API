@@ -4,6 +4,7 @@ import ActivitiesControllers from '../../../controllers/v1/Activities/activities
 const router = Router();
 
 router.get('/getAll/:user_id', ActivitiesControllers.getAll);
+router.get('/getById/:activity_id', ActivitiesControllers.getById);
 router.post('/create', ActivitiesControllers.postActivity);
 router.delete('/delete', ActivitiesControllers.deleteActivity);
 
