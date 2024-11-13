@@ -435,8 +435,12 @@ class PolarController {
             const exercise_url = body?.url;
             const event = body?.event;
             const signature_secret_key = process.env.polar_signature_secret_key;
-            console.log('signature_secret_key: ', signature_secret_key)
-            if (event != 'EXERCISE') return res.status(204).end();
+            console.log('signature_secret_key: ', signature_secret_key);
+            if (
+                signature_secret_key !=
+                process.env.polar_webhook_signature_secret_key
+            )
+                return res.status(200).end();
 
             const runner = await RunnersServices.getByBrandId(brand_id);
 
