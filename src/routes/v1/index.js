@@ -20,20 +20,21 @@ import suunto from './Suunto/index.js';
 import uploads from './Uploads/index.js';
 import paid from './Paid/index.js';
 import codes from './Codes/index.js';
+import notifications from './Notification/index.js';
 import LoginController from './login/login.controllers.js';
 
 const router = Router();
 
 router.get('/', (req, res) => {
-	res.send(req.href);
-	// let IS_IPAD = navigator.userAgent.match(/iPad/i) != null,
-	// 	IS_IPHONE =
-	// 		!IS_IPAD &&
-	// 		(navigator.userAgent.match(/iPhone/i) != null ||
-	// 			navigator.userAgent.match(/iPod/i) != null),
-	// 	IS_IOS = IS_IPAD || IS_IPHONE,
-	// 	IS_ANDROID = !IS_IOS && navigator.userAgent.match(/android/i) != null,
-	// 	IS_MOBILE = IS_IOS || IS_ANDROID;
+    res.send(req.href);
+    // let IS_IPAD = navigator.userAgent.match(/iPad/i) != null,
+    // 	IS_IPHONE =
+    // 		!IS_IPAD &&
+    // 		(navigator.userAgent.match(/iPhone/i) != null ||
+    // 			navigator.userAgent.match(/iPod/i) != null),
+    // 	IS_IOS = IS_IPAD || IS_IPHONE,
+    // 	IS_ANDROID = !IS_IOS && navigator.userAgent.match(/android/i) != null,
+    // 	IS_MOBILE = IS_IOS || IS_ANDROID;
 });
 
 router.post('/login', LoginController.login);
@@ -50,6 +51,7 @@ router.use('/recovery', recovery);
 router.use('/calendar', calendar);
 router.use('/paid', paid);
 router.use('/codes', codes);
+router.use('/notifications', notifications);
 
 router.use('/coros', coros);
 router.use('/suunto', suunto);
@@ -60,19 +62,19 @@ router.use('/garmin', garmin);
 router.use('/payment', payment);
 
 router.post('/mercadopago', (req, res) => {
-	const data = req.body;
-	console.log('Mercado Pago Data => ', data);
+    const data = req.body;
+    console.log('Mercado Pago Data => ', data);
 });
 
 router.get('/chats', async (req, res) => {
-	const chats = await UserChats.find({});
-	res.status(200).send(chats);
+    const chats = await UserChats.find({});
+    res.status(200).send(chats);
 });
 
 router.get('/logs', async (req, res) => {
-	const logs = await LogsServices.getAll();
-	if (logs.error) return res.send('An error has ocurred');
-	res.status(200).send(logs.data.sort((a, b) => b.createdAt - a.createdAt));
+    const logs = await LogsServices.getAll();
+    if (logs.error) return res.send('An error has ocurred');
+    res.status(200).send(logs.data.sort((a, b) => b.createdAt - a.createdAt));
 });
 
 router.use('/stripe', stripe);

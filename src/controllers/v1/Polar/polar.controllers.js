@@ -11,6 +11,7 @@ import axios from 'axios';
 import activityTypes from '../../../utils/constants/activityTypes.js';
 import polarTitleParser from '../../../utils/functions/polarTitleParser.js';
 import polarDurationParse from '../../../utils/functions/polarDurationParse.js';
+import CalendarServices from '../../../services/v1/Calendar/calendar.services.js';
 
 class PolarController {
     static async authUser(req, res) {
@@ -430,7 +431,7 @@ class PolarController {
     static async webhook(req, res) {
         try {
             const body = req.body;
-            console.log('Polar webhook', body);
+            console.log('Polar webhook', body)
             const brand_id = body?.user_id;
             const exercise_url = body?.url;
             const event = body?.event;

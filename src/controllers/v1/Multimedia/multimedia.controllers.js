@@ -1,8 +1,4 @@
-import { GridFsStorage } from 'multer-gridfs-storage';
 import Multimedias from '../../../db/models/Multimedia.js';
-import mongoose from 'mongoose';
-import crypto from 'crypto';
-import multer from 'multer';
 
 class MultimediaController {
 	static async getAll(req, res) {

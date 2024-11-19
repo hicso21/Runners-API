@@ -263,7 +263,6 @@ class SuuntoController {
     static async webhook(req, res) {
         try {
             const body = req.body;
-            console.log('Suunto Webhook', body);
             const brand_id = body.username;
             const workoutid = body.workoutid;
             const runner = await RunnersServices.getByBrandId(brand_id);
@@ -279,7 +278,6 @@ class SuuntoController {
                 }
             );
             const workoutData = data.payload;
-            console.log('Suunto workoutData ', workoutData);
             if (data.error) {
                 console.log(data.error);
                 return await LogsServices.create(
@@ -333,7 +331,7 @@ class SuuntoController {
             };
             const activityResponse = await ActivitiesServices.createActivity(
                 dataToSend
-            ).then((res) => console.log('New Activity response', res));
+            ).then((res) => console.log('New Suunto Activity response', res));
 
             if (!error && calendarActivities[0]?._id)
                 await CalendarServices.completeActivity(

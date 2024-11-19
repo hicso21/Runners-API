@@ -266,6 +266,9 @@ class GarminController {
             const activity = await ActivitiesServices.createActivity(
                 dataToSend
             );
+
+            console.log('New Garmin Activity response', activity);
+
             res.send({
                 data: activity,
                 error: false,
