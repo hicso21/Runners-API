@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose';
 
 const NutritionSchema = new Schema(
     {
-        name: String,
+        title: String,
         text: String,
         resource: Object,
         start: Date,

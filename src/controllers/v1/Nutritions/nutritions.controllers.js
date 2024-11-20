@@ -5,7 +5,6 @@ export default class NutritionControllers {
         const body = req.body;
         try {
             const nutrition = await Nutritions.create(body);
-
             res.send({
                 error: false,
                 data: nutrition,
@@ -39,7 +38,7 @@ export default class NutritionControllers {
     static async getById(req, res) {
         const { id } = req.params;
         try {
-            const nutrition = await Nutritions.findById();
+            const nutrition = await Nutritions.findById(id);
 
             res.send({
                 error: false,
