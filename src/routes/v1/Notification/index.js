@@ -3,9 +3,9 @@ import NotificationsControllers from '../../../controllers/v1/Notifications/noti
 
 const router = Router();
 
-router.get('/:user_id', NotificationsControllers.findOrCreate);
-router.get('/add/:user_id', NotificationsControllers.addNotification);
-router.get('/remove/:user_id', NotificationsControllers.eraseNotification);
+router.post('/:user_id', NotificationsControllers.findOrCreate);
+router.patch('/add/:user_id', NotificationsControllers.addNotification);
+router.patch('/remove/:user_id', NotificationsControllers.eraseNotification);
 router.get('/', NotificationsControllers.getAll);
 
 export default router;
