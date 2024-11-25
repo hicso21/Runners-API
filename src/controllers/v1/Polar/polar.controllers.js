@@ -67,7 +67,7 @@ class PolarController {
                     response.access_token
                 );
                 if (polarResponse?.error) {
-                    console.log('polarResponse data', polarResponse?.data);
+                    console.log(response.x_user_id, response.access_token);
                     console.log(
                         'polarResponse data response',
                         polarResponse?.data?.response
