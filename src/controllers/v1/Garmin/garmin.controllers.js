@@ -12,6 +12,7 @@ import oauthSignature from 'oauth-signature';
 import activityTypes from '../../../utils/constants/activityTypes.js';
 import Test from '../../../db/models/TestModel.js';
 import CalendarServices from '../../../services/v1/Calendar/calendar.services.js';
+import NotificationsServices from '../../../services/v1/Notifications/notifications.services.js';
 
 function generateRandomNonce() {
     const randomBytes = crypto.randomBytes(16);
@@ -341,6 +342,7 @@ class GarminController {
                         activityResponse?._id
                     );
             });
+            NotificationsServices.setToTrue(runner._id);
             res.status(200).send('EVENT_RECEIVED');
         } catch (error) {
             console.log('Error on POST of get_stats_activities');

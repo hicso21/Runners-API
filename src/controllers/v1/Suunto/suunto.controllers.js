@@ -6,6 +6,7 @@ import SuuntoServices from '../../../services/v1/Suunto/suunto.services.js';
 import activityTypes from '../../../utils/constants/activityTypes.js';
 import CalendarServices from '../../../services/v1/Calendar/calendar.services.js';
 import SuuntoActivitiesId from '../../../utils/constants/SuuntoActivitiesId.js';
+import NotificationsServices from '../../../services/v1/Notifications/notifications.services.js';
 
 class SuuntoController {
     static async getUser(req, res) {
@@ -339,6 +340,7 @@ class SuuntoController {
                     activityResponse?._id
                 );
 
+            NotificationsServices.setToTrue(runner._id);
             res.status(200).send('Suunto Webhook');
         } catch (error) {
             await LogsServices.create(

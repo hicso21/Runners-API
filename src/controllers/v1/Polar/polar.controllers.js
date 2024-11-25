@@ -12,6 +12,7 @@ import activityTypes from '../../../utils/constants/activityTypes.js';
 import polarTitleParser from '../../../utils/functions/polarTitleParser.js';
 import polarDurationParse from '../../../utils/functions/polarDurationParse.js';
 import CalendarServices from '../../../services/v1/Calendar/calendar.services.js';
+import NotificationsServices from '../../../services/v1/Notifications/notifications.services.js';
 
 class PolarController {
     static async authUser(req, res) {
@@ -514,7 +515,7 @@ class PolarController {
                     calendarActivities[0]?._id,
                     activityResponse?._id
                 );
-
+            NotificationsServices.setToTrue(runner._id);
             res.sendStatus(200);
         } catch (error) {
             await LogsServices.create(

@@ -1,3 +1,4 @@
+import axios from 'axios';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -12,11 +13,8 @@ import { fileURLToPath } from 'url';
 import sockets from './sockets.js';
 import './src/db/mongoDB.js';
 import router from './src/routes/v1/index.js';
-import currentVersion from './src/utils/constants/currentVersion.js';
-import CalendarServices from './src/services/v1/Calendar/calendar.services.js';
-import fetchSuunto from './src/utils/fetches/fetchSuuntoAPI.js';
 import RunnersServices from './src/services/v1/Runners/runners.services.js';
-import axios from 'axios';
+import currentVersion from './src/utils/constants/currentVersion.js';
 config();
 
 const PORT = process.env.PORT || 8080;
