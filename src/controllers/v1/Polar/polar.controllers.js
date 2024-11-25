@@ -50,7 +50,6 @@ class PolarController {
         };
         try {
             const response = await PolarServices.token(body, headers);
-            console.log('Polar response', response);
             if (response?.access_token != undefined) {
                 console.log('Polar update data', {
                     access_token: response.access_token,
@@ -64,10 +63,10 @@ class PolarController {
                 });
                 const polarResponse = await PolarServices.register(
                     response.x_user_id,
+                    response.token_type,
                     response.access_token
                 );
                 if (polarResponse?.error) {
-                    console.log(response.x_user_id, response.access_token);
                     console.log(
                         'polarResponse data response',
                         polarResponse?.data?.response
