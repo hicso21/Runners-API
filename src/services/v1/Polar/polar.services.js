@@ -24,12 +24,12 @@ class PolarServices {
         try {
             const { data } = await axios.post(
                 'https://www.polaraccesslink.com/v3/users',
-                JSON.stringify({ 'member-id': x_user_id }),
+                { 'member-id': x_user_id },
                 {
                     headers: {
-                        'Content-Type': 'application/xml',
+                        'Content-Type': 'application/json',
                         Accept: 'application/json',
-                        Authorization: `${token_type} ${access_token}`,
+                        Authorization: `Bearer ${access_token}`,
                     },
                 }
             );
