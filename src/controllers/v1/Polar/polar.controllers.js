@@ -66,9 +66,13 @@ class PolarController {
                     response.x_user_id,
                     response.access_token
                 );
-                if (polarResponse?.error)
-                    console.log('polarResponse', polarResponse?.response);
-                else console.log('polarResponse ', polarResponse);
+                if (polarResponse?.error) {
+                    console.log('polarResponse data', polarResponse?.data);
+                    console.log(
+                        'polarResponse data response',
+                        polarResponse?.data?.response
+                    );
+                } else console.log('polarResponse ', polarResponse);
                 res.send('<h2>Vuelve a la app</h2>');
             } else {
                 await LogsServices.create(
