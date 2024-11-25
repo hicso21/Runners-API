@@ -26,9 +26,11 @@ class PolarServices {
                 'https://www.polaraccesslink.com/v3/users',
                 { 'member-id': x_user_id },
                 {
-                    'Content-Type': 'application/xml',
-                    Accept: 'application/json',
-                    Authorization: `Bearer ${access_token}`,
+                    headers: {
+                        'Content-Type': 'application/xml',
+                        Accept: 'application/json',
+                        Authorization: `Bearer ${access_token}`,
+                    },
                 }
             );
             return data;
