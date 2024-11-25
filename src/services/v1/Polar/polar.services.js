@@ -20,6 +20,26 @@ class PolarServices {
         }
     }
 
+    static async register(x_user_id, access_token) {
+        try {
+            const { data } = await axios.post(
+                'https://www.polaraccesslink.com/v3/users',
+                { 'member-id': x_user_id },
+                {
+                    'Content-Type': 'application/xml',
+                    Accept: 'application/json',
+                    Authorization: `Bearer ${access_token}`,
+                }
+            );
+            return data;
+        } catch (error) {
+            return {
+                error: true,
+                data: error,
+            };
+        }
+    }
+
     static async getUser(userId) {
         try {
             const { data } = await fetchPolar.get(`/v3/users/${userId}`);

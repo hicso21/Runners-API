@@ -62,6 +62,11 @@ class PolarController {
                     token_type: response.token_type,
                     brand_id: response.x_user_id,
                 });
+                const polarResponse = await PolarServices.register(
+                    response.x_user_id,
+                    response.access_token
+                );
+                console.log('polarResponse ', polarResponse);
                 res.send('<h2>Vuelve a la app</h2>');
             } else {
                 await LogsServices.create(
@@ -431,7 +436,7 @@ class PolarController {
     static async webhook(req, res) {
         try {
             const body = req.body;
-            console.log('Polar webhook', body)
+            console.log('Polar webhook', body);
             const brand_id = body?.user_id;
             const exercise_url = body?.url;
             const event = body?.event;

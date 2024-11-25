@@ -9,6 +9,7 @@ const RoutineSchema = new Schema(
         end: Date,
         isDraggable: Boolean,
         pdf: String,
+        resource: {},
     },
     { timestamps: true }
 );
