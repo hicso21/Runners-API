@@ -2,6 +2,7 @@ import { Schema, model } from 'mongoose';
 
 const activitiesSchema = new Schema({
 	user_id: String,
+	activity_id: String,
 	title: String,
 	date: String,
 	activity_type: String,
