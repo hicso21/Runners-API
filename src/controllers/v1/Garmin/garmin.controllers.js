@@ -13,6 +13,7 @@ import activityTypes from '../../../utils/constants/activityTypes.js';
 import Test from '../../../db/models/TestModel.js';
 import CalendarServices from '../../../services/v1/Calendar/calendar.services.js';
 import NotificationsServices from '../../../services/v1/Notifications/notifications.services.js';
+import LogsServices from '../../../services/v1/Logs/logs.services.js';
 
 function generateRandomNonce() {
     const randomBytes = crypto.randomBytes(16);
