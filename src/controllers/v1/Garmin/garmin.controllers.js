@@ -346,6 +346,11 @@ class GarminController {
             res.status(200).send('EVENT_RECEIVED');
         } catch (error) {
             console.log('Error on POST of get_stats_activities');
+            await LogsServices.create(
+                'activitiesWebhook error garmin',
+                JSON.stringify(error),
+                error
+            );
             res.status(500).send({
                 error: true,
                 msg: 'An error has ocurred',
