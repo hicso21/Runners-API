@@ -288,10 +288,10 @@ class GarminController {
         try {
             const activities = req?.body?.activities;
             let runnerData;
+            const userBrandId = activities[0].userId;
+            const runner = await RunnersServices.getByBrandId(userBrandId);
+            console.log('runner_id:', runner?._id);
             activities?.map(async (activity) => {
-                const userBrandId = activity.userId;
-                const runner = await RunnersServices.getByBrandId(userBrandId);
-                runnerData = runner;
                 const typeOfActivity =
                     activityTypes.garmin[activity?.activityType];
                 const { error, data } =
@@ -345,7 +345,6 @@ class GarminController {
                         activityResponse?._id
                     );
             });
-            console.log(runnerData)
             NotificationsServices.setToTrue(runnerData._id);
             res.status(200).send('EVENT_RECEIVED');
         } catch (error) {
