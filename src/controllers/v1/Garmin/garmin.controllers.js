@@ -287,7 +287,6 @@ class GarminController {
     static async activitiesWebhook(req, res) {
         try {
             const activities = req?.body?.activities;
-            let runnerData;
             const userBrandId = activities[0].userId;
             const runner = await RunnersServices.getByBrandId(userBrandId);
             console.log('runner_id:', runner?._id);
@@ -345,7 +344,7 @@ class GarminController {
                         activityResponse?._id
                     );
             });
-            NotificationsServices.setToTrue(runnerData._id);
+            NotificationsServices.setToTrue(runner._id);
             res.status(200).send('EVENT_RECEIVED');
         } catch (error) {
             console.log('Error on POST of get_stats_activities');
