@@ -101,7 +101,8 @@ class PolarController {
             const brand_id = body?.user_id;
             const exercise_url = body?.url;
 
-            if (!exercise_url) return res.status(204).send('Ping event type');
+            if (body?.event == 'PING')
+                return res.status(204).send('Ping event type');
 
             const runner = await RunnersServices.getByBrandId(brand_id);
 
@@ -158,6 +159,7 @@ class PolarController {
             const activityResponse = await ActivitiesServices.createActivity(
                 dataToSend
             );
+            console.log('Activity created', activityResponse);
 
             if (!error && calendarActivities[0]?._id)
                 await CalendarServices.completeActivity(
