@@ -25,6 +25,21 @@ class ActivitiesServices {
         }
     }
 
+    static async getByBrandActivityId(activity_id) {
+        try {
+            const activities = await Activities.findOne({ activity_id });
+            return {
+                error: false,
+                data: activities,
+            };
+        } catch (error) {
+            return {
+                error: true,
+                data: error,
+            };
+        }
+    }
+
     static async createActivity(body) {
         try {
             const activity = await Activities.create(body);

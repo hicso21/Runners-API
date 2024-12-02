@@ -97,23 +97,31 @@ class PolarController {
     static async webhook(req, res) {
         try {
             const body = req.body;
-            console.log('Polar webhook', body);
+            //console.log('Polar webhook', body);
             const brand_id = body?.user_id;
             const exercise_url = body?.url;
 
             if (body?.event == 'PING')
-                return res.status(204).send('Ping event type');
+                return res.status(200).send({ msg: 'Ping event type' });
 
             const runner = await RunnersServices.getByBrandId(brand_id);
 
-            const activity = await axios.get(exercise_url, {
-                Accept: 'application/json',
-                auth: `Bearer ${runner.access_token}`,
-            });
+            console.log('access_token:', runner.access_token);
+
+            const activity = await fetch(exercise_url, {
+                method: 'GET',
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: `Bearer ${runner.access_token}`,
+                },
+            }).then((res) => res.json());
 
             console.log('Polar activity webhook: ', activity);
 
-            if (!activity?.id) return res.sendStatus(204);
+            const { error: activityError } =
+                await ActivitiesServices.getByBrandActivityId(activity?.id);
+
+            if (!activity?.id || activityError) return res.sendStatus(204);
 
             const typeOfActivity =
                 activityTypes.polar[activity?.detailed_sport_info];

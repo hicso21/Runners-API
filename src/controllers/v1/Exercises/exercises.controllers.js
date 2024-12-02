@@ -7,7 +7,7 @@ class ExercisesControllers {
             const exercises = await ExercisesServices.getAllExercises();
             res.status(200).send(exercises);
         } catch (error) {
-            res.status(404).send({
+            res.status(500).send({
                 error: true,
                 data: error
             });
@@ -20,7 +20,7 @@ class ExercisesControllers {
             const exercise = await ExercisesServices.getExerciseById(id);
             res.status(200).send(exercise);
         } catch (error) {
-            res.status(404).send({
+            res.status(500).send({
                 error: true,
                 data: error
             });
@@ -33,7 +33,7 @@ class ExercisesControllers {
             const newExercise = await ExercisesServices.newExercise(exercise);
             res.status(201).send(newExercise);
         } catch (error) {
-            res.status(404).send({
+            res.status(500).send({
                 error: true,
                 data: error
             });
@@ -47,7 +47,7 @@ class ExercisesControllers {
             const updateExercise = await ExercisesServices.updateExercise(id, exercise);
             res.status(200).send(updateExercise);
         } catch (error) {
-            res.status(404).send({
+            res.status(500).send({
                 error: true,
                 data: error
             });
@@ -60,7 +60,7 @@ class ExercisesControllers {
             const res = await ExercisesServices.deleteExercise(id);
             res.status(200).send(res);
         } catch (error) {
-            res.status(404).send({
+            res.status(500).send({
                 error: true,
                 data: error
             });
