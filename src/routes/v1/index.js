@@ -20,6 +20,7 @@ import suunto from './Suunto/index.js';
 import uploads from './Uploads/index.js';
 import paid from './Paid/index.js';
 import codes from './Codes/index.js';
+import foods from './Foods/index.js';
 import notifications from './Notification/index.js';
 import LoginController from './login/login.controllers.js';
 
@@ -52,6 +53,7 @@ router.use('/calendar', calendar);
 router.use('/paid', paid);
 router.use('/codes', codes);
 router.use('/notifications', notifications);
+router.use('/foods', foods);
 
 router.use('/coros', coros);
 router.use('/suunto', suunto);
