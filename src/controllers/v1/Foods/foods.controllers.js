@@ -8,7 +8,10 @@ export default class FoodsControllers {
                 return res
                     .status(400)
                     .send('An error has ocurred getting foods');
-            res.send(foods);
+            res.send({
+                error: false,
+                data: foods,
+            });
         } catch (error) {
             res.status(500).send({
                 error: true,
@@ -26,7 +29,7 @@ export default class FoodsControllers {
                 return res
                     .status(400)
                     .send('An error has ocurred creating food');
-            res.send(newFood);
+            res.send({ error: false, data: newFood });
         } catch (error) {
             res.status(500).send({
                 error: true,
@@ -49,7 +52,7 @@ export default class FoodsControllers {
                 return res
                     .status(400)
                     .send('An error has ocurred creating food');
-            res.send(updatedFood);
+            res.send({ error: false, data: updatedFood });
         } catch (error) {
             res.status(500).send({
                 error: true,
@@ -63,7 +66,7 @@ export default class FoodsControllers {
         try {
             if (!params.id) return res.send("Id's missing");
             const deletedFood = await FoodsServices.deleteFood(params.id);
-            res.send(deletedFood);
+            res.send({ error: false, data: deletedFood });
         } catch (error) {
             res.status(500).send({
                 error: true,
