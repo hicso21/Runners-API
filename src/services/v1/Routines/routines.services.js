@@ -42,6 +42,22 @@ export default class RoutinesServices {
         }
     }
 
+    static async updateRoutineName(id, newName) {
+        try {
+            const routineUpdated = await Routines.findByIdAndUpdate(
+                id,
+                { $set: { name: newName } },
+                { new: true }
+            );
+            return routineUpdated;
+        } catch (error) {
+            return {
+                error: true,
+                data: error,
+            };
+        }
+    }
+
     static async updateRoutine(id, routine) {
         try {
             const routineUpdated = await Routines.findByIdAndUpdate(

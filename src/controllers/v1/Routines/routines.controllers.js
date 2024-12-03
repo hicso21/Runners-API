@@ -44,6 +44,23 @@ class RoutinesController {
         }
     }
 
+    static async updateRoutineName(req, res) {
+        try {
+            const { id } = req.params;
+            const { name } = req.body;
+            const updatedRoutine = await RoutinesServices.updateRoutineName(
+                id,
+                name
+            );
+            res.status(200).send(updatedRoutine);
+        } catch (error) {
+            res.status(500).send({
+                error: true,
+                data: error,
+            });
+        }
+    }
+
     static async updateRoutine(req, res) {
         try {
             const { id } = req.params;
