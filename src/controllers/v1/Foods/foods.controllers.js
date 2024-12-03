@@ -23,7 +23,7 @@ export default class FoodsControllers {
     static async createFood(req, res) {
         const body = req.body;
         try {
-            if (!body.food) return res.send('The body have not food property');
+            if (!body.food || !body.type) return res.send('Properties missing');
             const newFood = await FoodsServices.createFood(body);
             if (newFood.error)
                 return res

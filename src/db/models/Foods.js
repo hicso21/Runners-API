@@ -3,6 +3,7 @@ import { Schema, model } from 'mongoose';
 const foodSchema = new Schema(
     {
         food: String,
+        type: String,
     },
     { timestamps: true }
 );
