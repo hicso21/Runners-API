@@ -360,6 +360,66 @@ class GarminController {
             });
         }
     }
+
+    static async getHrvSummary(req, res) {
+        const body = req.body;
+        try {
+            console.log('getHrvSummary:', body);
+            res.status(200).send('EVENT_RECEIVED');
+        } catch (error) {
+            console.log('Error on POST of get_hrv_summary');
+            await LogsServices.create(
+                'getHrvSummary error garmin',
+                JSON.stringify(error),
+                error
+            );
+            res.status(500).send({
+                error: true,
+                msg: 'An error has ocurred',
+                data: error,
+            });
+        }
+    }
+
+    static async getStatsActivityDetails(req, res) {
+        const body = req.body;
+        try {
+            console.log('getStatsActivityDetails:', body);
+            res.status(200).send('EVENT_RECEIVED');
+        } catch (error) {
+            console.log('Error on POST of get_stats_activity_details');
+            await LogsServices.create(
+                'getStatsActivityDetails error garmin',
+                JSON.stringify(error),
+                error
+            );
+            res.status(500).send({
+                error: true,
+                msg: 'An error has ocurred',
+                data: error,
+            });
+        }
+    }
+
+    static async getMoveIQ(req, res) {
+        const body = req.body;
+        try {
+            console.log('getMoveIQ:', body);
+            res.status(200).send('EVENT_RECEIVED');
+        } catch (error) {
+            console.log('Error on POST of get_move_iq');
+            await LogsServices.create(
+                'getMoveIQ error garmin',
+                JSON.stringify(error),
+                error
+            );
+            res.status(500).send({
+                error: true,
+                msg: 'An error has ocurred',
+                data: error,
+            });
+        }
+    }
 }
 
 export default GarminController;
