@@ -388,11 +388,7 @@ class GarminController {
             console.log('getStatsActivityDetails:', body);
             console.log(
                 'getStatsActivityDetails samples',
-                body?.activityDetails[0].samples
-            );
-            console.log(
-                'getStatsActivityDetails laps',
-                body?.activityDetails[0].laps
+                body?.activityDetails[0].samples[0]
             );
             res.status(200).send('EVENT_RECEIVED');
         } catch (error) {
