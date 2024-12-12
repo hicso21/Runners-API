@@ -26,6 +26,7 @@ const activitiesSchema = new Schema({
     average_temperature: String,
     heart_rates: Array,
     zones: Array,
+    time_in_zones: Array,
     route: Array,
     speeds: Array,
     paces: Array,

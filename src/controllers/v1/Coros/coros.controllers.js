@@ -231,6 +231,7 @@ class CorosController {
                     heart_rates: [],
                     speeds: [],
                     zones: [],
+                    time_in_zones: [],
                     route: [],
                     triathlon_data: workoutData[1].triathlonItemList,
                     description: '',

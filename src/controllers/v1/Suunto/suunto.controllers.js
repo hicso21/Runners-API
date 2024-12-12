@@ -272,9 +272,21 @@ class SuuntoController {
                 runner.refresh_token
             );
             const workoutData = data.payload;
-            
-            console.log('workoutData', workoutData);
-            
+
+            // console.log('workoutData', workoutData);
+            console.log(
+                'workoutData HeartrateStreamExtension',
+                workoutData?.extensions.find(
+                    (item) => item.type == 'HeartrateStreamExtension'
+                )?.points
+            );
+            console.log(
+                'workoutData LocationStreamExtension',
+                workoutData?.extensions.find(
+                    (item) => item.type == 'LocationStreamExtension'
+                )?.locationPoints
+            );
+
             if (data.error) {
                 console.log(data.error);
                 return await LogsServices.create(
@@ -326,6 +338,7 @@ class SuuntoController {
                 heart_rates: [],
                 speeds: [],
                 zones: [],
+                time_in_zones: [],
                 route: [],
                 triathlon_data: [],
                 description: '',

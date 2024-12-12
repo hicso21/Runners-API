@@ -198,6 +198,7 @@ class StravaController {
                 heart_rates: [],
                 speeds: [],
                 zones: [],
+                time_in_zones: [],
                 route: [],
                 triathlon_data: [],
                 description: '',

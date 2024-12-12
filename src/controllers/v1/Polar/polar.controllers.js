@@ -165,7 +165,8 @@ class PolarController {
                 paces: [],
                 heart_rates: [],
                 speeds: [],
-                zones: activity?.heart_rate_zones?.map((item) => ({
+                zones: [],
+                time_in_zones: activity?.heart_rate_zones?.map((item) => ({
                     zone: item?.index + 1,
                     time_in_zone: polarDurationParse(item?.in_zone),
                 })),
