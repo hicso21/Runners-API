@@ -13,6 +13,7 @@ import activityTypes from '../../../utils/constants/activityTypes.js';
 import CalendarServices from '../../../services/v1/Calendar/calendar.services.js';
 import NotificationsServices from '../../../services/v1/Notifications/notifications.services.js';
 import LogsServices from '../../../services/v1/Logs/logs.services.js';
+import calculateTimeInZones from '../../../utils/functions/calculateTimeInZones.js';
 
 function generateRandomNonce() {
     const randomBytes = crypto.randomBytes(16);
@@ -341,6 +342,7 @@ class GarminController {
                     heart_rates: [],
                     speeds: [],
                     zones: [],
+                    time_in_zones: [],
                     route: [],
                     triathlon_data: [],
                     description: '',
@@ -393,40 +395,103 @@ class GarminController {
         }
     }
 
-    static async getHrvSummary(req, res) {
-        const body = req.body;
-        try {
-            const { hrv, ...bodyRest } = body;
-            console.log('getHrvSummary:', bodyRest);
-            console.log('getHrvSummary hrvValues', body?.hrv[0].hrvValues);
-            res.status(200).send('EVENT_RECEIVED');
-        } catch (error) {
-            console.log('Error on POST of get_hrv_summary');
-            await LogsServices.create(
-                'getHrvSummary error garmin',
-                JSON.stringify(error),
-                error
-            );
-            res.status(500).send({
-                error: true,
-                msg: 'An error has ocurred',
-                data: error,
-            });
-        }
-    }
-
     static async getStatsActivityDetails(req, res) {
         const body = req.body;
         try {
             console.log('getStatsActivityDetails:', body);
             console.log(
                 'getStatsActivityDetails summary',
-                body?.activityDetails[0].summary[0]
+                body?.activityDetails[0].summary
             );
             console.log(
                 'getStatsActivityDetails samples',
                 body?.activityDetails[0].samples[0]
             );
+            const activities = body?.activityDetails;
+            const userBrandId = activities[0].userId;
+            const runner = await RunnersServices.getByBrandId(userBrandId);
+            activities?.map(async (activity) => {
+                console.log('garmin activity', activity);
+                const typeOfActivity =
+                    activityTypes.garmin[activity?.summary?.activityType];
+
+                const { error, data } =
+                    await CalendarServices.getLastByActivityType(
+                        typeOfActivity,
+                        runner._id
+                    );
+
+                const { time_in_zones, zones } = calculateTimeInZones(
+                    runner?.birthday,
+                    activity?.samples
+                );
+                console.log({ zones, time_in_zones });
+
+                const dataToSend = {
+                    user_id: runner._id,
+                    brand_id: activity?.summary?.userId,
+                    activity_id: activity?.summary?.activityId,
+                    activity_type:
+                        typeOfActivity || activity?.summary?.activityType,
+                    title: '',
+                    timestamp: activity?.summary?.startTimeInSeconds * 1000,
+                    date: new Date(
+                        activity?.summary?.startTimeInSeconds * 1000
+                    ).toLocaleString(),
+                    distance: activity?.summary?.distanceInMeters,
+                    total_time: activity?.summary?.durationInSeconds,
+                    average_heart_rate:
+                        activity?.summary?.averageHeartRateInBeatsPerMinute,
+                    max_heart_rate:
+                        activity?.summary?.maxHeartRateInBeatsPerMinute,
+                    average_pace:
+                        activity?.summary?.averagePaceInMinutesPerKilometer,
+                    max_pace: activity?.summary?.maxPaceInMinutesPerKilometer,
+                    calories: activity?.summary?.activeKilocalories,
+                    positive_slope:
+                        activity?.summary?.totalElevationGainInMeters,
+                    negative_slope:
+                        activity?.summary?.totalElevationLossInMeters,
+                    average_speed:
+                        activity?.summary?.averageSpeedInMetersPerSecond,
+                    max_speed: activity?.summary?.maxSpeedInMetersPerSecond,
+                    average_cadence:
+                        activity?.summary?.averageRunCadenceInStepsPerMinute,
+                    steps: activity?.summary?.steps,
+                    max_cadence:
+                        activity?.summary?.maxRunCadenceInStepsPerMinute,
+                    training_load: '',
+                    resting_heart_rate: '',
+                    min_height: '',
+                    max_height: '',
+                    estimated_liquid_loss: '',
+                    average_temperature: '',
+                    paces: [],
+                    heart_rates: activity?.samples?.map(
+                        (item) => item.heartRate
+                    ),
+                    speeds: activity?.samples?.map(
+                        (item) => item.speedMetersPerSecond
+                    ),
+                    zones,
+                    time_in_zones,
+                    route: activity?.samples?.map((item) => ({
+                        latitude: item.latitudeInDegree,
+                        longitude: item.longitudeInDegree,
+                    })),
+                    triathlon_data: [],
+                    description: '',
+                };
+
+                const activityResponse =
+                    await ActivitiesServices.createActivity(dataToSend);
+                if (!error && data[0]?._id)
+                    await CalendarServices.completeActivity(
+                        data[0]?._id,
+                        activityResponse?._id
+                    );
+            });
+            NotificationsServices.setToTrue(runner._id);
             res.status(200).send('EVENT_RECEIVED');
         } catch (error) {
             console.log('Error on POST of get_stats_activity_details');
