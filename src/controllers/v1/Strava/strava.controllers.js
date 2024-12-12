@@ -195,7 +195,11 @@ class StravaController {
                 estimated_liquid_loss: '',
                 average_temperature: '',
                 paces: [],
-                triathlonData: [],
+                heart_rates: [],
+                speeds: [],
+                zones: [],
+                route: [],
+                triathlon_data: [],
                 description: '',
             };
             const activity = await ActivitiesServices.createActivity(

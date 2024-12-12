@@ -238,7 +238,7 @@ class SuuntoController {
                 average_temperature:
                     response?.payload[0]?.extensions?.avgTemperature,
                 paces: [],
-                triathlonData: [],
+                triathlon_data: [],
                 description: '',
             };
             const activity = await ActivitiesServices.createActivity(
@@ -267,18 +267,14 @@ class SuuntoController {
             const brand_id = body.username;
             const workoutid = body.workoutid;
             const runner = await RunnersServices.getByBrandId(brand_id);
-            const { data } = await axios.get(
-                `https://cloudapi.suunto.com/v3/workouts/${workoutid}`,
-                {
-                    headers: {
-                        Authorization: runner.refresh_token,
-                        'Cache-Control': 'no-cache',
-                        'Ocp-Apim-Subscription-Key':
-                            process.env.suunto_primary_key,
-                    },
-                }
+            const data = await SuuntoServices.getWorkoutById(
+                workoutid,
+                runner.refresh_token
             );
             const workoutData = data.payload;
+            
+            console.log('workoutData', workoutData);
+            
             if (data.error) {
                 console.log(data.error);
                 return await LogsServices.create(
@@ -301,7 +297,7 @@ class SuuntoController {
             const dataToSend = {
                 user_id: runner._id,
                 brand_id,
-                activity_id: workoutData?.workoutId,
+                activity_id: workoutData?.workoutKey,
                 activity_type: typeOfActivity || suuntoActivityType,
                 title: suuntoActivityType,
                 timestamp: workoutData?.startTime,
@@ -327,12 +323,16 @@ class SuuntoController {
                 estimated_liquid_loss: '',
                 average_temperature: '',
                 paces: [],
-                triathlonData: [],
+                heart_rates: [],
+                speeds: [],
+                zones: [],
+                route: [],
+                triathlon_data: [],
                 description: '',
             };
             const activityResponse = await ActivitiesServices.createActivity(
                 dataToSend
-            ).then((res) => console.log('New Suunto Activity response', res));
+            );
 
             if (!error && calendarActivities[0]?._id)
                 await CalendarServices.completeActivity(

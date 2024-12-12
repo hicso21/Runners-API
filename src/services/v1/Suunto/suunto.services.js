@@ -2,6 +2,7 @@ import mainUrl from '../../../utils/constants/mainUrl.js';
 import fetchSuunto from '../../../utils/fetches/fetchSuuntoAPI.js';
 import config from '../../../config/suuntoData.js';
 import LogsServices from '../Logs/logs.services.js';
+import axios from 'axios';
 
 class SuuntoServices {
     static async getAuthorizeUrl(id) {
@@ -116,6 +117,32 @@ class SuuntoServices {
         } catch (error) {
             await LogsServices.create(
                 'sleepData error suunto',
+                JSON.stringify(error),
+                error
+            );
+            return { error: true, data: error };
+        }
+    }
+
+    static async getWorkoutById(workoutid, refresh_runner_token) {
+        try {
+            const extensions =
+                'CadenceStreamExtension,HeartrateStreamExtension,SummaryExtension,LocationStreamExtension';
+            const { data } = await axios.get(
+                `https://cloudapi.suunto.com/v3/workouts/${workoutid}?extensions=${extensions}`,
+                {
+                    headers: {
+                        Authorization: refresh_runner_token,
+                        'Cache-Control': 'no-cache',
+                        'Ocp-Apim-Subscription-Key':
+                            process.env.suunto_primary_key,
+                    },
+                }
+            );
+            return data;
+        } catch (error) {
+            await LogsServices.create(
+                'getWorkoutById error suunto',
                 JSON.stringify(error),
                 error
             );

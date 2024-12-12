@@ -10,7 +10,6 @@ import ActivitiesServices from '../../../services/v1/Activities/activities.servi
 import { v1 } from 'uuid';
 import oauthSignature from 'oauth-signature';
 import activityTypes from '../../../utils/constants/activityTypes.js';
-import Test from '../../../db/models/TestModel.js';
 import CalendarServices from '../../../services/v1/Calendar/calendar.services.js';
 import NotificationsServices from '../../../services/v1/Notifications/notifications.services.js';
 import LogsServices from '../../../services/v1/Logs/logs.services.js';
@@ -261,7 +260,7 @@ class GarminController {
                 estimated_liquid_loss: '',
                 average_temperature: '',
                 paces: data?.samples,
-                triathlonData: [],
+                triathlon_data: [],
                 description: '',
                 activityId: data?.activityId,
             };
@@ -291,12 +290,19 @@ class GarminController {
             const runner = await RunnersServices.getByBrandId(userBrandId);
             console.log('runner_id:', runner?._id);
             activities?.map(async (activity) => {
+                console.log('garmin activity', activity);
                 const typeOfActivity =
                     activityTypes.garmin[activity?.activityType];
+
                 const { error, data } =
                     await CalendarServices.getLastByActivityType(
                         typeOfActivity,
                         runner._id
+                    );
+
+                const { data: activityData, error: ActivityError } =
+                    await ActivitiesServices.getByBrandActivityId(
+                        activity?.activityId
                     );
 
                 const dataToSend = {
@@ -332,17 +338,43 @@ class GarminController {
                     estimated_liquid_loss: '',
                     average_temperature: '',
                     paces: [],
-                    triathlonData: [],
+                    heart_rates: [],
+                    speeds: [],
+                    zones: [],
+                    route: [],
+                    triathlon_data: [],
                     description: '',
                 };
-                const activityResponse =
-                    await ActivitiesServices.createActivity(dataToSend);
 
-                if (!error && data[0]?._id)
-                    await CalendarServices.completeActivity(
-                        data[0]?._id,
-                        activityResponse?._id
-                    );
+                if (!ActivityError && activityData?.heart_rates?.length > 0) {
+                    const {
+                        paces,
+                        heart_rates,
+                        speeds,
+                        zones,
+                        route,
+                        triathlon_data,
+                        ...sendingData
+                    } = dataToSend;
+                    const activityResponse =
+                        await ActivitiesServices.updateActivity(
+                            activityData?._id,
+                            sendingData
+                        );
+                    if (!error && data[0]?._id)
+                        await CalendarServices.completeActivity(
+                            data[0]?._id,
+                            activityResponse?._id
+                        );
+                } else {
+                    const activityResponse =
+                        await ActivitiesServices.createActivity(dataToSend);
+                    if (!error && data[0]?._id)
+                        await CalendarServices.completeActivity(
+                            data[0]?._id,
+                            activityResponse?._id
+                        );
+                }
             });
             NotificationsServices.setToTrue(runner._id);
             res.status(200).send('EVENT_RECEIVED');
@@ -364,7 +396,8 @@ class GarminController {
     static async getHrvSummary(req, res) {
         const body = req.body;
         try {
-            console.log('getHrvSummary:', body);
+            const { hrv, ...bodyRest } = body;
+            console.log('getHrvSummary:', bodyRest);
             console.log('getHrvSummary hrvValues', body?.hrv[0].hrvValues);
             res.status(200).send('EVENT_RECEIVED');
         } catch (error) {
@@ -386,6 +419,10 @@ class GarminController {
         const body = req.body;
         try {
             console.log('getStatsActivityDetails:', body);
+            console.log(
+                'getStatsActivityDetails summary',
+                body?.activityDetails[0].summary[0]
+            );
             console.log(
                 'getStatsActivityDetails samples',
                 body?.activityDetails[0].samples[0]

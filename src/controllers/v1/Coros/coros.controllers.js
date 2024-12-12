@@ -228,7 +228,11 @@ class CorosController {
                     estimated_liquid_loss: '',
                     average_temperature: '',
                     paces: [],
-                    triathlonData: workoutData[1].triathlonItemList,
+                    heart_rates: [],
+                    speeds: [],
+                    zones: [],
+                    route: [],
+                    triathlon_data: workoutData[1].triathlonItemList,
                     description: '',
                 };
                 const activity = await ActivitiesServices.createActivity(

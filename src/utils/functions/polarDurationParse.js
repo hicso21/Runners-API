@@ -7,5 +7,8 @@ export default function polarDurationParse(duration) {
     const minutesMatch = duration.match(/(\d+)M/);
     if (minutesMatch) totalSeconds += parseInt(minutesMatch[1]) * 60;
 
+    const secondsMatch = duration.match(/(\d+(?:\.\d+)?)S/);
+    if (secondsMatch) totalSeconds += Math.floor(parseFloat(secondsMatch[1]));
+
     return totalSeconds;
 }

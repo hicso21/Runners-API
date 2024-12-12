@@ -24,9 +24,12 @@ const activitiesSchema = new Schema({
     max_height: String,
     estimated_liquid_loss: String,
     average_temperature: String,
-    heartRates: Array,
+    heart_rates: Array,
+    zones: Array,
+    route: Array,
+    speeds: Array,
     paces: Array,
-    triathlonData: Array,
+    triathlon_data: Array,
     description: String,
 });
 

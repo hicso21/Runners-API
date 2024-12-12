@@ -40,6 +40,27 @@ class ActivitiesServices {
         }
     }
 
+    static async updateActivity(activity_id, body) {
+        try {
+            const activities = await Activities.findByIdAndUpdate(
+                activity_id,
+                {
+                    $set: body,
+                },
+                { new: true }
+            );
+            return {
+                error: false,
+                data: activities,
+            };
+        } catch (error) {
+            return {
+                error: true,
+                data: error,
+            };
+        }
+    }
+
     static async createActivity(body) {
         try {
             const activity = await Activities.create(body);

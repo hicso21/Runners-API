@@ -108,13 +108,16 @@ class PolarController {
 
             console.log('access_token:', runner.access_token);
 
-            const activity = await fetch(exercise_url, {
-                method: 'GET',
-                headers: {
-                    Accept: 'application/json',
-                    Authorization: `Bearer ${runner.access_token}`,
-                },
-            }).then((res) => res.json());
+            const activity = await fetch(
+                `${exercise_url}?zones=true&route=true`,
+                {
+                    method: 'GET',
+                    headers: {
+                        Accept: 'application/json',
+                        Authorization: `Bearer ${runner.access_token}`,
+                    },
+                }
+            ).then((res) => res.json());
 
             console.log('Polar activity webhook: ', activity);
 
@@ -160,7 +163,17 @@ class PolarController {
                 estimated_liquid_loss: '',
                 average_temperature: '',
                 paces: [],
-                triathlonData: [],
+                heart_rates: [],
+                speeds: [],
+                zones: activity?.heart_rate_zones?.map((item) => ({
+                    zone: item?.index + 1,
+                    time_in_zone: polarDurationParse(item?.in_zone),
+                })),
+                route: activity?.route?.map((item) => ({
+                    latitude: item?.latitude,
+                    longitude: item?.longitude,
+                })),
+                triathlon_data: [],
                 description: '',
             };
 
