@@ -127,7 +127,11 @@ class SuuntoServices {
     static async getWorkoutById(workoutid, refresh_runner_token) {
         try {
             const extensions =
-                'CadenceStreamExtension,HeartrateStreamExtension,SummaryExtension,LocationStreamExtension';
+                'CadenceStreamExtension,' +
+                'HeartrateStreamExtension,' +
+                'SummaryExtension,' +
+                'SpeedStreamExtension,' +
+                'LocationStreamExtension';
             const { data } = await axios.get(
                 `https://cloudapi.suunto.com/v3/workouts/${workoutid}?extensions=${extensions}`,
                 {

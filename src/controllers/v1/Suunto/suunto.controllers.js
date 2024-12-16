@@ -287,6 +287,13 @@ class SuuntoController {
                 )?.locationPoints
             );
 
+            console.log(
+                'workoutData SpeedStreamExtension',
+                workoutData?.extensions.find(
+                    (item) => item.type == 'SpeedStreamExtension'
+                )
+            );
+
             if (data.error) {
                 console.log(data.error);
                 return await LogsServices.create(

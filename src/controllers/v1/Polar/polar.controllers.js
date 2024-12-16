@@ -97,7 +97,6 @@ class PolarController {
     static async webhook(req, res) {
         try {
             const body = req.body;
-            //console.log('Polar webhook', body);
             const brand_id = body?.user_id;
             const exercise_url = body?.url;
 
@@ -105,8 +104,6 @@ class PolarController {
                 return res.status(200).send({ msg: 'Ping event type' });
 
             const runner = await RunnersServices.getByBrandId(brand_id);
-
-            console.log('access_token:', runner.access_token);
 
             const activity = await fetch(
                 `${exercise_url}?zones=true&route=true`,
@@ -118,8 +115,6 @@ class PolarController {
                     },
                 }
             ).then((res) => res.json());
-
-            console.log('Polar activity webhook: ', activity);
 
             const { error: activityError } =
                 await ActivitiesServices.getByBrandActivityId(activity?.id);
@@ -181,7 +176,7 @@ class PolarController {
             const activityResponse = await ActivitiesServices.createActivity(
                 dataToSend
             );
-            console.log('Activity created', activityResponse);
+            console.log('Polar Activity created', activityResponse);
 
             if (!error && calendarActivities[0]?._id)
                 await CalendarServices.completeActivity(
