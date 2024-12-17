@@ -13,6 +13,20 @@ class ActivitiesServices {
         }
     }
 
+    static async getAllWithoutArray(user_id) {
+        try {
+            const activities = await Activities.find({ user_id }).select(
+                '-route -heart_rates -paces -triathlon_data -speeds'
+            );
+            return activities;
+        } catch (error) {
+            return {
+                error: true,
+                data: error,
+            };
+        }
+    }
+
     static async getById(_id) {
         try {
             const activities = await Activities.findOne({ _id });

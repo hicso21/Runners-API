@@ -14,6 +14,21 @@ class ActivitiesControllers {
         }
     }
 
+    static async getAllWithoutArray(req, res) {
+        const { user_id } = req.params;
+        try {
+            const activities = await ActivitiesServices.getAllWithoutArray(
+                user_id
+            );
+            res.send(activities);
+        } catch (error) {
+            res.send({
+                error: true,
+                data: error,
+            });
+        }
+    }
+
     static async getById(req, res) {
         const activity_id = req.params.activity_id;
         try {
