@@ -411,7 +411,6 @@ class GarminController {
             const userBrandId = activities[0].userId;
             const runner = await RunnersServices.getByBrandId(userBrandId);
             activities?.map(async (activity) => {
-                console.log('garmin activity', activity);
                 const typeOfActivity =
                     activityTypes.garmin[activity?.summary?.activityType];
 
