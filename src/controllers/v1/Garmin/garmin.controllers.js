@@ -469,15 +469,17 @@ class GarminController {
                     heart_rates: activity?.samples?.map(
                         (item) => item.heartRate
                     ),
-                    speeds: activity?.samples?.map(
-                        (item) => item.speedMetersPerSecond
-                    ),
+                    speeds: activity?.samples
+                        ?.map((item) => item.speedMetersPerSecond)
+                        .filter((item) => item),
                     zones,
                     time_in_zones,
-                    route: activity?.samples?.map((item) => ({
-                        latitude: item.latitudeInDegree,
-                        longitude: item.longitudeInDegree,
-                    })),
+                    route: activity?.samples
+                        ?.map((item) => ({
+                            latitude: item.latitudeInDegree,
+                            longitude: item.longitudeInDegree,
+                        }))
+                        .filter((item) => item.latitude && item.longitude),
                     triathlon_data: [],
                     description: '',
                 };

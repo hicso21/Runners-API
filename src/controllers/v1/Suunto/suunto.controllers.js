@@ -330,9 +330,9 @@ class SuuntoController {
                 average_temperature: '',
                 paces: [],
                 heart_rates: [],
-                speeds: workoutData?.extensions.find(
-                    (item) => item.type == 'SpeedStreamExtension'
-                )?.points,
+                speeds: workoutData?.extensions
+                    .find((item) => item.type == 'SpeedStreamExtension')
+                    ?.points.filter((item) => item),
                 zones: [],
                 time_in_zones: [],
                 route: workoutData?.extensions
@@ -340,14 +340,14 @@ class SuuntoController {
                     ?.locationPoints?.map((item) => ({
                         latitude: item.latitude,
                         longitude: item.longitude,
-                    })),
+                    }))
+                    .filter((item) => item.latitude && item.longitude),
                 triathlon_data: [],
                 description: '',
             };
             const activityResponse = await ActivitiesServices.createActivity(
                 dataToSend
             );
-
             if (!error && calendarActivities[0]?._id)
                 await CalendarServices.completeActivity(
                     calendarActivities[0]?._id,

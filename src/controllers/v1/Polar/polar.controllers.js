@@ -159,16 +159,18 @@ class PolarController {
                 average_temperature: '',
                 paces: [],
                 heart_rates: [],
-                speeds: [],
+                speeds: [].filter((item) => item),
                 zones: [],
                 time_in_zones: activity?.heart_rate_zones?.map((item) => ({
                     zone: item?.index + 1,
                     time_in_zone: polarDurationParse(item?.in_zone),
                 })),
-                route: activity?.route?.map((item) => ({
-                    latitude: item?.latitude,
-                    longitude: item?.longitude,
-                })),
+                route: activity?.route
+                    ?.map((item) => ({
+                        latitude: item?.latitude,
+                        longitude: item?.longitude,
+                    }))
+                    .filter((item) => item.latitude && item.longitude),
                 triathlon_data: [],
                 description: '',
             };
