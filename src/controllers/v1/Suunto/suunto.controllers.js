@@ -280,19 +280,6 @@ class SuuntoController {
                     (item) => item.type == 'HeartrateStreamExtension'
                 )?.points
             );
-            console.log(
-                'workoutData LocationStreamExtension',
-                workoutData?.extensions.find(
-                    (item) => item.type == 'LocationStreamExtension'
-                )?.locationPoints
-            );
-
-            console.log(
-                'workoutData SpeedStreamExtension',
-                workoutData?.extensions.find(
-                    (item) => item.type == 'SpeedStreamExtension'
-                )
-            );
 
             if (data.error) {
                 console.log(data.error);
@@ -343,10 +330,17 @@ class SuuntoController {
                 average_temperature: '',
                 paces: [],
                 heart_rates: [],
-                speeds: [],
+                speeds: workoutData?.extensions.find(
+                    (item) => item.type == 'SpeedStreamExtension'
+                )?.points,
                 zones: [],
                 time_in_zones: [],
-                route: [],
+                route: workoutData?.extensions
+                    .find((item) => item.type == 'LocationStreamExtension')
+                    ?.locationPoints?.map((item) => ({
+                        latitude: item.latitude,
+                        longitude: item.longitude,
+                    })),
                 triathlon_data: [],
                 description: '',
             };
