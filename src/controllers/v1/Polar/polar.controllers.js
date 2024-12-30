@@ -106,7 +106,7 @@ class PolarController {
             const runner = await RunnersServices.getByBrandId(brand_id);
 
             const activity = await fetch(
-                `${exercise_url}?zones=true&route=true`,
+                `${exercise_url}?zones=true&route=true&samples=true`,
                 {
                     method: 'GET',
                     headers: {
@@ -128,6 +128,12 @@ class PolarController {
                     typeOfActivity,
                     runner._id
                 );
+            const { samples, heart_rate_zones, route, ...items } = activity;
+
+            console.log('Polar data', items);
+            console.log('Polar heart_rate_zones', heart_rate_zones[0]);
+            console.log('Polar route', route[0]);
+            console.log('Polar samples', samples[0]);
 
             const dataToSend = {
                 user_id: runner._id,
@@ -178,7 +184,6 @@ class PolarController {
             const activityResponse = await ActivitiesServices.createActivity(
                 dataToSend
             );
-            console.log('Polar Activity created', activityResponse);
 
             if (!error && calendarActivities[0]?._id)
                 await CalendarServices.completeActivity(
