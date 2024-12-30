@@ -424,7 +424,10 @@ class GarminController {
                     runner?.birthday,
                     activity?.samples
                 );
-                console.log({ zones, time_in_zones });
+                console.log({
+                    zones: [zones[0], zones[1], zones[2]],
+                    time_in_zones,
+                });
 
                 const dataToSend = {
                     user_id: runner._id,
