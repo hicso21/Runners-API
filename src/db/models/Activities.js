@@ -29,6 +29,7 @@ const activitiesSchema = new Schema({
     time_in_zones: Array,
     route: Array,
     speeds: Array,
+    elevation: Array,
     paces: Array,
     triathlon_data: Array,
     description: String,

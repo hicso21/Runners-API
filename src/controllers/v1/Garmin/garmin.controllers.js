@@ -469,6 +469,9 @@ class GarminController {
                     estimated_liquid_loss: '',
                     average_temperature: '',
                     paces: [],
+                    elevation: activity?.samples
+                        ?.map((item) => item.elevationInMeters)
+                        .filter((item) => item),
                     heart_rates: activity?.samples?.map(
                         (item) => item.heartRate
                     ),

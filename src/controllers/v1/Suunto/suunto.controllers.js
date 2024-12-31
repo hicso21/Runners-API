@@ -329,10 +329,15 @@ class SuuntoController {
                 estimated_liquid_loss: '',
                 average_temperature: '',
                 paces: [],
-                heart_rates: [],
+                elevation: [],
+                heart_rates: workoutData?.extensions
+                    .find((item) => item.type == 'HeartrateStreamExtension')
+                    ?.points?.map((item) => item.value)
+                    .filter((item) => item),
                 speeds: workoutData?.extensions
                     .find((item) => item.type == 'SpeedStreamExtension')
-                    ?.points.filter((item) => item),
+                    ?.points?.map((item) => item.value)
+                    .filter((item) => item),
                 zones: [],
                 time_in_zones: [],
                 route: workoutData?.extensions

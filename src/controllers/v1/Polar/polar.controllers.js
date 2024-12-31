@@ -164,6 +164,7 @@ class PolarController {
                 estimated_liquid_loss: '',
                 average_temperature: '',
                 paces: [],
+                elevation: [],
                 heart_rates: [],
                 speeds: [].filter((item) => item),
                 zones: [],

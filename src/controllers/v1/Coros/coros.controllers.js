@@ -228,6 +228,7 @@ class CorosController {
                     estimated_liquid_loss: '',
                     average_temperature: '',
                     paces: [],
+                    elevation: [],
                     heart_rates: [],
                     speeds: [],
                     zones: [],
