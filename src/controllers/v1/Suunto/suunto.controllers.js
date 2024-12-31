@@ -280,6 +280,12 @@ class SuuntoController {
                     (item) => item.type == 'CadenceStreamExtension'
                 )
             );
+            console.log(
+                'workoutData VerticalLapExtension',
+                workoutData?.extensions.find(
+                    (item) => item.type == 'VerticalLapExtension'
+                )
+            );
 
             if (data.error) {
                 console.log(data.error);
