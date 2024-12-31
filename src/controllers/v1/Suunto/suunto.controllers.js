@@ -278,7 +278,7 @@ class SuuntoController {
                 'workoutData CadenceStreamExtension',
                 workoutData?.extensions.find(
                     (item) => item.type == 'CadenceStreamExtension'
-                )?.points
+                )
             );
 
             if (data.error) {
