@@ -275,9 +275,9 @@ class SuuntoController {
 
             // console.log('workoutData', workoutData);
             console.log(
-                'workoutData HeartrateStreamExtension',
+                'workoutData CadenceStreamExtension',
                 workoutData?.extensions.find(
-                    (item) => item.type == 'HeartrateStreamExtension'
+                    (item) => item.type == 'CadenceStreamExtension'
                 )?.points
             );
 
