@@ -273,17 +273,10 @@ class SuuntoController {
             );
             const workoutData = data.payload;
 
-            // console.log('workoutData', workoutData);
             console.log(
-                'workoutData CadenceStreamExtension',
+                'workoutData VerticalSpeedStreamExtension',
                 workoutData?.extensions.find(
-                    (item) => item.type == 'CadenceStreamExtension'
-                )
-            );
-            console.log(
-                'workoutData VerticalLapExtension',
-                workoutData?.extensions.find(
-                    (item) => item.type == 'VerticalLapExtension'
+                    (item) => item.type == 'VerticalSpeedStreamExtension'
                 )
             );
 
@@ -334,7 +327,10 @@ class SuuntoController {
                 max_height: workoutData?.maxAltitude,
                 estimated_liquid_loss: '',
                 average_temperature: '',
-                paces: [],
+                paces: workoutData?.extensions
+                    .find((item) => item.type == 'CadenceStreamExtension')
+                    .points.map((item) => item.value)
+                    .filter((item) => item),
                 elevation: [],
                 heart_rates: workoutData?.extensions
                     .find((item) => item.type == 'HeartrateStreamExtension')
