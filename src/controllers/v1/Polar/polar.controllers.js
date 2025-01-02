@@ -163,10 +163,22 @@ class PolarController {
                 max_height: '',
                 estimated_liquid_loss: '',
                 average_temperature: '',
-                paces: [],
-                elevation: [],
-                heart_rates: [],
-                speeds: [].filter((item) => item),
+                paces: samples
+                    ?.find((item) => item.sample_type == 2)
+                    ?.data.split(',')
+                    ?.filter((item) => item),
+                elevation: samples
+                    ?.find((item) => item.sample_type == 3)
+                    ?.data.split(',')
+                    ?.filter((item) => item),
+                heart_rates: samples
+                    ?.find((item) => item.sample_type == 0)
+                    ?.data.split(',')
+                    ?.filter((item) => item),
+                speeds: samples
+                    ?.find((item) => item.sample_type == 1)
+                    ?.data.split(',')
+                    ?.filter((item) => item),
                 zones: [],
                 time_in_zones: activity?.heart_rate_zones?.map((item) => ({
                     zone: item?.index + 1,

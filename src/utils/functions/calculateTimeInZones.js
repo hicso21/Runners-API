@@ -61,10 +61,7 @@ export default function calculateTimeInZones(birthDate, heartRateData) {
         );
         const zone = zones[zoneIndex];
         if (zone) {
-            hrz.push({
-                zone: zone.zone,
-                timestamp: hr?.startTimeInSeconds,
-            });
+            hrz.push(zone.zone);
             if (index < heartRateData.length - 1) {
                 if (timestamp) {
                     zone.time_in_zone += hr?.startTimeInSeconds - timestamp;
