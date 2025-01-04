@@ -53,19 +53,19 @@ export default function calculateTimeInZones(birthDate, heartRateData) {
 
     const hrz = [];
 
-    let timestamp = heartRateData[0]?.startTimeInSeconds;
+    let timestamp = heartRateData[0]?.timestamp;
 
     heartRateData.forEach((hr, index) => {
         const zoneIndex = zones.findIndex(
-            (z) => hr?.heartRate >= z.min && hr?.heartRate <= z.max
+            (z) => hr?.value >= z.min && hr?.value <= z.max
         );
         const zone = zones[zoneIndex];
         if (zone) {
             hrz.push(zone.zone);
             if (index < heartRateData.length - 1) {
                 if (timestamp) {
-                    zone.time_in_zone += hr?.startTimeInSeconds - timestamp;
-                    timestamp = hr?.startTimeInSeconds;
+                    zone.time_in_zone += hr?.timestamp - timestamp;
+                    timestamp = hr?.timestamp;
                 } else zone.time_in_zone += 4;
             }
         }

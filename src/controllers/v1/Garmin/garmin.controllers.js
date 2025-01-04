@@ -422,12 +422,11 @@ class GarminController {
 
                 const { time_in_zones, zones } = calculateTimeInZones(
                     runner?.birthday,
-                    activity?.samples
+                    activity?.samples.map((item) => ({
+                        timestamp: item.startTimeInSeconds,
+                        value: item.heartRate,
+                    }))
                 );
-                console.log({
-                    zones: [zones[0], zones[1], zones[2]],
-                    time_in_zones,
-                });
 
                 const dataToSend = {
                     user_id: runner._id,

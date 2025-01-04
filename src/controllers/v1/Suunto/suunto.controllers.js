@@ -7,6 +7,7 @@ import activityTypes from '../../../utils/constants/activityTypes.js';
 import CalendarServices from '../../../services/v1/Calendar/calendar.services.js';
 import SuuntoActivitiesId from '../../../utils/constants/SuuntoActivitiesId.js';
 import NotificationsServices from '../../../services/v1/Notifications/notifications.services.js';
+import calculateTimeInZones from '../../../utils/functions/calculateTimeInZones.js';
 
 class SuuntoController {
     static async getUser(req, res) {
@@ -292,6 +293,27 @@ class SuuntoController {
                     runner._id
                 );
 
+            const { zones } = calculateTimeInZones(
+                runner?.birthday,
+                workoutData?.extensions.find(
+                    (item) => item.type == 'HeartrateStreamExtension'
+                )?.points
+            );
+
+            const time_in_zones = Object.values(
+                workoutData?.extensions.find(
+                    (item) => item.type == 'IntensityExtension'
+                )?.zones?.heartRate
+            ).map((item, index) => ({
+                zone: index + 1,
+                time_in_zone: item.totalTime,
+            }));
+
+            console.log({
+                zones: [zones[0], zones[1], zones[2]],
+                time_in_zones,
+            });
+
             const dataToSend = {
                 user_id: runner._id,
                 brand_id,
@@ -342,8 +364,8 @@ class SuuntoController {
                     .find((item) => item.type == 'SpeedStreamExtension')
                     ?.points?.map((item) => item.value)
                     .filter((item) => item),
-                zones: [],
-                time_in_zones: [],
+                zones,
+                time_in_zones,
                 route: workoutData?.extensions
                     .find((item) => item.type == 'LocationStreamExtension')
                     ?.locationPoints?.map((item) => ({

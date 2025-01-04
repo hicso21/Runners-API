@@ -13,6 +13,7 @@ import polarTitleParser from '../../../utils/functions/polarTitleParser.js';
 import polarDurationParse from '../../../utils/functions/polarDurationParse.js';
 import CalendarServices from '../../../services/v1/Calendar/calendar.services.js';
 import NotificationsServices from '../../../services/v1/Notifications/notifications.services.js';
+import calculateTimeInZones from '../../../utils/functions/calculateTimeInZones.js';
 
 class PolarController {
     static async authUser(req, res) {
@@ -130,10 +131,19 @@ class PolarController {
                 );
             const { samples, heart_rate_zones, route, ...items } = activity;
 
-            console.log('Polar data', items);
-            console.log('Polar heart_rate_zones', heart_rate_zones[0]);
-            console.log('Polar route', route[0]);
-            console.log('Polar samples', samples[0]);
+            const timestamp = new Date(activity?.start_time).getTime();
+
+            const { recording_rate, data } = samples?.find(
+                (item) => item.sample_type == 0
+            );
+
+            const { time_in_zones, zones } = calculateTimeInZones(
+                runner?.birthday,
+                data.split(',')?.map((item, index) => ({
+                    value: parseInt(item),
+                    timestamp: timestamp + index * recording_rate,
+                }))
+            );
 
             const dataToSend = {
                 user_id: runner._id,
@@ -141,7 +151,7 @@ class PolarController {
                 activity_id: activity?.id,
                 activity_type: typeOfActivity,
                 title: polarTitleParser(activity?.detailed_sport_info),
-                timestamp: new Date(activity?.start_time).getTime(),
+                timestamp,
                 date: new Date(activity?.start_time).toLocaleString(),
                 distance: activity?.distance,
                 total_time: polarDurationParse(activity?.duration),
@@ -185,7 +195,7 @@ class PolarController {
                     ?.data.split(',')
                     ?.map((item) => (parseInt(item) * 1000) / 3600)
                     ?.filter((item) => item),
-                zones: [],
+                zones,
                 time_in_zones: activity?.heart_rate_zones?.map((item) => ({
                     zone: item?.index + 1,
                     time_in_zone: polarDurationParse(item?.in_zone),
