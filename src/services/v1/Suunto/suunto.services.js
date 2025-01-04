@@ -132,6 +132,7 @@ class SuuntoServices {
                 'SummaryExtension,' +
                 'SpeedStreamExtension,' +
                 'VerticalSpeedStreamExtension,' +
+                'StepCountDeltaStreamExtension,' +
                 'LocationStreamExtension';
             const { data } = await axios.get(
                 `https://cloudapi.suunto.com/v3/workouts/${workoutid}?extensions=${extensions}`,

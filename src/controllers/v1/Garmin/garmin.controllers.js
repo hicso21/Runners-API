@@ -468,7 +468,17 @@ class GarminController {
                     max_height: '',
                     estimated_liquid_loss: '',
                     average_temperature: '',
-                    paces: [],
+                    rate: activity?.samples
+                        ?.map((item) => (item.stepsPerMinute * 60) / 1000)
+                        .filter((item) => item),
+                    paces: activity?.samples
+                        ?.map((item) =>
+                            Math.pow(
+                                (item.speedMetersPerSecond * 60) / 1000,
+                                -1
+                            )
+                        )
+                        .filter((item) => item),
                     elevation: activity?.samples
                         ?.map((item) => item.elevationInMeters)
                         .filter((item) => item),

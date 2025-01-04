@@ -279,6 +279,12 @@ class SuuntoController {
                     (item) => item.type == 'VerticalSpeedStreamExtension'
                 )
             );
+            console.log(
+                'workoutData StepCountDeltaStreamExtension',
+                workoutData?.extensions.find(
+                    (item) => item.type == 'StepCountDeltaStreamExtension'
+                )
+            );
 
             if (data.error) {
                 console.log(data.error);
@@ -327,9 +333,15 @@ class SuuntoController {
                 max_height: workoutData?.maxAltitude,
                 estimated_liquid_loss: '',
                 average_temperature: '',
-                paces: workoutData?.extensions
+                rate: workoutData?.extensions
                     .find((item) => item.type == 'CadenceStreamExtension')
                     .points.map((item) => item.value)
+                    .filter((item) => item),
+                paces: workoutData?.extensions
+                    .find((item) => item.type == 'SpeedStreamExtension')
+                    ?.points?.map((item) =>
+                        Math.pow((item.value * 60) / 1000, -1)
+                    )
                     .filter((item) => item),
                 elevation: [],
                 heart_rates: workoutData?.extensions

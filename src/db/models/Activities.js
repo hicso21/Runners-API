@@ -24,6 +24,7 @@ const activitiesSchema = new Schema({
     max_height: String,
     estimated_liquid_loss: String,
     average_temperature: String,
+    rate: Array,
     heart_rates: Array,
     zones: Array,
     time_in_zones: Array,
