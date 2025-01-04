@@ -273,19 +273,6 @@ class SuuntoController {
             );
             const workoutData = data.payload;
 
-            console.log(
-                'workoutData VerticalSpeedStreamExtension',
-                workoutData?.extensions.find(
-                    (item) => item.type == 'VerticalSpeedStreamExtension'
-                )
-            );
-            console.log(
-                'workoutData StepCountDeltaStreamExtension',
-                workoutData?.extensions.find(
-                    (item) => item.type == 'StepCountDeltaStreamExtension'
-                )
-            );
-
             if (data.error) {
                 console.log(data.error);
                 return await LogsServices.create(
@@ -343,7 +330,10 @@ class SuuntoController {
                         Math.pow((item.value * 60) / 1000, -1)
                     )
                     .filter((item) => item),
-                elevation: [],
+                elevation: workoutData?.extensions
+                    .find((item) => item.type == 'AltitudeStreamExtension')
+                    ?.points?.map((item) => item.value)
+                    .filter((item) => item),
                 heart_rates: workoutData?.extensions
                     .find((item) => item.type == 'HeartrateStreamExtension')
                     ?.points?.map((item) => item.value)

@@ -129,10 +129,8 @@ class SuuntoServices {
             const extensions =
                 'CadenceStreamExtension,' +
                 'HeartrateStreamExtension,' +
-                'SummaryExtension,' +
                 'SpeedStreamExtension,' +
-                'VerticalSpeedStreamExtension,' +
-                'StepCountDeltaStreamExtension,' +
+                'AltitudeStreamExtension,' +
                 'LocationStreamExtension';
             const { data } = await axios.get(
                 `https://cloudapi.suunto.com/v3/workouts/${workoutid}?extensions=${extensions}`,
