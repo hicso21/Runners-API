@@ -467,7 +467,7 @@ class GarminController {
                     max_height: '',
                     estimated_liquid_loss: '',
                     average_temperature: '',
-                    rate: activity?.samples
+                    cadences: activity?.samples
                         ?.map((item) => (item.stepsPerMinute * 60) / 1000)
                         .filter((item) => item),
                     paces: activity?.samples
