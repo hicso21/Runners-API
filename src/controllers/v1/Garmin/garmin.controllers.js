@@ -439,7 +439,10 @@ class GarminController {
                     date: new Date(
                         activity?.summary?.startTimeInSeconds * 1000
                     ).toLocaleString(),
-                    distance: activity?.summary?.distanceInMeters,
+                    distance:
+                        parseInt(activity?.summary?.distanceInMeters) > 1000
+                            ? activity?.summary?.distanceInMeters / 1000
+                            : activity?.summary?.distanceInMeters,
                     total_time: activity?.summary?.durationInSeconds,
                     average_heart_rate:
                         activity?.summary?.averageHeartRateInBeatsPerMinute,

@@ -322,7 +322,10 @@ class SuuntoController {
                 title: suuntoActivityType,
                 timestamp: workoutData?.startTime,
                 date: new Date(workoutData?.startTime).toLocaleString(),
-                distance: workoutData?.totalDistance,
+                distance:
+                    parseInt(workoutData?.totalDistance) > 1000
+                        ? workoutData?.totalDistance / 1000
+                        : workoutData?.totalDistance,
                 total_time: workoutData?.totalTime,
                 average_heart_rate: workoutData?.hrdata?.workoutAvgHR,
                 max_heart_rate: workoutData?.hrdata?.workoutMaxHR,
