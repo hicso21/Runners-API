@@ -153,10 +153,11 @@ class PolarController {
                 title: polarTitleParser(activity?.detailed_sport_info),
                 timestamp,
                 date: new Date(activity?.start_time).toLocaleString(),
-                distance: parseInt(activity?.distance) > 1000
-                ? activity?.distance / 1000
-                : activity?.distance,
-        total_time: workoutData?.totalTime,
+                distance:
+                    parseInt(activity?.distance) > 1000
+                        ? activity?.distance / 1000
+                        : activity?.distance,
+                total_time: workoutData?.totalTime,
                 total_time: polarDurationParse(activity?.duration),
                 average_heart_rate: activity?.heart_rate?.average,
                 max_heart_rate: activity?.heart_rate?.maximum,
@@ -176,7 +177,7 @@ class PolarController {
                 max_height: '',
                 estimated_liquid_loss: '',
                 average_temperature: '',
-                rate: samples
+                cadences: samples
                     ?.find((item) => item.sample_type == 8)
                     ?.data.split(',')
                     ?.filter((item) => item),

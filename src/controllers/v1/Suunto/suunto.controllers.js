@@ -345,7 +345,7 @@ class SuuntoController {
                 max_height: workoutData?.maxAltitude,
                 estimated_liquid_loss: '',
                 average_temperature: '',
-                rate: workoutData?.extensions
+                cadences: workoutData?.extensions
                     .find((item) => item.type == 'CadenceStreamExtension')
                     .points.map((item) => item.value)
                     .filter((item) => item),

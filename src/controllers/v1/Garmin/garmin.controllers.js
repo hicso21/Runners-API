@@ -471,7 +471,7 @@ class GarminController {
                     estimated_liquid_loss: '',
                     average_temperature: '',
                     cadences: activity?.samples
-                        ?.map((item) => (item.stepsPerMinute * 60) / 1000)
+                        ?.map((item) => item.stepsPerMinute)
                         .filter((item) => item),
                     paces: activity?.samples
                         ?.map((item) =>
