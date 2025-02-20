@@ -38,7 +38,12 @@ class NotificationsServices {
         try {
             return await Notifications.findOneAndUpdate(
                 { user_id },
-                { $set: { notification: true } }
+                {
+                    $set: {
+                        notification: true,
+                        updatedDate: Date.now(),
+                    },
+                }
             );
         } catch (error) {
             return {
