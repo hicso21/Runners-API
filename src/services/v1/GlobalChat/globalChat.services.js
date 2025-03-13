@@ -1,4 +1,4 @@
-import GlobalChats from '../../../db/models/GlobalChat';
+import GlobalChats from '../../../db/models/GlobalChat.js';
 
 export default class GlobalChatServices {
     static async createGlobalChat(msg) {

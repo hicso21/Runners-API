@@ -1,4 +1,4 @@
-import UserChats from '../../../db/models/UserChat';
+import UserChats from '../../../db/models/UserChat.js';
 
 export default class UserChatServices {
     static async createUserChat(msg) {
