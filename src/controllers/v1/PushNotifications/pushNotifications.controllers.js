@@ -3,6 +3,13 @@ import PushNotificationsServices from '../../../services/v1/PushNotifications/pu
 export default class PushNotificationsControllers {
     static async createNotificationToken(req, res) {
         const { token, user_id } = req.body;
+
+        if (!user_id || !push_token) {
+            return res
+                .status(400)
+                .send({ msg: 'Se requieren user_id y push_token', data: null });
+        }
+
         const alreadyExist = await PushNotificationsServices.getByToken(token);
         if (alreadyExist)
             return res.send({
@@ -18,6 +25,13 @@ export default class PushNotificationsControllers {
 
     static async getTokenByUserId(req, res) {
         const { user_id } = req.params;
+
+        if (!user_id) {
+            return res
+                .status(400)
+                .send({ msg: 'Se requieren user_id y push_token', data: null });
+        }
+
         const userToken = await PushNotificationsServices.getByUserId(user_id);
         if (!userToken)
             return res.send({
