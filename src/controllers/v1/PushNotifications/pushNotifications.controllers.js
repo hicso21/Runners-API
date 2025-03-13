@@ -2,9 +2,9 @@ import PushNotificationsServices from '../../../services/v1/PushNotifications/pu
 
 export default class PushNotificationsControllers {
     static async createNotificationToken(req, res) {
-        const { token, user_id } = req.body;
+        const { user_id, token } = req.body;
 
-        if (!user_id || !push_token) {
+        if (!user_id || !token) {
             return res
                 .status(400)
                 .send({ msg: 'Se requieren user_id y push_token', data: null });
