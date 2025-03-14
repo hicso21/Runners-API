@@ -39,6 +39,11 @@ export default async function sockets(io) {
                 const user_push_token =
                     await PushNotificationsServices.getByUserId(msg?.user_id);
 
+                console.log({
+                    token: user_push_token.token,
+                    msg: message.message,
+                });
+
                 if (!isUserOnline && user_push_token.token) {
                     await sendPushNotification(
                         user_push_token.token,
