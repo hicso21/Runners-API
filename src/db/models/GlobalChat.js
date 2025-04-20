@@ -9,6 +9,7 @@ const globalChatSchema = new Schema(
         timestamp: Number,
         is_audio: Boolean,
         on_response: Object,
+        duration: Number,
         createdAt: {
             type: Date,
             default: Date.now,

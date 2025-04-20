@@ -7,6 +7,7 @@ const userChatSchema = new Schema(
         name: String,
         is_user: Boolean,
         is_audio: Boolean,
+        duration: Number,
         timestamp: Number,
         createdAt: { type: Date, expires: 604800 },
     },

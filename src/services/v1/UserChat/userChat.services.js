@@ -4,7 +4,7 @@ export default class UserChatServices {
     static async createUserChat(msg) {
         const userChatCreated = await UserChats.create({
             ...msg,
-            timestamp: Date.now(),
+            timestamp: msg?.timestamp || Date.now(),
         });
         return userChatCreated;
     }
