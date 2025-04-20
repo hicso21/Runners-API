@@ -39,11 +39,11 @@ export default async function sockets(io) {
                 const user_push_token =
                     await PushNotificationsServices.getByUserId(msg?.user_id);
 
-                if (!isUserOnline && user_push_token.token) {
+                if (!isUserOnline && user_push_token?.token && msg?.is_user) {
                     await sendPushNotification(
-                        user_push_token.token,
+                        user_push_token?.token,
                         'Juan',
-                        msg.message
+                        msg?.message
                     );
                 }
             } catch (error) {
