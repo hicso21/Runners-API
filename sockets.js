@@ -67,8 +67,8 @@ export default async function sockets(io) {
 
         socket.on('disconnect', () => {
             console.log('An user has disconnected');
-            // delete onlineUsers[socket.id];
-            // io.emit('connected users', onlineUsers);
+            delete onlineUsers[socket.id];
+            io.emit('connected users', onlineUsers);
         });
 
         if (!socket.recovered) {
