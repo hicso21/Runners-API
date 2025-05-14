@@ -1,6 +1,6 @@
 import Notifications from '../../../db/models/Notification.js';
 
-class NotificationsServices {
+export default class NotificationsServices {
     static async create(user_id) {
         try {
             return await Notifications.create({ user_id, notification: true });
@@ -67,5 +67,3 @@ class NotificationsServices {
         }
     }
 }
-
-export default NotificationsServices;

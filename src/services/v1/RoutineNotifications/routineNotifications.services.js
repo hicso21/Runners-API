@@ -1,4 +1,4 @@
-import RoutineNotifications from '../../../db/models/RoutineNotifications';
+import RoutineNotifications from '../../../db/models/RoutineNotifications.js';
 
 export default class RoutineNotificationsServices {
     static async create(user_id) {

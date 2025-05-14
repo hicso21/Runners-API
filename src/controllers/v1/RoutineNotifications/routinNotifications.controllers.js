@@ -1,6 +1,6 @@
-import RoutineNotificationsServices from '../../../services/v1/RoutineNotifications/routineNotifications.services';
+import RoutineNotificationsServices from '../../../services/v1/RoutineNotifications/routineNotifications.services.js';
 
-class RoutineNotificationsController {
+export default class RoutineNotificationsController {
     static async findOrCreate(req, res) {
         const user_id = req.params.user_id;
         try {
@@ -77,5 +77,3 @@ class RoutineNotificationsController {
         }
     }
 }
-
-export default RoutineNotificationsController;

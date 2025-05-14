@@ -2,6 +2,7 @@ import ActivitiesServices from '../../../services/v1/Activities/activities.servi
 import CorosServices from '../../../services/v1/Coros/coros.services.js';
 import LogsServices from '../../../services/v1/Logs/logs.services.js';
 import RunnersServices from '../../../services/v1/Runners/runners.services.js';
+import fetchCoros from '../../../utils/fetches/fetchCorosAPI.js';
 
 const outdoorRun = (workout) => workout.mode == 8 && workout.subMode == 1;
 const indoorRun = (workout) => workout.mode == 8 && workout.subMode == 2;
