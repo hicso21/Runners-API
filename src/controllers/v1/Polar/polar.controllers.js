@@ -1,19 +1,16 @@
+import { Buffer } from 'buffer';
+import qs from 'qs';
 import config from '../../../config/polarData.js';
+import ActivitiesServices from '../../../services/v1/Activities/activities.services.js';
+import CalendarServices from '../../../services/v1/Calendar/calendar.services.js';
 import LogsServices from '../../../services/v1/Logs/logs.services.js';
 import PolarServices from '../../../services/v1/Polar/polar.services.js';
+import RoutineNotificationsServices from '../../../services/v1/RoutineNotifications/routineNotifications.services.js';
 import RunnersServices from '../../../services/v1/Runners/runners.services.js';
-import mainUrl from '../../../utils/constants/mainUrl.js';
-import { Buffer } from 'buffer';
-import fetchPolar from '../../../utils/fetches/fetchPolarAPI.js';
-import ActivitiesServices from '../../../services/v1/Activities/activities.services.js';
-import qs from 'qs';
-import axios from 'axios';
 import activityTypes from '../../../utils/constants/activityTypes.js';
-import polarTitleParser from '../../../utils/functions/polarTitleParser.js';
-import polarDurationParse from '../../../utils/functions/polarDurationParse.js';
-import CalendarServices from '../../../services/v1/Calendar/calendar.services.js';
-import NotificationsServices from '../../../services/v1/Notifications/notifications.services.js';
 import calculateTimeInZones from '../../../utils/functions/calculateTimeInZones.js';
+import polarDurationParse from '../../../utils/functions/polarDurationParse.js';
+import polarTitleParser from '../../../utils/functions/polarTitleParser.js';
 
 class PolarController {
     static async authUser(req, res) {
@@ -223,7 +220,7 @@ class PolarController {
                     calendarActivities[0]?._id,
                     activityResponse?._id
                 );
-            NotificationsServices.setToTrue(runner._id);
+            RoutineNotificationsServices.setToTrue(runner._id);
             res.sendStatus(200);
         } catch (error) {
             await LogsServices.create(

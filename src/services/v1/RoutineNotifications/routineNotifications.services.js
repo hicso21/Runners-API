@@ -6,6 +6,7 @@ export default class RoutineNotificationsServices {
             return await RoutineNotifications.create({
                 user_id,
                 notification: true,
+                updatedDate: Date.now(),
             });
         } catch (error) {
             return {

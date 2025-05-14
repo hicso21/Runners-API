@@ -6,7 +6,7 @@ import UserChatServices from './src/services/v1/UserChat/userChat.services.js';
 import sendPushNotification from './src/utils/functions/sendPushNotification.js';
 import PushNotificationsServices from './src/services/v1/PushNotifications/pushNotifications.services.js';
 
-// let onlineUsers = {};
+let onlineUsers = {};
 
 export default async function sockets(io) {
     io.on('connection', async (socket) => {
@@ -55,15 +55,15 @@ export default async function sockets(io) {
             });
         });
 
-        // socket.on('connected users', async (user) => {
-        // 	try {
-        // 		onlineUsers[socket.id] = user;
-        // 		io.emit('connected users', onlineUsers);
-        // 	} catch (error) {
-        // 		console.error(error);
-        // 		return;
-        // 	}
-        // });
+        socket.on('connected users', async (user) => {
+        	try {
+        		onlineUsers[socket.id] = user;
+        		io.emit('connected users', onlineUsers);
+        	} catch (error) {
+        		console.error(error);
+        		return;
+        	}
+        });
 
         socket.on('disconnect', () => {
             console.log('An user has disconnected');

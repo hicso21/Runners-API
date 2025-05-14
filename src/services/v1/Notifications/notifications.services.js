@@ -3,7 +3,11 @@ import Notifications from '../../../db/models/Notification.js';
 export default class NotificationsServices {
     static async create(user_id) {
         try {
-            return await Notifications.create({ user_id, notification: true });
+            return await Notifications.create({
+                user_id,
+                notification: true,
+                updatedDate: Date.now(),
+            });
         } catch (error) {
             return {
                 error: true,
@@ -57,7 +61,7 @@ export default class NotificationsServices {
         try {
             return await Notifications.findOneAndUpdate(
                 { user_id },
-                { $set: { notification: false } }
+                { $set: { notification: false, updatedDate: Date.now() } }
             );
         } catch (error) {
             return {

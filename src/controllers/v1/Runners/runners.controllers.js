@@ -9,6 +9,7 @@ import divideName from '../../../utils/functions/divideName.js';
 import axios from 'axios';
 import brevoConfig from '../../../config/brevo.config.js';
 import toStringWithSpecialChars from '../../../utils/functions/toStringWithSpecialChars.js';
+import creatingProcess from '../../../utils/functions/creatingProcess.js';
 
 export default class RunnersControllers {
     static async getAll(req, res) {
@@ -128,6 +129,7 @@ export default class RunnersControllers {
                 access_token: '',
             };
             const runner = await RunnersServices.create(runnerData);
+            await creatingProcess(runner._id);
             console.log(runner);
             res.status(201).send({ error: false, data: runner });
         } catch (error) {

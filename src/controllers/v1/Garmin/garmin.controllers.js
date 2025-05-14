@@ -2,17 +2,17 @@ import axios from 'axios';
 import crypto from 'crypto';
 import Oauth from 'oauth';
 import OAuth10a from 'oauth-1.0a';
+import oauthSignature from 'oauth-signature';
+import { v1 } from 'uuid';
 import config from '../../../config/garminData.js';
+import ActivitiesServices from '../../../services/v1/Activities/activities.services.js';
+import CalendarServices from '../../../services/v1/Calendar/calendar.services.js';
+import LogsServices from '../../../services/v1/Logs/logs.services.js';
+import RoutineNotificationsServices from '../../../services/v1/RoutineNotifications/routineNotifications.services.js';
 import RunnersServices from '../../../services/v1/Runners/runners.services.js';
+import activityTypes from '../../../utils/constants/activityTypes.js';
 import { environment } from '../../../utils/constants/mainUrl.js';
 import fetchGarmin from '../../../utils/fetches/fetchGarminAPI.js';
-import ActivitiesServices from '../../../services/v1/Activities/activities.services.js';
-import { v1 } from 'uuid';
-import oauthSignature from 'oauth-signature';
-import activityTypes from '../../../utils/constants/activityTypes.js';
-import CalendarServices from '../../../services/v1/Calendar/calendar.services.js';
-import NotificationsServices from '../../../services/v1/Notifications/notifications.services.js';
-import LogsServices from '../../../services/v1/Logs/logs.services.js';
 import calculateTimeInZones from '../../../utils/functions/calculateTimeInZones.js';
 
 function generateRandomNonce() {
@@ -378,7 +378,7 @@ class GarminController {
                         );
                 }
             });
-            NotificationsServices.setToTrue(runner._id);
+            RoutineNotificationsServices.setToTrue(runner._id);
             res.status(200).send('EVENT_RECEIVED');
         } catch (error) {
             console.log('Error on POST of get_stats_activities');
@@ -510,7 +510,7 @@ class GarminController {
                         activityResponse?._id
                     );
             });
-            NotificationsServices.setToTrue(runner._id);
+            RoutineNotificationsServices.setToTrue(runner._id);
             res.status(200).send('EVENT_RECEIVED');
         } catch (error) {
             console.log('Error on POST of get_stats_activity_details');

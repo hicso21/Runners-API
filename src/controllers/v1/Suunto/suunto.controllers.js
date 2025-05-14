@@ -1,12 +1,11 @@
-import axios from 'axios';
 import ActivitiesServices from '../../../services/v1/Activities/activities.services.js';
+import CalendarServices from '../../../services/v1/Calendar/calendar.services.js';
 import LogsServices from '../../../services/v1/Logs/logs.services.js';
+import RoutineNotificationsServices from '../../../services/v1/RoutineNotifications/routineNotifications.services.js';
 import RunnersServices from '../../../services/v1/Runners/runners.services.js';
 import SuuntoServices from '../../../services/v1/Suunto/suunto.services.js';
 import activityTypes from '../../../utils/constants/activityTypes.js';
-import CalendarServices from '../../../services/v1/Calendar/calendar.services.js';
 import SuuntoActivitiesId from '../../../utils/constants/SuuntoActivitiesId.js';
-import NotificationsServices from '../../../services/v1/Notifications/notifications.services.js';
 import calculateTimeInZones from '../../../utils/functions/calculateTimeInZones.js';
 
 class SuuntoController {
@@ -388,7 +387,7 @@ class SuuntoController {
                     activityResponse?._id
                 );
 
-            NotificationsServices.setToTrue(runner._id);
+            RoutineNotificationsServices.setToTrue(runner._id);
             res.status(200).send('Suunto Webhook');
         } catch (error) {
             await LogsServices.create(
