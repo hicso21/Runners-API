@@ -59,6 +59,49 @@ app.use(logger('dev'));
 
 sockets(io);
 
+function rateLimiter({ windowMs = 60000, max = 100 }) {
+    // Almacén en memoria para las solicitudes por IP
+    const requests = new Map();
+
+    // Retornamos la función de middleware
+    return (req, res, next) => {
+        const ip = req.ip || req.connection.remoteAddress;
+
+        // Si es la primera solicitud para esta IP, inicializamos
+        if (!requests.has(ip)) {
+            requests.set(ip, {
+                count: 1,
+                resetTime: Date.now() + windowMs,
+            });
+            return next();
+        }
+
+        const client = requests.get(ip);
+        const now = Date.now();
+
+        // Si ha pasado el tiempo de reset, reiniciamos el contador
+        if (now > client.resetTime) {
+            client.count = 1;
+            client.resetTime = now + windowMs;
+            return next();
+        }
+
+        // Si excede el máximo de solicitudes
+        if (client.count >= max) {
+            return res.status(429).json({
+                mensaje: 'Demasiadas solicitudes, por favor intente más tarde',
+                retryAfter: Math.ceil((client.resetTime - now) / 1000),
+            });
+        }
+
+        // Incrementamos el contador
+        client.count++;
+        next();
+    };
+}
+
+app.use(rateLimiter({ windowMs: 30 * 1000, max: 10 })); // 10 cada medio minuto
+
 app.use(
     '/api/v1',
     (req, res, next) => {
