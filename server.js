@@ -40,8 +40,8 @@ const io = new Server(server, {
 // Middleware
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(cookieParser());
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(
     cors({
         origin: [
@@ -56,6 +56,38 @@ app.use(
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(logger('dev'));
+
+const autenticarToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+
+    // El formato típico es "Bearer TOKEN"
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+        return res
+            .status(401)
+            .json({ mensaje: 'Acceso denegado. Token no proporcionado.' });
+    }
+
+    try {
+        // Verificar el token
+        const usuarioVerificado = jwt.verify(token, process.env.jwt_secret);
+
+        // Agregar la información del usuario al objeto request
+        req.usuario = usuarioVerificado;
+
+        // Continuar con la siguiente función
+        next();
+    } catch (error) {
+        if (error.name === 'TokenExpiredError') {
+            return res.status(401).json({
+                mensaje: 'Token expirado. Por favor, inicie sesión nuevamente.',
+            });
+        }
+
+        return res.status(403).json({ mensaje: 'Token inválido.' });
+    }
+};
 
 sockets(io);
 
@@ -167,6 +199,10 @@ app.get('/status', async (req, res) => {
             </div>
         `
     );
+});
+
+app.use((req, res) => {
+    res.status(404).json({ mensaje: 'Recurso no encontrado' });
 });
 
 server.listen(PORT, () => {
