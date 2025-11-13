@@ -36,18 +36,6 @@ const activitiesSchema = new Schema({
     description: String,
 });
 
-activitiesSchema.index({ user_id: 1, date: -1 }, { name: 'user_date_idx' });
-activitiesSchema.index(
-    { user_id: 1, activity_type: 1, date: -1 },
-    { name: 'user_type_date_idx' }
-);
-activitiesSchema.index(
-    { user_id: 1, date: -1, activity_type: 1 },
-    { name: 'user_date_type_idx' }
-);
-
-activitiesSchema.set('autoIndex', process.env.NODE_ENV !== 'production');
-
 const Activities = model('Activitie', activitiesSchema);
 
 export default Activities;
