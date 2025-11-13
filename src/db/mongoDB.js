@@ -1,16 +1,16 @@
 import mongoose from 'mongoose';
+import { config } from 'dotenv';
 
-// const url = 'mongodb://mongo:Thomas2110$@runners_db:27017';
+config();
 
-const url =
-	'mongodb+srv://hicso:thomas2110@runnersdb.kso8gvp.mongodb.net/?retryWrites=true&w=majority';
+const url = process.env.MONGODB_URI;
 
 const db = mongoose
-	.connect(url, {
-		dbName: 'runners_api',
-	})
-	.then(() => console.log('DB was connected successfully'))
-	.catch((err) => console.error(err));
+    .connect(url, {
+        dbName: 'runners_api',
+    })
+    .then(() => console.log('DB was connected successfully'))
+    .catch((err) => console.error(err));
 
 mongoose.Promise = global.Promise;
 
