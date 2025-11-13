@@ -5,26 +5,69 @@ class ActivitiesControllers {
         const { user_id } = req.params;
         try {
             const activities = await ActivitiesServices.getAll(user_id);
-            res.send(activities);
+            res.json(activities);
         } catch (error) {
-            res.send({
+            res.status(500).json({
                 error: true,
-                data: error,
+                data: error.message,
             });
         }
     }
 
     static async getAllWithoutArray(req, res) {
         const { user_id } = req.params;
+        const { limit, offset, activityType, startDate, endDate, fields } =
+            req.query;
+
         try {
             const activities = await ActivitiesServices.getAllWithoutArray(
-                user_id
+                user_id,
+                {
+                    limit,
+                    offset,
+                    activityType,
+                    startDate,
+                    endDate,
+                    fields,
+                }
             );
-            res.send(activities);
+
+            res.set({
+                'Cache-Control': 'private, max-age=120',
+                ETag: `W/"${user_id}-${Date.now()}"`,
+            });
+
+            res.json(activities);
         } catch (error) {
-            res.send({
+            res.status(500).json({
                 error: true,
-                data: error,
+                data: error.message,
+            });
+        }
+    }
+
+    static async getAggregated(req, res) {
+        const { user_id } = req.params;
+        const { groupBy, activityType, startDate, endDate } = req.query;
+
+        try {
+            const aggregatedData = await ActivitiesServices.getAggregatedStats(
+                user_id,
+                {
+                    groupBy,
+                    activityType,
+                    startDate,
+                    endDate,
+                }
+            );
+
+            res.set({ 'Cache-Control': 'private, max-age=300' });
+
+            res.json(aggregatedData);
+        } catch (error) {
+            res.status(500).json({
+                error: true,
+                data: error.message,
             });
         }
     }
@@ -33,11 +76,11 @@ class ActivitiesControllers {
         const activity_id = req.params.activity_id;
         try {
             const activities = await ActivitiesServices.getById(activity_id);
-            res.send(activities);
+            res.json(activities);
         } catch (error) {
-            res.send({
+            res.status(500).json({
                 error: true,
-                data: error,
+                data: error.message,
             });
         }
     }
@@ -46,11 +89,11 @@ class ActivitiesControllers {
         const body = req.body;
         try {
             const newActivity = await ActivitiesServices.createActivity(body);
-            res.send(newActivity);
+            res.status(201).json(newActivity);
         } catch (error) {
-            res.send({
+            res.status(500).json({
                 error: true,
-                data: error,
+                data: error.message,
             });
         }
     }
@@ -62,11 +105,11 @@ class ActivitiesControllers {
                 user_id,
                 date
             );
-            res.send(deletedActivity);
+            res.json(deletedActivity);
         } catch (error) {
-            res.send({
+            res.status(500).json({
                 error: true,
-                data: error,
+                data: error.message,
             });
         }
     }
