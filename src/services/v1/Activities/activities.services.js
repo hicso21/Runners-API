@@ -5,7 +5,7 @@ class ActivitiesServices {
         try {
             const activities = await Activities.find({ user_id })
                 .lean()
-                .sort({ date: -1 });
+                .sort({ timestamp: -1 });
             return activities;
         } catch (error) {
             return {
@@ -32,14 +32,17 @@ class ActivitiesServices {
                 query.activity_type = activityType;
 
             if (startDate || endDate) {
-                query.date = {};
-                if (startDate) query.date.$gte = new Date(startDate);
-                if (endDate) query.date.$lte = new Date(endDate);
+                query.timestamp = {};
+                if (startDate)
+                    query.timestamp.$gte = new Date(startDate).getTime();
+                if (endDate) query.timestamp.$lte = new Date(endDate).getTime();
             }
+
+            console.log(query);
 
             let queryBuilder = Activities.find(query)
                 .select(fields)
-                .sort({ date: -1 })
+                .sort({ timestamp: -1 })
                 .lean();
 
             if (limit) queryBuilder = queryBuilder.limit(parseInt(limit));
@@ -71,9 +74,11 @@ class ActivitiesServices {
                 matchStage.activity_type = activityType;
 
             if (startDate || endDate) {
-                matchStage.date = {};
-                if (startDate) matchStage.date.$gte = new Date(startDate);
-                if (endDate) matchStage.date.$lte = new Date(endDate);
+                matchStage.timestamp = {};
+                if (startDate)
+                    matchStage.timestamp.$gte = new Date(startDate).getTime();
+                if (endDate)
+                    matchStage.timestamp.$lte = new Date(endDate).getTime();
             }
 
             let dateFormat;
@@ -93,7 +98,7 @@ class ActivitiesServices {
 
             const aggregatedData = await Activities.aggregate([
                 { $match: matchStage },
-                { $sort: { date: 1 } },
+                { $sort: { timestamp: 1 } },
                 {
                     $group: {
                         _id: {

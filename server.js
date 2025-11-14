@@ -16,6 +16,7 @@ import router from './src/routes/v1/index.js';
 import RunnersServices from './src/services/v1/Runners/runners.services.js';
 import currentVersion from './src/utils/constants/currentVersion.js';
 config();
+import './testing.js';
 
 const PORT = process.env.PORT || 8080;
 const app = express();

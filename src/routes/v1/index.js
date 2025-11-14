@@ -34,28 +34,28 @@ router.get('/', (req, res) => {
 
 router.post('/login', LoginController.login);
 
-router.use('/groups', groups);
-router.use('/routines', routines);
-router.use('/exercises', exercises);
-router.use('/runners', runners);
-router.use('/nutritions', nutritions);
-router.use('/upload', uploads);
 router.use('/activities', activities);
 router.use('/brevo', brevo);
-router.use('/recovery', recovery);
 router.use('/calendar', calendar);
-router.use('/paid', paid);
 router.use('/codes', codes);
-router.use('/notifications', notifications);
-router.use('/routine_notifications', routineNotifications);
+router.use('/exercises', exercises);
 router.use('/foods', foods);
+router.use('/groups', groups);
+router.use('/notifications', notifications);
+router.use('/nutritions', nutritions);
+router.use('/paid', paid);
 router.use('/push_notifications', pushNotifications);
+router.use('/recovery', recovery);
+router.use('/routine_notifications', routineNotifications);
+router.use('/routines', routines);
+router.use('/runners', runners);
+router.use('/upload', uploads);
 
 router.use('/coros', coros);
-router.use('/suunto', suunto);
-router.use('/strava', strava);
-router.use('/polar', polar);
 router.use('/garmin', garmin);
+router.use('/polar', polar);
+router.use('/strava', strava);
+router.use('/suunto', suunto);
 
 router.use('/payment', payment);
 

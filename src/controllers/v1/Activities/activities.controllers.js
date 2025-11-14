@@ -39,6 +39,7 @@ class ActivitiesControllers {
 
             res.json(activities);
         } catch (error) {
+            console.error(error);
             res.status(500).json({
                 error: true,
                 data: error.message,
@@ -65,6 +66,7 @@ class ActivitiesControllers {
 
             res.json(aggregatedData);
         } catch (error) {
+            console.error(error);
             res.status(500).json({
                 error: true,
                 data: error.message,
