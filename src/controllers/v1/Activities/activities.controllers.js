@@ -5,6 +5,7 @@ class ActivitiesControllers {
         const { user_id } = req.params;
         try {
             const activities = await ActivitiesServices.getAll(user_id);
+
             res.json(activities);
         } catch (error) {
             res.status(500).json({
@@ -42,7 +43,7 @@ class ActivitiesControllers {
             console.error(error);
             res.status(500).json({
                 error: true,
-                data: error.message,
+                data: error,
             });
         }
     }

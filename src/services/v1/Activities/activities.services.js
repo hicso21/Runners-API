@@ -5,7 +5,7 @@ class ActivitiesServices {
         try {
             const activities = await Activities.find({ user_id })
                 .lean()
-                .sort({ timestamp: -1 });
+                .sort({ timestamp_num: -1 });
             return activities;
         } catch (error) {
             return {
@@ -23,38 +23,51 @@ class ActivitiesServices {
                 activityType,
                 startDate,
                 endDate,
-                fields = 'elevation distance average_heart_rate max_heart_rate average_pace calories training_load positive_slope negative_slope average_speed average_cadence max_cadence total_time zones date activity_type',
+                fields = 'elevation distance average_heart_rate max_heart_rate average_pace calories training_load positive_slope negative_slope average_speed average_cadence max_cadence total_time zones date activity_type timestamp timestamp_num',
             } = options;
 
+            // Construir query simple que USA ÍNDICES
             const query = { user_id };
 
-            if (activityType && activityType !== 'Todos')
+            // Filtro por tipo de actividad
+            if (activityType && activityType !== 'Todos') {
                 query.activity_type = activityType;
-
-            if (startDate || endDate) {
-                query.timestamp = {};
-                if (startDate)
-                    query.timestamp.$gte = new Date(startDate).getTime();
-                if (endDate) query.timestamp.$lte = new Date(endDate).getTime();
             }
 
-            console.log(query);
+            // Filtro por timestamp_num (campo numérico indexado)
+            if (startDate || endDate) {
+                query.timestamp_num = {};
 
+                if (startDate) {
+                    query.timestamp_num.$gte = new Date(startDate).getTime();
+                }
+
+                if (endDate) {
+                    query.timestamp_num.$lte = new Date(endDate).getTime();
+                }
+            }
+
+            // Query optimizada que USA ÍNDICES
             let queryBuilder = Activities.find(query)
                 .select(fields)
-                .sort({ timestamp: -1 })
+                .sort({ timestamp_num: -1 })
                 .lean();
 
-            if (limit) queryBuilder = queryBuilder.limit(parseInt(limit));
-            if (offset) queryBuilder = queryBuilder.skip(parseInt(offset));
+            if (limit) {
+                queryBuilder = queryBuilder.limit(parseInt(limit));
+            }
+
+            if (offset) {
+                queryBuilder = queryBuilder.skip(parseInt(offset));
+            }
 
             const activities = await queryBuilder;
-
             return activities;
         } catch (error) {
+            console.error('Error en getAllWithoutArray:', error);
             return {
                 error: true,
-                data: error,
+                data: error.message,
             };
         }
     }
@@ -62,70 +75,219 @@ class ActivitiesServices {
     static async getAggregatedStats(user_id, options = {}) {
         try {
             const {
-                groupBy = 'week', // 'day', 'week', 'month'
+                groupBy = 'week',
                 activityType,
                 startDate,
                 endDate,
             } = options;
 
-            const matchStage = { user_id };
+            // Pipeline optimizado que USA ÍNDICES
+            const pipeline = [
+                // Match con índice
+                {
+                    $match: { user_id },
+                },
+            ];
 
-            if (activityType && activityType !== 'Todos')
-                matchStage.activity_type = activityType;
+            // Construir match adicional con timestamp_num
+            const additionalMatch = {};
+
+            if (activityType && activityType !== 'Todos') {
+                additionalMatch.activity_type = activityType;
+            }
 
             if (startDate || endDate) {
-                matchStage.timestamp = {};
-                if (startDate)
-                    matchStage.timestamp.$gte = new Date(startDate).getTime();
-                if (endDate)
-                    matchStage.timestamp.$lte = new Date(endDate).getTime();
+                additionalMatch.timestamp_num = {};
+                if (startDate) {
+                    additionalMatch.timestamp_num.$gte = new Date(
+                        startDate
+                    ).getTime();
+                }
+                if (endDate) {
+                    additionalMatch.timestamp_num.$lte = new Date(
+                        endDate
+                    ).getTime();
+                }
             }
 
-            let dateFormat;
+            if (Object.keys(additionalMatch).length > 0) {
+                pipeline.push({ $match: additionalMatch });
+            }
+
+            // Proyectar solo campos necesarios
+            pipeline.push({
+                $project: {
+                    timestamp_num: 1,
+                    activity_type: 1,
+                    total_time: 1,
+                    average_heart_rate: 1,
+                    max_heart_rate: 1,
+                    distance: 1,
+                    calories: 1,
+                    elevation: 1,
+                    zones: 1,
+                },
+            });
+
+            // Convertir timestamp a fecha
+            pipeline.push({
+                $addFields: {
+                    dateObj: { $toDate: '$timestamp_num' },
+                },
+            });
+
+            // Formato de agrupación
+            let groupId;
             switch (groupBy) {
                 case 'day':
-                    dateFormat = '%Y-%m-%d';
+                    groupId = {
+                        $dateToString: { format: '%Y-%m-%d', date: '$dateObj' },
+                    };
                     break;
                 case 'week':
-                    dateFormat = '%Y-W%U';
+                    groupId = {
+                        $dateToString: { format: '%Y-W%U', date: '$dateObj' },
+                    };
                     break;
                 case 'month':
-                    dateFormat = '%Y-%m';
+                    groupId = {
+                        $dateToString: { format: '%Y-%m', date: '$dateObj' },
+                    };
                     break;
                 default:
-                    dateFormat = '%Y-%m-%d';
+                    groupId = {
+                        $dateToString: { format: '%Y-%m-%d', date: '$dateObj' },
+                    };
             }
 
-            const aggregatedData = await Activities.aggregate([
-                { $match: matchStage },
-                { $sort: { timestamp: 1 } },
-                {
-                    $group: {
-                        _id: {
-                            $dateToString: {
-                                format: dateFormat,
-                                date: '$date',
+            // Ordenar antes de agrupar
+            pipeline.push({ $sort: { timestamp_num: 1 } });
+
+            // Convertir campos a números de forma segura
+            pipeline.push({
+                $addFields: {
+                    total_time_num: {
+                        $cond: {
+                            if: {
+                                $or: [
+                                    {
+                                        $eq: [
+                                            { $type: '$total_time' },
+                                            'array',
+                                        ],
+                                    },
+                                    { $eq: ['$total_time', ''] },
+                                    { $eq: ['$total_time', null] },
+                                ],
                             },
+                            then: 0,
+                            else: { $toDouble: '$total_time' },
                         },
-                        total_time: { $avg: '$total_time' },
-                        average_heart_rate: { $avg: '$average_heart_rate' },
-                        max_heart_rate: { $max: '$max_heart_rate' },
-                        distance: { $sum: '$distance' },
-                        calories: { $sum: '$calories' },
-                        elevation: { $sum: '$elevation' },
-                        zones: { $push: '$zones' },
-                        count: { $sum: 1 },
-                        date: { $first: '$date' },
+                    },
+                    average_heart_rate_num: {
+                        $cond: {
+                            if: {
+                                $or: [
+                                    {
+                                        $eq: [
+                                            { $type: '$average_heart_rate' },
+                                            'array',
+                                        ],
+                                    },
+                                    { $eq: ['$average_heart_rate', ''] },
+                                    { $eq: ['$average_heart_rate', null] },
+                                ],
+                            },
+                            then: 0,
+                            else: { $toDouble: '$average_heart_rate' },
+                        },
+                    },
+                    max_heart_rate_num: {
+                        $cond: {
+                            if: {
+                                $or: [
+                                    {
+                                        $eq: [
+                                            { $type: '$max_heart_rate' },
+                                            'array',
+                                        ],
+                                    },
+                                    { $eq: ['$max_heart_rate', ''] },
+                                    { $eq: ['$max_heart_rate', null] },
+                                ],
+                            },
+                            then: 0,
+                            else: { $toDouble: '$max_heart_rate' },
+                        },
+                    },
+                    distance_num: {
+                        $cond: {
+                            if: {
+                                $or: [
+                                    { $eq: [{ $type: '$distance' }, 'array'] },
+                                    { $eq: ['$distance', ''] },
+                                    { $eq: ['$distance', null] },
+                                ],
+                            },
+                            then: 0,
+                            else: { $toDouble: '$distance' },
+                        },
+                    },
+                    calories_num: {
+                        $cond: {
+                            if: {
+                                $or: [
+                                    { $eq: [{ $type: '$calories' }, 'array'] },
+                                    { $eq: ['$calories', ''] },
+                                    { $eq: ['$calories', null] },
+                                ],
+                            },
+                            then: 0,
+                            else: { $toDouble: '$calories' },
+                        },
+                    },
+                    elevation_num: {
+                        $cond: {
+                            if: {
+                                $or: [
+                                    { $eq: [{ $type: '$elevation' }, 'array'] },
+                                    { $eq: ['$elevation', ''] },
+                                    { $eq: ['$elevation', null] },
+                                ],
+                            },
+                            then: 0,
+                            else: { $toDouble: '$elevation' },
+                        },
                     },
                 },
-                { $sort: { _id: 1 } },
-            ]);
+            });
 
+            // Agrupar
+            pipeline.push({
+                $group: {
+                    _id: groupId,
+                    total_time: { $avg: '$total_time_num' },
+                    average_heart_rate: { $avg: '$average_heart_rate_num' },
+                    max_heart_rate: { $max: '$max_heart_rate_num' },
+                    distance: { $sum: '$distance_num' },
+                    calories: { $sum: '$calories_num' },
+                    elevation: { $sum: '$elevation_num' },
+                    zones: { $push: '$zones' },
+                    count: { $sum: 1 },
+                    date: { $first: '$dateObj' },
+                },
+            });
+
+            // Ordenar resultado
+            pipeline.push({ $sort: { _id: 1 } });
+
+            const aggregatedData = await Activities.aggregate(pipeline);
             return aggregatedData;
         } catch (error) {
+            console.error('Error en getAggregatedStats:', error);
             return {
                 error: true,
-                data: error,
+                data: error.message,
             };
         }
     }
@@ -180,6 +342,10 @@ class ActivitiesServices {
 
     static async createActivity(body) {
         try {
+            // Agregar timestamp_num al crear
+            if (body.timestamp && !body.timestamp_num)
+                body.timestamp_num = parseInt(body.timestamp);
+
             const activity = await Activities.create(body);
             return activity;
         } catch (error) {

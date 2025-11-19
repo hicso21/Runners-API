@@ -7,6 +7,7 @@ const activitiesSchema = new Schema({
     date: String,
     activity_type: String,
     timestamp: String,
+    timestamp_num: Number,
     distance: String,
     total_time: String,
     average_heart_rate: String,
