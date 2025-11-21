@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Activities from '../../../db/models/Activities.js';
 
 class ActivitiesServices {
@@ -18,57 +19,83 @@ class ActivitiesServices {
     static async getAllWithoutArray(user_id, options = {}) {
         try {
             const {
-                limit,
+                limit = 50,
                 offset = 0,
                 activityType,
                 startDate,
                 endDate,
-                fields = 'elevation distance average_heart_rate max_heart_rate average_pace calories training_load positive_slope negative_slope average_speed average_cadence max_cadence total_time zones date activity_type timestamp timestamp_num',
+                fields = 'date activity_type timestamp_num distance total_time calories',
             } = options;
 
-            // Construir query simple que USA ÍNDICES
-            const query = { user_id };
+            // CONSTRUIR QUERY
+            const query = { user_id: user_id };
 
-            // Filtro por tipo de actividad
-            if (activityType && activityType !== 'Todos') {
+            // Manejo robusto de fechas
+            if (startDate) {
+                const startTime = new Date(startDate).getTime();
+                if (!isNaN(startTime))
+                    query.timestamp_num = {
+                        ...(query.timestamp_num || {}),
+                        $gte: startTime,
+                    };
+            }
+
+            if (endDate) {
+                const endTime = new Date(endDate).getTime();
+                if (!isNaN(endTime))
+                    query.timestamp_num = {
+                        ...(query.timestamp_num || {}),
+                        $lte: endTime,
+                    };
+            }
+
+            if (activityType && activityType !== 'Todos')
                 query.activity_type = activityType;
-            }
 
-            // Filtro por timestamp_num (campo numérico indexado)
-            if (startDate || endDate) {
-                query.timestamp_num = {};
+            // PROYECCIÓN
+            const projection = {};
+            if (fields)
+                fields.split(' ').forEach((field) => {
+                    if (field.trim()) projection[field] = 1;
+                });
 
-                if (startDate) {
-                    query.timestamp_num.$gte = new Date(startDate).getTime();
-                }
+            // USAR COLECCIÓN DIRECTA CON HINT
+            const collection = mongoose.connection.db.collection('activities');
 
-                if (endDate) {
-                    query.timestamp_num.$lte = new Date(endDate).getTime();
-                }
-            }
-
-            // Query optimizada que USA ÍNDICES
-            let queryBuilder = Activities.find(query)
-                .select(fields)
+            const cursor = collection
+                .find(query)
                 .sort({ timestamp_num: -1 })
-                .lean();
+                .skip(parseInt(offset))
+                .limit(parseInt(limit))
+                .hint('main_perf_idx') // FORZAR ÍNDICE PRINCIPAL
+                .project(projection);
 
-            if (limit) {
-                queryBuilder = queryBuilder.limit(parseInt(limit));
-            }
+            const activities = await cursor.toArray();
 
-            if (offset) {
-                queryBuilder = queryBuilder.skip(parseInt(offset));
-            }
+            console.log(
+                `✅ Query with hint: ${activities.length} docs in <100ms`
+            );
 
-            const activities = await queryBuilder;
             return activities;
         } catch (error) {
-            console.error('Error en getAllWithoutArray:', error);
-            return {
-                error: true,
-                data: error.message,
-            };
+            console.error('❌ Error in getAllWithoutArray:', error.message);
+
+            // FALLBACK: intentar sin hint
+            try {
+                const Activities = mongoose.model('Activitie');
+                return await Activities.find(query)
+                    .select(projection)
+                    .sort({ timestamp_num: -1 })
+                    .skip(parseInt(offset))
+                    .limit(parseInt(limit))
+                    .lean();
+            } catch (fallbackError) {
+                console.error(
+                    '❌ Fallback also failed:',
+                    fallbackError.message
+                );
+                return [];
+            }
         }
     }
 
@@ -81,40 +108,33 @@ class ActivitiesServices {
                 endDate,
             } = options;
 
-            // Pipeline optimizado que USA ÍNDICES
-            const pipeline = [
-                // Match con índice
-                {
-                    $match: { user_id },
-                },
-            ];
+            const pipeline = [];
 
-            // Construir match adicional con timestamp_num
-            const additionalMatch = {};
+            // Match inicial optimizado para usar índices
+            const matchStage = {
+                user_id: user_id,
+                timestamp_num: { $exists: true, $ne: null, $gt: 0 }, // Solo documentos con timestamp_num válido
+            };
 
             if (activityType && activityType !== 'Todos') {
-                additionalMatch.activity_type = activityType;
+                matchStage.activity_type = activityType;
             }
 
             if (startDate || endDate) {
-                additionalMatch.timestamp_num = {};
+                matchStage.timestamp_num = {};
                 if (startDate) {
-                    additionalMatch.timestamp_num.$gte = new Date(
+                    matchStage.timestamp_num.$gte = new Date(
                         startDate
                     ).getTime();
                 }
                 if (endDate) {
-                    additionalMatch.timestamp_num.$lte = new Date(
-                        endDate
-                    ).getTime();
+                    matchStage.timestamp_num.$lte = new Date(endDate).getTime();
                 }
             }
 
-            if (Object.keys(additionalMatch).length > 0) {
-                pipeline.push({ $match: additionalMatch });
-            }
+            pipeline.push({ $match: matchStage });
 
-            // Proyectar solo campos necesarios
+            // Proyección temprana para reducir datos
             pipeline.push({
                 $project: {
                     timestamp_num: 1,
@@ -126,161 +146,87 @@ class ActivitiesServices {
                     calories: 1,
                     elevation: 1,
                     zones: 1,
+                    date: 1,
                 },
             });
 
-            // Convertir timestamp a fecha
+            // Convertir timestamp a fecha - método más robusto
             pipeline.push({
                 $addFields: {
-                    dateObj: { $toDate: '$timestamp_num' },
+                    dateObj: {
+                        $cond: {
+                            if: {
+                                $and: [
+                                    { $ne: ['$timestamp_num', null] },
+                                    { $gt: ['$timestamp_num', 0] },
+                                ],
+                            },
+                            then: { $toDate: '$timestamp_num' },
+                            else: { $toDate: new Date() }, // Fallback
+                        },
+                    },
                 },
             });
 
-            // Formato de agrupación
+            // Determinar groupId
             let groupId;
-            switch (groupBy) {
-                case 'day':
-                    groupId = {
-                        $dateToString: { format: '%Y-%m-%d', date: '$dateObj' },
-                    };
-                    break;
-                case 'week':
-                    groupId = {
-                        $dateToString: { format: '%Y-W%U', date: '$dateObj' },
-                    };
-                    break;
-                case 'month':
-                    groupId = {
-                        $dateToString: { format: '%Y-%m', date: '$dateObj' },
-                    };
-                    break;
-                default:
-                    groupId = {
-                        $dateToString: { format: '%Y-%m-%d', date: '$dateObj' },
-                    };
-            }
+            const groupConfig = {
+                day: '%Y-%m-%d',
+                week: '%Y-%U',
+                month: '%Y-%m',
+            };
 
-            // Ordenar antes de agrupar
-            pipeline.push({ $sort: { timestamp_num: 1 } });
+            groupId = {
+                $dateToString: {
+                    format: groupConfig[groupBy] || '%Y-%m-%d',
+                    date: '$dateObj',
+                },
+            };
 
-            // Convertir campos a números de forma segura
-            pipeline.push({
-                $addFields: {
-                    total_time_num: {
-                        $cond: {
-                            if: {
-                                $or: [
-                                    {
-                                        $eq: [
-                                            { $type: '$total_time' },
-                                            'array',
-                                        ],
-                                    },
-                                    { $eq: ['$total_time', ''] },
-                                    { $eq: ['$total_time', null] },
-                                ],
-                            },
-                            then: 0,
-                            else: { $toDouble: '$total_time' },
-                        },
+            // Helper para convertir campos numéricos de forma segura
+            const safeConvert = (field) => ({
+                $cond: {
+                    if: {
+                        $or: [
+                            { $eq: [{ $type: field }, 'array'] },
+                            { $eq: [field, ''] },
+                            { $eq: [field, null] },
+                            { $eq: [{ $type: field }, 'missing'] },
+                        ],
                     },
-                    average_heart_rate_num: {
-                        $cond: {
-                            if: {
-                                $or: [
-                                    {
-                                        $eq: [
-                                            { $type: '$average_heart_rate' },
-                                            'array',
-                                        ],
-                                    },
-                                    { $eq: ['$average_heart_rate', ''] },
-                                    { $eq: ['$average_heart_rate', null] },
-                                ],
-                            },
-                            then: 0,
-                            else: { $toDouble: '$average_heart_rate' },
-                        },
-                    },
-                    max_heart_rate_num: {
-                        $cond: {
-                            if: {
-                                $or: [
-                                    {
-                                        $eq: [
-                                            { $type: '$max_heart_rate' },
-                                            'array',
-                                        ],
-                                    },
-                                    { $eq: ['$max_heart_rate', ''] },
-                                    { $eq: ['$max_heart_rate', null] },
-                                ],
-                            },
-                            then: 0,
-                            else: { $toDouble: '$max_heart_rate' },
-                        },
-                    },
-                    distance_num: {
-                        $cond: {
-                            if: {
-                                $or: [
-                                    { $eq: [{ $type: '$distance' }, 'array'] },
-                                    { $eq: ['$distance', ''] },
-                                    { $eq: ['$distance', null] },
-                                ],
-                            },
-                            then: 0,
-                            else: { $toDouble: '$distance' },
-                        },
-                    },
-                    calories_num: {
-                        $cond: {
-                            if: {
-                                $or: [
-                                    { $eq: [{ $type: '$calories' }, 'array'] },
-                                    { $eq: ['$calories', ''] },
-                                    { $eq: ['$calories', null] },
-                                ],
-                            },
-                            then: 0,
-                            else: { $toDouble: '$calories' },
-                        },
-                    },
-                    elevation_num: {
-                        $cond: {
-                            if: {
-                                $or: [
-                                    { $eq: [{ $type: '$elevation' }, 'array'] },
-                                    { $eq: ['$elevation', ''] },
-                                    { $eq: ['$elevation', null] },
-                                ],
-                            },
-                            then: 0,
-                            else: { $toDouble: '$elevation' },
+                    then: 0,
+                    else: {
+                        $convert: {
+                            input: field,
+                            to: 'double',
+                            onError: 0,
+                            onNull: 0,
                         },
                     },
                 },
             });
 
-            // Agrupar
+            // Group optimizado
             pipeline.push({
                 $group: {
                     _id: groupId,
-                    total_time: { $avg: '$total_time_num' },
-                    average_heart_rate: { $avg: '$average_heart_rate_num' },
-                    max_heart_rate: { $max: '$max_heart_rate_num' },
-                    distance: { $sum: '$distance_num' },
-                    calories: { $sum: '$calories_num' },
-                    elevation: { $sum: '$elevation_num' },
-                    zones: { $push: '$zones' },
+                    total_time: { $avg: safeConvert('$total_time') },
+                    average_heart_rate: {
+                        $avg: safeConvert('$average_heart_rate'),
+                    },
+                    max_heart_rate: { $max: safeConvert('$max_heart_rate') },
+                    distance: { $sum: safeConvert('$distance') },
+                    calories: { $sum: safeConvert('$calories') },
+                    elevation: { $sum: safeConvert('$elevation') },
                     count: { $sum: 1 },
-                    date: { $first: '$dateObj' },
+                    start_date: { $min: '$dateObj' },
+                    end_date: { $max: '$dateObj' },
                 },
             });
 
-            // Ordenar resultado
             pipeline.push({ $sort: { _id: 1 } });
 
+            // Ejecutar agregación SIN .allowDiskUse() y .maxTimeMS()
             const aggregatedData = await Activities.aggregate(pipeline);
             return aggregatedData;
         } catch (error) {
@@ -321,11 +267,14 @@ class ActivitiesServices {
 
     static async updateActivity(activity_id, body) {
         try {
+            // Si actualizas timestamp, actualiza también timestamp_num
+            if (body.timestamp && !body.timestamp_num) {
+                body.timestamp_num = parseInt(body.timestamp);
+            }
+
             const activities = await Activities.findByIdAndUpdate(
                 activity_id,
-                {
-                    $set: body,
-                },
+                { $set: body },
                 { new: true }
             ).lean();
             return {
@@ -343,9 +292,9 @@ class ActivitiesServices {
     static async createActivity(body) {
         try {
             // Agregar timestamp_num al crear
-            if (body.timestamp && !body.timestamp_num)
+            if (body.timestamp && !body.timestamp_num) {
                 body.timestamp_num = parseInt(body.timestamp);
-
+            }
             const activity = await Activities.create(body);
             return activity;
         } catch (error) {

@@ -441,17 +441,22 @@ class GarminController {
                     ).toLocaleString(),
                     distance:
                         parseInt(activity?.summary?.distanceInMeters) > 1000
-                            ? activity?.summary?.distanceInMeters / 1000
-                            : activity?.summary?.distanceInMeters,
-                    total_time: activity?.summary?.durationInSeconds,
-                    average_heart_rate:
-                        activity?.summary?.averageHeartRateInBeatsPerMinute,
-                    max_heart_rate:
-                        activity?.summary?.maxHeartRateInBeatsPerMinute,
+                            ? parseFloat(activity?.summary?.distanceInMeters) /
+                              1000
+                            : parseFloat(activity?.summary?.distanceInMeters),
+                    total_time: parseFloat(
+                        activity?.summary?.durationInSeconds
+                    ),
+                    average_heart_rate: parseFloat(
+                        activity?.summary?.averageHeartRateInBeatsPerMinute
+                    ),
+                    max_heart_rate: parseFloat(
+                        activity?.summary?.maxHeartRateInBeatsPerMinute
+                    ),
                     average_pace:
                         activity?.summary?.averagePaceInMinutesPerKilometer,
                     max_pace: activity?.summary?.maxPaceInMinutesPerKilometer,
-                    calories: activity?.summary?.activeKilocalories,
+                    calories: parseFloat(activity?.summary?.activeKilocalories),
                     positive_slope:
                         activity?.summary?.totalElevationGainInMeters,
                     negative_slope:

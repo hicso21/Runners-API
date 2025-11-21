@@ -323,14 +323,14 @@ class SuuntoController {
                 date: new Date(workoutData?.startTime).toLocaleString(),
                 distance:
                     parseInt(workoutData?.totalDistance) > 1000
-                        ? workoutData?.totalDistance / 1000
-                        : workoutData?.totalDistance,
-                total_time: workoutData?.totalTime,
-                average_heart_rate: workoutData?.hrdata?.workoutAvgHR,
-                max_heart_rate: workoutData?.hrdata?.workoutMaxHR,
+                        ? parseFloat(workoutData?.totalDistance) / 1000
+                        : parseFloat(workoutData?.totalDistance),
+                total_time: parseFloat(workoutData?.totalTime),
+                average_heart_rate: parseFloat(workoutData?.hrdata?.workoutAvgHR),
+                max_heart_rate: parseFloat(workoutData?.hrdata?.workoutMaxHR),
                 average_pace: workoutData?.avgPace,
                 max_pace: '',
-                calories: workoutData?.energyConsumption,
+                calories: parseFloat(workoutData?.energyConsumption),
                 positive_slope: workoutData?.totalAscent,
                 negative_slope: workoutData?.totalDescent,
                 average_speed: workoutData?.avgSpeed,

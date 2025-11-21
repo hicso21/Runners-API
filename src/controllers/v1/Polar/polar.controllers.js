@@ -152,15 +152,14 @@ class PolarController {
                 date: new Date(activity?.start_time).toLocaleString(),
                 distance:
                     parseInt(activity?.distance) > 1000
-                        ? activity?.distance / 1000
-                        : activity?.distance,
-                total_time: workoutData?.totalTime,
-                total_time: polarDurationParse(activity?.duration),
-                average_heart_rate: activity?.heart_rate?.average,
-                max_heart_rate: activity?.heart_rate?.maximum,
+                        ? parseFloat(activity?.distance) / 1000
+                        : parseFloat(activity?.distance),
+                total_time: parseFloat(polarDurationParse(activity?.duration)),
+                average_heart_rate: parseFloat(activity?.heart_rate?.average),
+                max_heart_rate: parseFloat(activity?.heart_rate?.maximum),
                 average_pace: '',
                 max_pace: '',
-                calories: activity?.calories,
+                calories: parseFloat(activity?.calories),
                 positive_slope: '',
                 negative_slope: '',
                 average_speed: '',
