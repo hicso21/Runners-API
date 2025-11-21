@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-// import './src/db/mongoDB.js';
 import ActivitiesServices from './src/services/v1/Activities/activities.services.js';
 
 dotenv.config();
@@ -1922,6 +1921,36 @@ export async function finalBenchmark() {
     }
 }
 
+export async function checkConnection() {
+    const states = {
+        0: 'disconnected',
+        1: 'connected',
+        2: 'connecting',
+        3: 'disconnecting',
+        99: 'uninitialized',
+    };
+
+    console.log(
+        '🔍 Connection status:',
+        states[mongoose.connection.readyState]
+    );
+    console.log('📊 Database available:', !!mongoose.connection.db);
+
+    if (mongoose.connection.db) {
+        try {
+            const collections = await mongoose.connection.db
+                .listCollections()
+                .toArray();
+            console.log(
+                '📋 Available collections:',
+                collections.map((c) => c.name)
+            );
+        } catch (error) {
+            console.log('❌ Cannot list collections:', error.message);
+        }
+    }
+}
+
 // (async () => {
 //     await new Promise((resolve) => {
 //         if (mongoose.connection.readyState === 1) {
@@ -1930,7 +1959,7 @@ export async function finalBenchmark() {
 //             mongoose.connection.once('open', resolve);
 //         }
 //     });
-//     await compatibleDiagnostic();
+//     await checkConnection();
 // })();
 
 // await quickPerformanceTest();

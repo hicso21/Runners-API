@@ -10,13 +10,13 @@ import { createServer } from 'node:http';
 import path from 'path';
 import { Server } from 'socket.io';
 import { fileURLToPath } from 'url';
-// import './benchmark.js';
+import './benchmark.js';
 import sockets from './sockets.js';
 import './src/db/mongoDB.js';
 import router from './src/routes/v1/index.js';
 import RunnersServices from './src/services/v1/Runners/runners.services.js';
 import currentVersion from './src/utils/constants/currentVersion.js';
-import './testing.js';
+
 config();
 
 const PORT = process.env.PORT || 8080;

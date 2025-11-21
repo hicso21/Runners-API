@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import Activities from '../../../db/models/Activities.js';
 
 class ActivitiesServices {
@@ -17,6 +16,10 @@ class ActivitiesServices {
     }
 
     static async getAllWithoutArray(user_id, options = {}) {
+        // DEFINIR QUERY FUERA DEL TRY PARA EL FALLBACK
+        const query = { user_id: user_id };
+        const projection = {};
+
         try {
             const {
                 limit = 50,
@@ -27,10 +30,7 @@ class ActivitiesServices {
                 fields = 'date activity_type timestamp_num distance total_time calories',
             } = options;
 
-            // CONSTRUIR QUERY
-            const query = { user_id: user_id };
-
-            // Manejo robusto de fechas
+            // Construir query
             if (startDate) {
                 const startTime = new Date(startDate).getTime();
                 if (!isNaN(startTime))
@@ -52,50 +52,26 @@ class ActivitiesServices {
             if (activityType && activityType !== 'Todos')
                 query.activity_type = activityType;
 
-            // PROYECCIÓN
-            const projection = {};
+            // Proyección
             if (fields)
                 fields.split(' ').forEach((field) => {
                     if (field.trim()) projection[field] = 1;
                 });
 
-            // USAR COLECCIÓN DIRECTA CON HINT
-            const collection = mongoose.connection.db.collection('activities');
-
-            const cursor = collection
-                .find(query)
+            // ENFOQUE PRINCIPAL: Mongoose con timeout
+            const activities = await Activities.find(query)
+                .select(projection)
                 .sort({ timestamp_num: -1 })
                 .skip(parseInt(offset))
                 .limit(parseInt(limit))
-                .hint('main_perf_idx') // FORZAR ÍNDICE PRINCIPAL
-                .project(projection);
+                .lean()
+                .maxTimeMS(5000);
 
-            const activities = await cursor.toArray();
-
-            console.log(
-                `✅ Query with hint: ${activities.length} docs in <100ms`
-            );
-
+            console.log(`✅ Query completed: ${activities.length} docs`);
             return activities;
         } catch (error) {
             console.error('❌ Error in getAllWithoutArray:', error.message);
-
-            // FALLBACK: intentar sin hint
-            try {
-                const Activities = mongoose.model('Activitie');
-                return await Activities.find(query)
-                    .select(projection)
-                    .sort({ timestamp_num: -1 })
-                    .skip(parseInt(offset))
-                    .limit(parseInt(limit))
-                    .lean();
-            } catch (fallbackError) {
-                console.error(
-                    '❌ Fallback also failed:',
-                    fallbackError.message
-                );
-                return [];
-            }
+            return [];
         }
     }
 
@@ -227,7 +203,9 @@ class ActivitiesServices {
             pipeline.push({ $sort: { _id: 1 } });
 
             // Ejecutar agregación SIN .allowDiskUse() y .maxTimeMS()
-            const aggregatedData = await Activities.aggregate(pipeline);
+            const aggregatedData = await Activities.aggregate(pipeline).option({
+                maxTimeMS: 30000,
+            });
             return aggregatedData;
         } catch (error) {
             console.error('Error en getAggregatedStats:', error);
