@@ -10,12 +10,12 @@ import { createServer } from 'node:http';
 import path from 'path';
 import { Server } from 'socket.io';
 import { fileURLToPath } from 'url';
-import './benchmark.js';
 import sockets from './sockets.js';
-import './src/db/mongoDB.js';
+import connectDB from './src/db/mongoDB.js'; // Importar función de conexión
 import router from './src/routes/v1/index.js';
 import RunnersServices from './src/services/v1/Runners/runners.services.js';
 import currentVersion from './src/utils/constants/currentVersion.js';
+import mongoose from 'mongoose';
 
 config();
 
@@ -162,19 +162,24 @@ app.get('/api/version', (req, res) =>
 );
 
 app.get('/test', async (req, res) => {
-    const runner = await RunnersServices.getByBrandId('martinurquiza');
-    const { data } = await axios.get(
-        `https://cloudapi.suunto.com/v3/workouts/6711919055a9220c7471d6c2`,
-        {
-            headers: {
-                Authorization: runner.refresh_token,
-                'Cache-Control': 'no-cache',
-                'Ocp-Apim-Subscription-Key': process.env.suunto_primary_key,
-            },
-        }
-    );
-    console.log(data);
-    res.end();
+    try {
+        const runner = await RunnersServices.getByBrandId('martinurquiza');
+        const { data } = await axios.get(
+            `https://cloudapi.suunto.com/v3/workouts/6711919055a9220c7471d6c2`,
+            {
+                headers: {
+                    Authorization: runner.refresh_token,
+                    'Cache-Control': 'no-cache',
+                    'Ocp-Apim-Subscription-Key': process.env.suunto_primary_key,
+                },
+            }
+        );
+        console.log(data);
+        res.json(data);
+    } catch (error) {
+        console.error('Error en /test:', error);
+        res.status(500).json({ error: error.message });
+    }
 });
 
 app.get('/', async (req, res) => {
@@ -203,15 +208,53 @@ app.get('/status', async (req, res) => {
     );
 });
 
+// Health check para verificar conexión a DB
+app.get('/health', async (req, res) => {
+    const dbStatus =
+        mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
+    res.json({
+        status: 'ok',
+        database: dbStatus,
+        timestamp: new Date().toISOString(),
+    });
+});
+
 app.use((req, res) => {
     res.status(404).json({ mensaje: 'Recurso no encontrado' });
 });
 
-server.listen(PORT, () => {
-    console.log('\n');
-    console.log(
-        '#######################################################################################'
-    );
-    console.log(`Server running on port ${PORT}`);
-    console.log(new Date());
-});
+// INICIAR SERVIDOR SOLO DESPUÉS DE CONECTAR A LA BASE DE DATOS
+async function startServer() {
+    try {
+        console.log('🔄 Conectando a MongoDB...');
+        await connectDB();
+        console.log('✅ MongoDB conectado, iniciando servidor...\n');
+
+        server.listen(PORT, () => {
+            console.log('\n');
+            console.log(
+                '#######################################################################################'
+            );
+            console.log(`🚀 Server running on port ${PORT}`);
+            console.log(`📅 ${new Date()}`);
+            console.log(
+                '#######################################################################################'
+            );
+            console.log('\n');
+        });
+
+        // IMPORTAR BENCHMARK DESPUÉS DE QUE TODO ESTÉ LISTO
+        // Solo en desarrollo
+        if (process.env.NODE_ENV !== 'production') {
+            import('./benchmark.js').catch((err) => {
+                console.log('⚠️  Benchmark no disponible:', err.message);
+            });
+        }
+    } catch (error) {
+        console.error('❌ Error al iniciar el servidor:', error);
+        process.exit(1);
+    }
+}
+
+// Iniciar el servidor
+startServer();
