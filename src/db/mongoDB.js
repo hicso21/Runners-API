@@ -6,7 +6,9 @@ config();
 const url = process.env.MONGODB_URI;
 
 if (!url) {
-    console.error('❌ MONGODB_URI no está definida en las variables de entorno');
+    console.error(
+        '❌ MONGODB_URI no está definida en las variables de entorno'
+    );
     process.exit(1);
 }
 
@@ -28,20 +30,19 @@ let isConnected = false;
 // Función para conectar
 const connectDB = async () => {
     // Si ya está conectado, retornar inmediatamente
-    if (isConnected && mongoose.connection.readyState === 1) {
+    if (isConnected && mongoose.connection.readyState === 1)
         return mongoose.connection;
-    }
 
     // Si ya hay una conexión en progreso, esperar a esa
-    if (connectionPromise) {
-        return connectionPromise;
-    }
+    if (connectionPromise) return connectionPromise;
 
     connectionPromise = mongoose
         .connect(url, mongooseOptions)
         .then(() => {
             isConnected = true;
-            console.log('✅ DB connected successfully with production settings');
+            console.log(
+                '✅ DB connected successfully with production settings'
+            );
             return mongoose.connection;
         })
         .catch((err) => {

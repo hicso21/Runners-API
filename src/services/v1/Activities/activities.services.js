@@ -1,4 +1,28 @@
+import mongoose from 'mongoose';
 import Activities from '../../../db/models/Activities.js';
+
+async function ensureConnection() {
+    if (mongoose.connection.readyState === 1) {
+        return true; // Ya conectado
+    }
+
+    if (mongoose.connection.readyState === 2) {
+        // Conectando, esperar hasta 5 segundos
+        await new Promise((resolve, reject) => {
+            const timeout = setTimeout(
+                () => reject(new Error('Connection timeout')),
+                5000
+            );
+            mongoose.connection.once('connected', () => {
+                clearTimeout(timeout);
+                resolve();
+            });
+        });
+        return true;
+    }
+
+    throw new Error('MongoDB not connected');
+}
 
 class ActivitiesServices {
     static async getAll(user_id) {
@@ -27,7 +51,7 @@ class ActivitiesServices {
                 activityType,
                 startDate,
                 endDate,
-                fields = 'date activity_type timestamp_num distance total_time calories',
+                fields = 'date activity_type timestamp_num distance total_time calories elevation distance average_heart_rate max_heart_rate average_pace training_load positive_slope negative_slope average_speed average_cadence max_cadence',
             } = options;
 
             // Construir query
@@ -77,6 +101,8 @@ class ActivitiesServices {
 
     static async getAggregatedStats(user_id, options = {}) {
         try {
+            await ensureConnection();
+
             const {
                 groupBy = 'week',
                 activityType,
@@ -98,14 +124,13 @@ class ActivitiesServices {
 
             if (startDate || endDate) {
                 matchStage.timestamp_num = {};
-                if (startDate) {
+                if (startDate)
                     matchStage.timestamp_num.$gte = new Date(
                         startDate
                     ).getTime();
-                }
-                if (endDate) {
+
+                if (endDate)
                     matchStage.timestamp_num.$lte = new Date(endDate).getTime();
-                }
             }
 
             pipeline.push({ $match: matchStage });
@@ -122,7 +147,13 @@ class ActivitiesServices {
                     calories: 1,
                     elevation: 1,
                     zones: 1,
-                    date: 1,
+                    average_pace: 1,
+                    training_load: 1,
+                    positive_slope: 1,
+                    negative_slope: 1,
+                    average_speed: 1,
+                    average_cadence: 1,
+                    max_cadence: 1,
                 },
             });
 
@@ -138,7 +169,7 @@ class ActivitiesServices {
                                 ],
                             },
                             then: { $toDate: '$timestamp_num' },
-                            else: { $toDate: new Date() }, // Fallback
+                            else: { $toDate: new Date() },
                         },
                     },
                 },
@@ -194,18 +225,26 @@ class ActivitiesServices {
                     distance: { $sum: safeConvert('$distance') },
                     calories: { $sum: safeConvert('$calories') },
                     elevation: { $sum: safeConvert('$elevation') },
+                    average_pace: { $avg: safeConvert('$average_pace') },
+                    training_load: { $sum: safeConvert('$training_load') },
+                    positive_slope: { $sum: safeConvert('$positive_slope') },
+                    negative_slope: { $sum: safeConvert('$negative_slope') },
+                    average_speed: { $avg: safeConvert('$average_speed') },
+                    average_cadence: { $avg: safeConvert('$average_cadence') },
+                    max_cadence: { $max: safeConvert('$max_cadence') },
                     count: { $sum: 1 },
-                    start_date: { $min: '$dateObj' },
-                    end_date: { $max: '$dateObj' },
+                    date: { $first: '$dateObj' },
                 },
             });
 
             pipeline.push({ $sort: { _id: 1 } });
 
             // Ejecutar agregación SIN .allowDiskUse() y .maxTimeMS()
-            const aggregatedData = await Activities.aggregate(pipeline).option({
-                maxTimeMS: 30000,
-            });
+            const aggregatedData = await Activities.aggregate(pipeline)
+                .option({
+                    maxTimeMS: 20000,
+                })
+                .exec();
             return aggregatedData;
         } catch (error) {
             console.error('Error en getAggregatedStats:', error);
