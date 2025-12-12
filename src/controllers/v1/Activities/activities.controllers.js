@@ -75,6 +75,33 @@ class ActivitiesControllers {
         }
     }
 
+    static async getZones(req, res) {
+        const { user_id } = req.params;
+        const { limit, offset, activityType, startDate, endDate } = req.query;
+
+        try {
+            const zones = await ActivitiesServices.getZones(user_id, {
+                limit,
+                offset,
+                activityType,
+                startDate,
+                endDate,
+            });
+
+            // Agregar headers para caché
+            res.set({
+                'Cache-Control': 'private, max-age=120', // 2 minutos
+            });
+
+            res.json(zones);
+        } catch (error) {
+            res.status(500).json({
+                error: true,
+                data: error.message,
+            });
+        }
+    }
+
     static async getById(req, res) {
         const activity_id = req.params.activity_id;
         try {

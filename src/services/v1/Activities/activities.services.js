@@ -1,29 +1,6 @@
 import mongoose from 'mongoose';
 import Activities from '../../../db/models/Activities.js';
 
-async function ensureConnection() {
-    if (mongoose.connection.readyState === 1) {
-        return true; // Ya conectado
-    }
-
-    if (mongoose.connection.readyState === 2) {
-        // Conectando, esperar hasta 5 segundos
-        await new Promise((resolve, reject) => {
-            const timeout = setTimeout(
-                () => reject(new Error('Connection timeout')),
-                5000
-            );
-            mongoose.connection.once('connected', () => {
-                clearTimeout(timeout);
-                resolve();
-            });
-        });
-        return true;
-    }
-
-    throw new Error('MongoDB not connected');
-}
-
 class ActivitiesServices {
     static async getAll(user_id) {
         try {
@@ -101,8 +78,6 @@ class ActivitiesServices {
 
     static async getAggregatedStats(user_id, options = {}) {
         try {
-            await ensureConnection();
-
             const {
                 groupBy = 'week',
                 activityType,
@@ -118,9 +93,8 @@ class ActivitiesServices {
                 timestamp_num: { $exists: true, $ne: null, $gt: 0 }, // Solo documentos con timestamp_num válido
             };
 
-            if (activityType && activityType !== 'Todos') {
+            if (activityType && activityType !== 'Todos')
                 matchStage.activity_type = activityType;
-            }
 
             if (startDate || endDate) {
                 matchStage.timestamp_num = {};
@@ -146,7 +120,6 @@ class ActivitiesServices {
                     distance: 1,
                     calories: 1,
                     elevation: 1,
-                    zones: 1,
                     average_pace: 1,
                     training_load: 1,
                     positive_slope: 1,
@@ -233,7 +206,8 @@ class ActivitiesServices {
                     average_cadence: { $avg: safeConvert('$average_cadence') },
                     max_cadence: { $max: safeConvert('$max_cadence') },
                     count: { $sum: 1 },
-                    date: { $first: '$dateObj' },
+                    start_date: { $min: '$dateObj' },
+                    end_date: { $max: '$dateObj' },
                 },
             });
 
@@ -252,6 +226,73 @@ class ActivitiesServices {
                 error: true,
                 data: error.message,
             };
+        }
+    }
+
+    static async getZones(user_id, options = {}) {
+        try {
+            const {
+                limit = 365,
+                offset = 0,
+                activityType,
+                startDate,
+                endDate,
+            } = options;
+
+            // Construir query
+            const query = {
+                user_id,
+                zones: { $exists: true, $ne: null }, // Solo actividades con zones
+            };
+
+            if (startDate) {
+                const startTime = new Date(startDate).getTime();
+                if (!isNaN(startTime)) {
+                    query.timestamp_num = {
+                        ...(query.timestamp_num || {}),
+                        $gte: startTime,
+                    };
+                }
+            }
+
+            if (endDate) {
+                const endTime = new Date(endDate).getTime();
+                if (!isNaN(endTime)) {
+                    query.timestamp_num = {
+                        ...(query.timestamp_num || {}),
+                        $lte: endTime,
+                    };
+                }
+            }
+
+            if (activityType && activityType !== 'Todos') {
+                query.activity_type = activityType;
+            }
+
+            console.log('🔍 Zones Query:', JSON.stringify(query));
+
+            // Ejecutar query - solo traer zones, date y total_time
+            const activities = await Activities.find(query)
+                .select('zones date timestamp_num activity_type')
+                .sort({ timestamp_num: -1 })
+                .skip(parseInt(offset))
+                .limit(parseInt(limit))
+                .lean()
+                .maxTimeMS(15000);
+
+            console.log(`✅ Zones query completed: ${activities.length} docs`);
+
+            // Retornar en formato optimizado
+            return activities.map((activity) => ({
+                zones: activity.zones,
+                date: activity.date,
+                total_time: activity.total_time,
+                activity_type: activity.activity_type,
+            }));
+        } catch (error) {
+            console.error('❌ Error in getZones:', error.message);
+            console.error('Stack:', error.stack);
+            return [];
         }
     }
 
